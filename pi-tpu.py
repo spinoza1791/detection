@@ -44,9 +44,9 @@ def main():
 		lbl_input = None
 		lbl_input = input("Type label name for this single object model:")
 		if lbl_input == None:
-			labels = [0, "Object"]
+			labels = dict((int(0), "object")
 		else:
-			labels = [0, lbl_input]
+			labels = dict((int(0), lbl_input)
 
 	mdl_dims = int(args.dims)
 	
