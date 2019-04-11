@@ -29,6 +29,8 @@ def main():
 	  '--max_obj', help='Maximum objects detected [>= 1], default 1', required=False)
 	parser.add_argument(
 	  '--thresh', help='Threshold confidence [0.1-1.0], default 0.3', required=False)
+	parser.add_argument(
+	'--video_off', help='Video display off, for increased FPS', required=False)
 	if len(sys.argv[1:])==0:
 		parser.print_help()
 		# parser.print_usage() # for just the usage line
@@ -62,7 +64,10 @@ def main():
 			thresh = 0.3	
 	else:
 		thresh = 0.3
-		
+	
+	video_off = False
+	if args.video_off :
+		video_off = True	
 		
 	cam_res_x = 256
 	cam_res_y = 256
@@ -146,7 +151,7 @@ def main():
 		sz_x = round(resized_x / mdl_dims)
 		sz_y = round(resized_y / mdl_dims)
 		img = pygame.transform.scale(img,(resized_x, resized_y))
-		if img:
+		if img and video_off == False:
 			screen.blit(img, (0,0))
 		#pygame.surfarray.blit_array(screen, img_arr)
 	
