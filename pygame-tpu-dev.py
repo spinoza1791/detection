@@ -28,7 +28,7 @@ def main():
 	parser.add_argument(
 	  '--max_obj', default=1, help='Maximum objects detected [>= 1], default 1', required=False)
 	parser.add_argument(
-	  '--thresh', default=0.3, help='Threshold confidence [0.1-1.0], default 0.3', required=False)
+	  '--thresh', help='Threshold confidence [0.1-1.0], default 0.3', default=0.3, required=False)
 	parser.add_argument(
 	  '--video_off', help='Video display off, for increased FPS', action='store_true', required=False)
 	if len(sys.argv[0:])==0:
@@ -62,8 +62,8 @@ def main():
 		thresh = float(args.thresh)
 		if thresh < 0.1 or thresh > 1.0:
 			thresh = 0.3	
-	else:
-		thresh = 0.3
+	#else:
+	#	thresh = 0.3
 	
 	video_off = False
 	if args.video_off :
