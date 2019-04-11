@@ -108,11 +108,11 @@ def main():
 	N = 10
 	
 	while True:
+		img = pycam.get_image()
 		img = pygame.transform.scale(img,(resized_x, resized_y))
 		if img and video_off == False:
 			screen.blit(img, (0,0))
-			
-		img = pycam.get_image()
+					
 		img = pygame.transform.scale(img,(mdl_dims,mdl_dims))
 		if gray:
 			img_arr = grayscale(img)
@@ -123,7 +123,7 @@ def main():
 			#print(img_arr.shape)
 			#print(img_arr.size)
 			
-		#img_arr = np.swapaxes(img_arr,0,1)
+		img_arr = np.swapaxes(img_arr,0,1)
 		#img_arr = pygame.PixelArray.transpose(img_arr) #requires pygame.PixelArray object
 		img_arr = np.ascontiguousarray(img_arr)
 		frame = io.BytesIO(img_arr)
