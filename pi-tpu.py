@@ -137,16 +137,6 @@ def main():
 		elapsed_ms = time.time() - start_ms
 		#pygame.surfarray.blit_array(screen, img_arr)	
 		i += 1
-		if i > N:
-			tm = time.time()
-			fps = "fps:{:5.1f} ".format(i / (tm - last_tm))
-			i = 0
-			last_tm = tm
-		fps_thresh = fps + "    thresh:" + str(thresh)
-		fps_fnt = fnt.render(fps_thresh, True, (255,255,0))
-		fps_width = fps_fnt.get_rect().width
-		screen.blit(fps_fnt,((resized_x / 2) - (fps_width / 2), 20))
-		
 		if results:
 			num_obj = 0
 			for obj in results:
@@ -182,6 +172,17 @@ def main():
 			fnt_ms = fnt.render(ms, True, (255,0,0))
 			fnt_ms_width = fnt_ms.get_rect().width
 			screen.blit(fnt_ms,((resized_x / 2 ) - (fnt_ms_width / 2), 0))
+				
+		if i > N:
+			tm = time.time()
+			fps = "fps:{:5.1f} ".format(i / (tm - last_tm))
+			i = 0
+			last_tm = tm
+			
+		fps_thresh = fps + "    thresh:" + str(thresh)
+		fps_fnt = fnt.render(fps_thresh, True, (255,255,0))
+		fps_width = fps_fnt.get_rect().width
+		screen.blit(fps_fnt,((resized_x / 2) - (fps_width / 2), 20))
 
 		for event in pygame.event.get():
 			keys = pygame.key.get_pressed()
