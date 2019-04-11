@@ -29,7 +29,7 @@ def main():
 	parser.add_argument(
 	  '--gray', help='Grayscale detection for increased FPS', action='store_true', required=False)
 	parser.add_argument(
-	  '--cam_res', help='Set camera resolution, examples: 96, 128, 256, 352, 384, 480', default=256, required=False)
+	  '--cam_res', help='Set camera resolution, examples: 96, 128, 256, 352, 384, 480, 640', default=256, required=False)
 	if len(sys.argv[0:])==0:
 		parser.print_help()
 		#parser.print_usage() # for just the usage line
@@ -78,7 +78,7 @@ def main():
 
 	pygame.init()
 	pygame.camera.init()
-	screen = pygame.display.set_mode((mdl_dims,mdl_dims), pygame.RESIZABLE)
+	screen = pygame.display.set_mode((cam_res_x,cam_res_y), pygame.RESIZABLE)
 	pygame.display.set_caption('Object Detection')
 	pycam = pygame.camera.Camera("/dev/video0",(cam_res_x,cam_res_y)) #, "YUV")
 	pycam.start() 
