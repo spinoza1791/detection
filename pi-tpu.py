@@ -88,7 +88,7 @@ def main():
 	fnt = pygame.font.SysFont('Arial', fnt_sz)
 	
 	def grayscale(img):
-		arr = pygame.surfarray.pixels3d(img)
+		arr = pygame.surfarray.array3d(img)
 		#arr = arr.dot([0.298, 0.587, 0.114])[:,:,None].repeat(3,axis=2)
 		avgs = [[(r*0.298 + g*0.587 + b*0.114) for (r,g,b) in col] for col in arr]
 		arr = np.array([[[avg,avg,avg] for avg in col] for col in avgs])
