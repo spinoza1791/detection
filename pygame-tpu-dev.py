@@ -47,11 +47,8 @@ def main():
 		else:
 			lables = [lbl_input]
 
-	#Set all input params equal to the input dimensions expected by the model
-	mdl_dims = int(args.dims) #dims must be a factor of 32 for picamera resolution to work
-	window_scale = 1
-
-
+	mdl_dims = int(args.dims)
+	
 	if args.max_obj:
 		max_obj = round(int(args.max_obj))
 		if max_obj < 1:
@@ -66,8 +63,9 @@ def main():
 	else:
 		thresh = 0.3
 		
-	cam_res_x = 480
-	cam_res_y = 480
+		
+	cam_res_x = 256
+	cam_res_y = 256
 	max_fps = 30
 	engine = edgetpu.detection.engine.DetectionEngine(args.model)
 
@@ -75,7 +73,7 @@ def main():
 	pygame.camera.init()
 	#screen = pygame.display.set_mode((mdl_dims, mdl_dims), pygame.DOUBLEBUF|pygame.HWSURFACE)
 	screen = pygame.display.set_mode((mdl_dims,mdl_dims), pygame.RESIZABLE)
-	##pygame.display.set_caption('Face Detection')
+	pygame.display.set_caption('Object Detection')
 	pycam = pygame.camera.Camera("/dev/video0",(cam_res_x,cam_res_y)) #, "RGB")
 	pycam.start() 
 	#screen.convert()
@@ -89,9 +87,9 @@ def main():
 	fnt_sz = 18
 	fnt = pygame.font.SysFont('Arial', fnt_sz)
 	
-	x1, x2, x3, x4, x5 = 0, 50, 50, 0, 0
-	y1, y2, y3, y4, y5 = 50, 50, 0, 0, 50
-	z = 5
+	#x1, x2, x3, x4, x5 = 0, 50, 50, 0, 0
+	#y1, y2, y3, y4, y5 = 50, 50, 0, 0, 50
+	#z = 5
 	last_tm = time.time()
 	i = 0
 	results = None
@@ -104,7 +102,7 @@ def main():
 	#rawCapture = PiRGBArray(camera, size=camera.resolution)
 	#stream = camera.capture_continuous(rawCapture, format="rgb", use_video_port=True)
 	while True:
-	##	clock.tick(max_fps)
+		#clock.tick(max_fps)
 	#with picamera.array.PiRGBArray(camera, size=(mdl_dims, mdl_dims)) as stream: 
 	#for foo in camera.capture_continuous(stream, use_video_port=True, format='rgb'):
 	#for f in stream:
@@ -145,7 +143,7 @@ def main():
 		screen = pygame.display.get_surface() #get the surface of the current active display
 		resized_x,resized_y = size = screen.get_width(), screen.get_height()
 		#print("x:", resized_x, " y:", resized_y)
-		sz_x = round(resized_x / mdl_dims)
+		sz_x = round(resized_x / mdl_dims)255
 		sz_y = round(resized_y / mdl_dims)
 		img = pygame.transform.scale(img,(resized_x, resized_y))
 		if img:
