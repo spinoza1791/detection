@@ -108,6 +108,8 @@ def main():
 	N = 10
 	
 	while True:
+		screen = pygame.display.get_surface() #get the surface of the current active display
+		resized_x,resized_y = size = screen.get_width(), screen.get_height()
 		img = pycam.get_image()
 		img = pygame.transform.scale(img,(resized_x, resized_y))
 		if img and video_off == False:
@@ -132,9 +134,6 @@ def main():
 		start_ms = time.time()
 		results = engine.DetectWithInputTensor(frame_buf_val, threshold=thresh, top_k=max_obj)
 		elapsed_ms = time.time() - start_ms
-		screen = pygame.display.get_surface() #get the surface of the current active display
-		resized_x,resized_y = size = screen.get_width(), screen.get_height()
-
 		#pygame.surfarray.blit_array(screen, img_arr)	
 		i += 1
 		if i > N:
