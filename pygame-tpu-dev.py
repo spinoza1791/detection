@@ -159,7 +159,7 @@ def main():
 			i = 0
 			last_tm = tm
 		fps_thresh = fps + " THRESH:" + str(thresh)
-		fps_fnt = fnt.render(fps + " THRESH:" + thresh, True, (255,255,0))
+		fps_fnt = fnt.render(fps_thresh, True, (255,255,0))
 		fps_width = fps_fnt.get_rect().width
 		screen.blit(fps_fnt,((resized_x / 2) - (fps_width / 2), 20))
 		
