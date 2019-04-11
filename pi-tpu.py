@@ -27,7 +27,7 @@ def main():
 	parser.add_argument(
 	  '--video_off', help='Video display off, for increased FPS', action='store_true', required=False)
 	parser.add_argument(
-	  '--gray', help='Grayscale detection for increased FPS', action='store_true', required=False)
+	  '--grey', help='Greyscale detection for increased FPS', action='store_true', required=False)
 	parser.add_argument(
 	  '--cam_res', help='Set camera resolution, examples: 96, 128, 256, 352, 384, 480', default=256, required=False)
 	if len(sys.argv[0:])==0:
@@ -64,9 +64,9 @@ def main():
 	if args.video_off :
 		video_off = True
 		
-	gray = False
-	if args.gray :
-		gray = True
+	grey = False
+	if args.grey :
+		grey = True
 		
 	if args.cam_res:
 		cam_res_x=cam_res_y= int(args.cam_res)
@@ -87,7 +87,7 @@ def main():
 	fnt_sz = 18
 	fnt = pygame.font.SysFont('Arial', fnt_sz)
 	
-	def grayscale(img):
+	def greyscale(img):
 		arr = pygame.surfarray.pixels3d(img)
 		#arr = arr.dot([0.298, 0.587, 0.114])[:,:,None].repeat(3,axis=2)
 		avgs = [[(r*0.298 + g*0.587 + b*0.114) for (r,g,b) in col] for col in arr]
@@ -114,18 +114,17 @@ def main():
 			img_arr = grayscale(img)
 		else:
 			img_arr = fullcolor(img)
-		img_arr = np.swapaxes(img_arr,0,1)
+		#img_arr = np.swapaxes(img_arr,0,1)
 		#img_arr = pygame.PixelArray.transpose(img_arr) #requires pygame.PixelArray object
-		img_arr = np.ascontiguousarray(img_arr)
+		#img_arr = np.ascontiguousarray(img_arr)
 		frame = io.BytesIO(img_arr)
 		frame_buf_val = np.frombuffer(frame.getvalue(), dtype=np.uint8)
-		#print(frame_buf_val)
+		print(frame_buf_val)
 		start_ms = time.time()
 		results = engine.DetectWithInputTensor(frame_buf_val, threshold=thresh, top_k=max_obj)
 		elapsed_ms = time.time() - start_ms
 		screen = pygame.display.get_surface() #get the surface of the current active display
 		resized_x,resized_y = size = screen.get_width(), screen.get_height()
-		#print("x:", resized_x, " y:", resized_y)
 		img = pygame.transform.scale(img,(resized_x, resized_y))
 		if img and video_off == False:
 			screen.blit(img, (0,0))
