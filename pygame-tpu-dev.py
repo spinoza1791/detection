@@ -128,7 +128,7 @@ def main():
 		##img = pygame.image.frombuffer(rgb[0:
 		##(camera.resolution[0] * camera.resolution[1] * 3)],
 		##camera.resolution, 'RGB')
-		start_ms = time.time()
+
 		img = pycam.get_image()
 		img = pygame.transform.scale(img,(mdl_dims,mdl_dims))
 		img_arr = pygame.surfarray.pixels3d(img)
@@ -137,7 +137,7 @@ def main():
 		img_arr = np.ascontiguousarray(img_arr)
 		frame = io.BytesIO(img_arr)
 		frame_buf_val = np.frombuffer(frame.getvalue(), dtype=np.uint8)
-		elapsed_ms = time.time() - start_ms
+
 		#print(frame_buf_val)
 
 		results = engine.DetectWithInputTensor(frame_buf_val, threshold=thresh, top_k=max_obj)
@@ -150,8 +150,10 @@ def main():
 		sz_x = round(resized_x / mdl_dims)
 		sz_y = round(resized_y / mdl_dims)
 		img = pygame.transform.scale(img,(resized_x, resized_y))
+		start_ms = time.time()
 		if img and video_off == False:
 			screen.blit(img, (0,0))
+		elapsed_ms = time.time() - start_ms
 		#pygame.surfarray.blit_array(screen, img_arr)
 	
 		i += 1
