@@ -42,10 +42,11 @@ def main():
 			labels = dict((int(k), v) for k, v in pairs)
 	else:
 		lbl_input = input("Type label name for this single object model:")
-		if lbl_input == None:
-			labels = dict(0, "object")
+		if lbl_input:
+			labels = {0: lbl_input}
 		else:
-			labels = dict(0, lbl_input)
+			labels = {0: 'object'}
+			
 
 	mdl_dims = int(args.dims)
 	
