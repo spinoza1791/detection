@@ -147,13 +147,13 @@ def main():
 		screen = pygame.display.get_surface() #get the surface of the current active display
 		resized_x,resized_y = size = screen.get_width(), screen.get_height()
 		#print("x:", resized_x, " y:", resized_y)
-		sz_x = round(resized_x / mdl_dims)
-		sz_y = round(resized_y / mdl_dims)
+		#sz_x = round(resized_x / mdl_dims)
+		#sz_y = round(resized_y / mdl_dims)
 		img = pygame.transform.scale(img,(resized_x, resized_y))
-		start_ms = time.time()
+
 		if img and video_off == False:
 			screen.blit(img, (0,0))
-		elapsed_ms = time.time() - start_ms
+
 		#pygame.surfarray.blit_array(screen, img_arr)
 	
 		i += 1
@@ -162,11 +162,13 @@ def main():
 			fps = "fps:{:5.1f} ".format(i / (tm - last_tm))
 			i = 0
 			last_tm = tm
+
 		fps_thresh = fps + "    thresh:" + str(thresh)
 		fps_fnt = fnt.render(fps_thresh, True, (255,255,0))
 		fps_width = fps_fnt.get_rect().width
+		start_ms = time.time()
 		screen.blit(fps_fnt,((resized_x / 2) - (fps_width / 2), 20))
-		
+		elapsed_ms = time.time() - start_ms
 		if results:
 			num_obj = 0
 			for obj in results:
