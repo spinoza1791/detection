@@ -26,12 +26,12 @@ def main():
 	parser.add_argument(
 	  '--dims', help='Model input dimension', required=True)
 	parser.add_argument(
-	  '--max_obj', help='Maximum objects detected [>= 1], default 1', required=False)
+	  '--max_obj', help='Maximum objects detected [>= 1], default 1', default=1, required=False)
 	parser.add_argument(
-	  '--thresh', help='Threshold confidence [0.1-1.0], default 0.3', required=False)
+	  '--thresh', help='Threshold confidence [0.1-1.0], default 0.3', default=0.3 required=False)
 	parser.add_argument(
 	'--video_off', help='Video display off, for increased FPS', default=False, required=False)
-	if len(sys.argv[1:])==0:
+	if len(sys.argv[1:5])==0:
 		#parser.print_help()
 		parser.print_usage() # for just the usage line
 		parser.exit()
