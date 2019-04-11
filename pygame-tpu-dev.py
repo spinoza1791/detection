@@ -143,7 +143,7 @@ def main():
 		screen = pygame.display.get_surface() #get the surface of the current active display
 		resized_x,resized_y = size = screen.get_width(), screen.get_height()
 		#print("x:", resized_x, " y:", resized_y)
-		sz_x = round(resized_x / mdl_dims)255
+		sz_x = round(resized_x / mdl_dims)
 		sz_y = round(resized_y / mdl_dims)
 		img = pygame.transform.scale(img,(resized_x, resized_y))
 		if img:
