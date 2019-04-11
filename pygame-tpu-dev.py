@@ -195,7 +195,7 @@ def main():
 			ms = "%s %.2fms" % ("No objects detected in", elapsed_ms*1000)
 			fnt_ms = fnt.render(ms, True, (255,0,0))
 			fnt_ms_width = fnt_ms.get_rect().width
-			screen.blit(fnt_ms,((resized_x / 2) - (fnt_ms_width / 2 * sz_y), 0))
+			screen.blit(fnt_ms,((resized_x / 2 ) - (fnt_ms_width / 2), 0))
 
 		for event in pygame.event.get():
 			keys = pygame.key.get_pressed()
