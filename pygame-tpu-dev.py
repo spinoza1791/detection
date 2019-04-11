@@ -94,6 +94,8 @@ def main():
 	#y1, y2, y3, y4, y5 = 50, 50, 0, 0, 50
 	#z = 5
 	last_tm = time.time()
+	start_ms = time.time()
+	elapsed_ms = time.time()
 	i = 0
 	results = None
 	fps = "00.0 fps"
@@ -166,9 +168,9 @@ def main():
 		fps_thresh = fps + "    thresh:" + str(thresh)
 		fps_fnt = fnt.render(fps_thresh, True, (255,255,0))
 		fps_width = fps_fnt.get_rect().width
-		start_ms = time.time()
 		screen.blit(fps_fnt,((resized_x / 2) - (fps_width / 2), 20))
-		elapsed_ms = time.time() - start_ms
+		
+		start_ms = time.time()
 		if results:
 			num_obj = 0
 			for obj in results:
@@ -202,6 +204,7 @@ def main():
 			fnt_ms = fnt.render(ms, True, (255,0,0))
 			fnt_ms_width = fnt_ms.get_rect().width
 			screen.blit(fnt_ms,((resized_x / 2 ) - (fnt_ms_width / 2), 0))
+		elapsed_ms = time.time() - start_ms
 
 		for event in pygame.event.get():
 			keys = pygame.key.get_pressed()
