@@ -27,7 +27,9 @@ def main():
 	parser.add_argument(
 	  '--video_off', help='Video display off, for increased FPS', action='store_true', required=False)
 	parser.add_argument(
-	  '--cam_res', help='Set camera resolution, increments of 64', default=256, required=False)
+	  '--gray', help='Grayscale detection for increased FPS', action='store_true', required=False)
+	parser.add_argument(
+	  '--cam_res', help='Set camera resolution, examples: 96, 128, 256, 352, 384, 480', default=256, required=False)
 	if len(sys.argv[0:])==0:
 		parser.print_help()
 		#parser.print_usage() # for just the usage line
@@ -62,11 +64,16 @@ def main():
 	if args.video_off :
 		video_off = True
 		
+	gray = False
+	if args.gray :
+		gray = True
+		
 	if args.cam_res:
 		cam_res_x=cam_res_y= int(args.cam_res)
 	else:		
 		cam_res_x=cam_res_y= 256
 		
+
 	engine = edgetpu.detection.engine.DetectionEngine(args.model)
 
 	pygame.init()
@@ -79,6 +86,16 @@ def main():
 	pygame.font.init()
 	fnt_sz = 18
 	fnt = pygame.font.SysFont('Arial', fnt_sz)
+	
+	def grayscale(img):
+		arr = pygame.surfarray.pixels3d(img)
+		arr=arr.dot([0.298, 0.587, 0.114])[:,:,None].repeat(3,axis=2)
+		return arr
+	
+	def fullcolor(img):
+		arr = pygame.surfarray.pixels3d(img)
+		return arr
+	
 	x1=x2=y1=y2=0
 	last_tm = time.time()
 	start_ms = time.time()
@@ -91,7 +108,10 @@ def main():
 	while True:
 		img = pycam.get_image()
 		img = pygame.transform.scale(img,(mdl_dims,mdl_dims))
-		img_arr = pygame.surfarray.pixels3d(img)
+		if gray:
+			img_arr = grayscale(img)
+		else:
+			img_arr = fullcolor(img)
 		img_arr = np.swapaxes(img_arr,0,1)
 		#img_arr = pygame.PixelArray.transpose(img_arr) #requires pygame.PixelArray object
 		img_arr = np.ascontiguousarray(img_arr)
