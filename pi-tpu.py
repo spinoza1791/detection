@@ -60,8 +60,8 @@ def main():
 	if args.video_off :
 		video_off = True	
 		
-	cam_res_x = 304
-	cam_res_y = 304
+	cam_res_x = 336
+	cam_res_y = 336
 	engine = edgetpu.detection.engine.DetectionEngine(args.model)
 
 	pygame.init()
