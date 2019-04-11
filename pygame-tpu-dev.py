@@ -43,7 +43,7 @@ def main():
 			labels = dict((int(k), v) for k, v in pairs)
 	else:
 		lbl_input = None
-		lbl_input = raw_input("Type label name for this single object model:")
+		lbl_input = input("Type label name for this single object model:")
 		if lbl_input == None:
 			lables = ["Object"]
 		else:
