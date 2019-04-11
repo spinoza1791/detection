@@ -117,9 +117,9 @@ def main():
 			img_arr = fullcolor(img)
 			print(img_arr.shape)
 			
-		#img_arr = np.swapaxes(img_arr,0,1)
+		img_arr = np.swapaxes(img_arr,0,1)
 		#img_arr = pygame.PixelArray.transpose(img_arr) #requires pygame.PixelArray object
-		#img_arr = np.ascontiguousarray(img_arr)
+		img_arr = np.ascontiguousarray(img_arr)
 		frame = io.BytesIO(img_arr)
 		frame_buf_val = np.frombuffer(frame.getvalue(), dtype=np.uint8)
 		print(frame_buf_val)
