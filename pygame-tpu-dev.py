@@ -86,7 +86,7 @@ def main():
 	pygame.font.init()
 	fnt_sz = 18
 	fnt = pygame.font.SysFont('Arial', fnt_sz)
-	
+	x1=x2=y1=y2=None
 	#x1, x2, x3, x4, x5 = 0, 50, 50, 0, 0
 	#y1, y2, y3, y4, y5 = 50, 50, 0, 0, 50
 	#z = 5
