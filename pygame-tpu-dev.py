@@ -128,7 +128,7 @@ def main():
 		##img = pygame.image.frombuffer(rgb[0:
 		##(camera.resolution[0] * camera.resolution[1] * 3)],
 		##camera.resolution, 'RGB')
-
+		start_ms = time.time()
 		img = pycam.get_image()
 		img = pygame.transform.scale(img,(mdl_dims,mdl_dims))
 		img_arr = pygame.surfarray.pixels3d(img)
@@ -137,11 +137,12 @@ def main():
 		img_arr = np.ascontiguousarray(img_arr)
 		frame = io.BytesIO(img_arr)
 		frame_buf_val = np.frombuffer(frame.getvalue(), dtype=np.uint8)
+		elapsed_ms = time.time() - start_ms
 		#print(frame_buf_val)
-		start_ms = time.time()
+
 		results = engine.DetectWithInputTensor(frame_buf_val, threshold=thresh, top_k=max_obj)
 		#frame.truncate(0)
-		elapsed_ms = time.time() - start_ms
+
 
 		screen = pygame.display.get_surface() #get the surface of the current active display
 		resized_x,resized_y = size = screen.get_width(), screen.get_height()
