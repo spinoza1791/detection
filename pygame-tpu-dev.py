@@ -155,10 +155,10 @@ def main():
 		i += 1
 		if i > N:
 			tm = time.time()
-			fps = "{:5.1f} fps".format(i / (tm - last_tm))
+			fps = "fps:{:5.1f} ".format(i / (tm - last_tm))
 			i = 0
 			last_tm = tm
-		fps_thresh = fps + " thresh " + str(thresh)
+		fps_thresh = fps + "    thresh:" + str(thresh)
 		fps_fnt = fnt.render(fps_thresh, True, (255,255,0))
 		fps_width = fps_fnt.get_rect().width
 		screen.blit(fps_fnt,((resized_x / 2) - (fps_width / 2), 20))
@@ -185,7 +185,7 @@ def main():
 				fnt_class_score = fnt.render(class_score, True, (0,255,255))
 				fnt_class_score_width = fnt_class_score.get_rect().width
 				screen.blit(fnt_class_score,(x2-fnt_class_score_width, y1-fnt_sz))
-				ms = "(%d) %s%.2fms" % (num_obj, "objects detected in ", elapsed_ms*1000)
+				ms = "(%d%s%d) %s%.2fms" % (num_obj, "/", max_obj, "objects detected in ", elapsed_ms*1000)
 				fnt_ms = fnt.render(ms, True, (255,255,255))
 				fnt_ms_width = fnt_ms.get_rect().width
 				screen.blit(fnt_ms,((resized_x / 2 ) - (fnt_ms_width / 2), 0))
