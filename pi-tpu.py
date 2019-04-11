@@ -89,7 +89,6 @@ def main():
 	
 	def grayscale(img):
 		arr = pygame.surfarray.pixels3d(img)
-		arr = np.ascontiguousarray(arr)
 		#arr = arr.dot([0.298, 0.587, 0.114])[:,:,None].repeat(3,axis=2)
 		avgs = [[(r*0.298 + g*0.587 + b*0.114) for (r,g,b) in col] for col in arr]
 		arr = np.array([[[avg,avg,avg] for avg in col] for col in avgs])
@@ -120,7 +119,7 @@ def main():
 			#print(img_arr.shape)
 			#print(img_arr.size)
 			
-		img_arr = np.swapaxes(img_arr,0,1)
+		#img_arr = np.swapaxes(img_arr,0,1)
 		#img_arr = pygame.PixelArray.transpose(img_arr) #requires pygame.PixelArray object
 		img_arr = np.ascontiguousarray(img_arr)
 		frame = io.BytesIO(img_arr)
