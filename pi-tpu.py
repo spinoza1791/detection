@@ -27,7 +27,7 @@ def main():
 	parser.add_argument(
 	  '--video_off', help='Video display off, for increased FPS', action='store_true', required=False)
 	parser.add_argument(
-	  '--grey', help='Greyscale detection for increased FPS', action='store_true', required=False)
+	  '--gray', help='Grayscale detection for increased FPS', action='store_true', required=False)
 	parser.add_argument(
 	  '--cam_res', help='Set camera resolution, examples: 96, 128, 256, 352, 384, 480', default=256, required=False)
 	if len(sys.argv[0:])==0:
@@ -64,9 +64,9 @@ def main():
 	if args.video_off :
 		video_off = True
 		
-	grey = False
-	if args.grey :
-		grey = True
+	gray = False
+	if args.gray :
+		gray = True
 		
 	if args.cam_res:
 		cam_res_x=cam_res_y= int(args.cam_res)
@@ -87,13 +87,13 @@ def main():
 	fnt_sz = 18
 	fnt = pygame.font.SysFont('Arial', fnt_sz)
 	
-	def greyscale(img):
+	def grayscale(img):
 		arr = pygame.surfarray.pixels3d(img)
 		#arr = arr.dot([0.298, 0.587, 0.114])[:,:,None].repeat(3,axis=2)
 		avgs = [[(r*0.298 + g*0.587 + b*0.114) for (r,g,b) in col] for col in arr]
 		arr = np.array([[[avg,avg,avg] for avg in col] for col in avgs])
 		return arr
-	
+
 	def fullcolor(img):
 		arr = pygame.surfarray.pixels3d(img)
 		return arr
@@ -110,8 +110,8 @@ def main():
 	while True:
 		img = pycam.get_image()
 		img = pygame.transform.scale(img,(mdl_dims,mdl_dims))
-		if grey:
-			img_arr = greyscale(img)
+		if gray:
+			img_arr = grayscale(img)
 		else:
 			img_arr = fullcolor(img)
 		#img_arr = np.swapaxes(img_arr,0,1)
