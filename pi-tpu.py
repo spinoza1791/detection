@@ -110,8 +110,8 @@ def main():
 	while True:
 		img = pycam.get_image()
 		img = pygame.transform.scale(img,(mdl_dims,mdl_dims))
-		if gray:
-			img_arr = grayscale(img)
+		if grey:
+			img_arr = greyscale(img)
 		else:
 			img_arr = fullcolor(img)
 		#img_arr = np.swapaxes(img_arr,0,1)
