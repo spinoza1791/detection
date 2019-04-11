@@ -113,9 +113,11 @@ def main():
 		if gray:
 			img_arr = grayscale(img)
 			print(img_arr.shape)
+			print(img_arr.size)
 		else:
 			img_arr = fullcolor(img)
 			print(img_arr.shape)
+			print(img_arr.size)
 			
 		img_arr = np.swapaxes(img_arr,0,1)
 		#img_arr = pygame.PixelArray.transpose(img_arr) #requires pygame.PixelArray object
