@@ -22,11 +22,11 @@ def main():
 	parser.add_argument(
 	  '--model', help='File path of Tflite model.', required=True)
 	parser.add_argument(
-	  '--labels', help='File path of labels file OR leave empty for single label name prompt', required=False)
+	  '--labels', help='File path of labels file OR leave empty for prompt to type label name', required=False)
 	parser.add_argument(
 	  '--dims', help='Model input dimension', required=True)
 	parser.add_argument(
-	  '--max_obj', default=1, help='Maximum objects detected [>= 1], default 1', required=False)
+	  '--max_obj', default=1, help='Maximum objects detected [>= 1], default 1', default=1, required=False)
 	parser.add_argument(
 	  '--thresh', help='Threshold confidence [0.1-1.0], default 0.3', default=0.3, required=False)
 	parser.add_argument(
@@ -43,7 +43,7 @@ def main():
 			labels = dict((int(k), v) for k, v in pairs)
 	else:
 		lbl_input = None
-		lbl_input = raw_input("Type label name for this single object model?")
+		lbl_input = raw_input("Type label name for this single object model:")
 		if lbl_input == None:
 			lables = ["Object"]
 		else:
@@ -52,11 +52,9 @@ def main():
 	mdl_dims = int(args.dims)
 	
 	if args.max_obj:
-		max_obj = round(int(args.max_obj))
+		max_obj = int(args.max_obj)
 		if max_obj < 1:
 			max_obj = 1
-	else:
-		max_obj = 1
 
 	if args.thresh:
 		thresh = float(args.thresh)
