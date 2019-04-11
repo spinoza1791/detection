@@ -30,7 +30,7 @@ def main():
 	parser.add_argument(
 	  '--thresh', default=0.3, help='Threshold confidence [0.1-1.0], default 0.3', required=False)
 	parser.add_argument(
-	'--video_off', help='Video display off, for increased FPS', default=False, required=False)
+	'--video_off', default=False, help='Video display off, for increased FPS', required=False)
 	if len(sys.argv[0:4])==0:
 		parser.print_help()
 		#parser.print_usage() # for just the usage line
