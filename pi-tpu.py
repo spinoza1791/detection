@@ -5,7 +5,7 @@ import io
 import time
 import sys
 import pygame
-#import pygame.camera
+import pygame.camera
 import numpy as np
 #from PIL import Image
 import edgetpu.detection.engine
