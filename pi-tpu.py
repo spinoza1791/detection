@@ -8,9 +8,6 @@ import pygame
 import pygame.camera
 import pygame.freetype as freetype
 import numpy as np
-#import picamera
-#import picamera.array
-#from picamera.array import PiRGBArray
 from PIL import Image
 import edgetpu.detection.engine
 import os
@@ -60,15 +57,13 @@ def main():
 		thresh = float(args.thresh)
 		if thresh < 0.1 or thresh > 1.0:
 			thresh = 0.3	
-	#else:
-	#	thresh = 0.3
 	
 	video_off = False
 	if args.video_off :
 		video_off = True	
 		
-	cam_res_x = 256
-	cam_res_y = 256
+	cam_res_x = 128
+	cam_res_y = 128
 	max_fps = 30
 	engine = edgetpu.detection.engine.DetectionEngine(args.model)
 
