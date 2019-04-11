@@ -26,6 +26,8 @@ def main():
 	  '--thresh', help='Threshold confidence [0.1-1.0], default=0.3', default=0.3, required=False)
 	parser.add_argument(
 	  '--video_off', help='Video display off, for increased FPS', action='store_true', required=False)
+	parser.add_argument(
+	  '--cam_res', help='Set camera resolution, increments of 64', default=256, required=False)
 	if len(sys.argv[0:])==0:
 		parser.print_help()
 		#parser.print_usage() # for just the usage line
@@ -58,10 +60,13 @@ def main():
 	
 	video_off = False
 	if args.video_off :
-		video_off = True	
+		video_off = True
 		
-	cam_res_x = 336
-	cam_res_y = 336
+	if args.cam_res:
+		cam_res_x=cam_res_y= int(args.cam_res)
+	else:		
+		cam_res_x=cam_res_y= 256
+		
 	engine = edgetpu.detection.engine.DetectionEngine(args.model)
 
 	pygame.init()
