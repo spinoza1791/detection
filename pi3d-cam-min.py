@@ -24,7 +24,7 @@ def get_pics():
     with picamera.array.PiRGBArray(camera) as output:
       while True: # loop for ever
         output.truncate(0)
-        camera.capture(output, 'rgb')
+        camera.capture(output, format='rgb', use_video_port=True)
         if npa is None: # do this once only
           npa = np.zeros(output.array.shape[:2] + (4,), dtype=np.uint8)
           npa[:,:,3] = 255 # fill alpha value
