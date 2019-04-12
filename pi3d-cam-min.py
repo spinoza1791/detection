@@ -46,12 +46,8 @@ def get_pics():
         new_pic = True
         time.sleep(0.05)
 
-t = threading.Thread(target=get_pics) # set up and start capture thread
-t.daemon = True
-t.start()
+##########################################################################
 
-while not new_pic: # wait for array to be filled first time
-    time.sleep(0.1)
 
 ########################################################################
 DISPLAY = pi3d.Display.create(x=mdl_dims, y=mdl_dims, frames_per_second=max_fps)
@@ -79,6 +75,13 @@ def ms_display(elapsed_ms):
   ms = str(elapsed_ms*1000)
   ms_txt.draw()
   ms_txt.quick_change(ms)
+  
+t = threading.Thread(target=get_pics) # set up and start capture thread
+t.daemon = True
+t.start()
+
+while not new_pic: # wait for array to be filled first time
+    time.sleep(0.1)
 
 while DISPLAY.loop_running():
   if new_pic:
