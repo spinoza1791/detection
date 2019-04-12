@@ -76,7 +76,7 @@ fps_txt = pi3d.String(camera=CAMERA, is_3d=False, font=font, string=fps, x=0, y=
 fps_txt.set_shader(txtshader)
 i = 0
 last_tm = time.time()
-
+ms = "00"
 ms_txt = pi3d.String(camera=CAMERA, is_3d=False, font=font, string=ms, x=0, y=preview_H/2 - 30, z=1.0)
 ms_txt.set_shader(txtshader)
 
