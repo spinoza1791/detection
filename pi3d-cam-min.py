@@ -81,8 +81,8 @@ while DISPLAY.loop_running():
   sprite.draw()
   fps_txt.draw()
   ms_txt.draw()
-	ms = str(elapsed_ms*1000)
-	ms_txt.quick_change(ms)
+  ms = str(elapsed_ms*1000)
+  ms_txt.quick_change(ms)
   i += 1
   if i > N:
     tm = time.time()
