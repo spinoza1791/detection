@@ -166,9 +166,9 @@ while DISPLAY.loop_running():
       DISPLAY.destroy()
       break
 
-  if new_pic:
-    tex.update_ndarray(npa)
-    new_pic = False
+#  if new_pic:
+#    tex.update_ndarray(npa)
+#    new_pic = False
 
   sprite.draw()
   fps_txt.draw()   
@@ -203,6 +203,10 @@ while DISPLAY.loop_running():
       new_pic = False
   bbox.draw() # i.e. one draw for all boxes
 
+  if new_pic:
+    tex.update_ndarray(npa)
+    new_pic = False
+    
 # Shut down the processors in an orderly fashion
 while pool:
   done = True
