@@ -122,14 +122,14 @@ while not new_pic:
 ########################################################################
 #DISPLAY = pi3d.Display.create(preview_mid_X, preview_mid_Y, w=preview_W, h=preview_H, layer=0, frames_per_second=max_fps)
 
-DISPLAY = pi3d.Display.create(x=320, y=320, layer=1,frames_per_second=30)
+DISPLAY = pi3d.Display.create(x=320, y=320, layer=1, frames_per_second=30)
 DISPLAY.set_background(0.0, 0.0, 0.0, 0.0)
 txtshader = pi3d.Shader("uv_flat")
 linshader = pi3d.Shader('mat_flat')
 CAMERA = pi3d.Camera(is_3d=False)
-tex = pi3d.Texture(npa)
-sprite = pi3d.Sprite(w=tex.ix, h=tex.iy, z=5.0)
-sprite.set_draw_details(txtshader, [tex])
+#tex = pi3d.Texture(npa)
+#sprite = pi3d.Sprite(w=tex.ix, h=tex.iy, z=5.0)
+#sprite.set_draw_details(txtshader, [tex])
 
 keybd = pi3d.Keyboard()
 
@@ -204,10 +204,11 @@ while DISPLAY.loop_running():
       new_pic = False
   bbox.draw() # i.e. one draw for all boxes
 
-  if new_pic:
-    tex.update_ndarray(npa)
-    new_pic = False
-  sprite.draw() 
+  #if new_pic:
+  #  tex.update_ndarray(npa)
+  #  new_pic = False
+  #sprite.draw()
+  
 # Shut down the processors in an orderly fashion
 while pool:
   done = True
