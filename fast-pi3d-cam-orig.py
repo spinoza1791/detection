@@ -115,8 +115,8 @@ t = threading.Thread(target=start_capture)
 t.daemon = True
 t.start()
 
-while not new_pic:
-  time.sleep(0.1)
+#while not new_pic:
+#  time.sleep(0.1)
 
 ########################################################################
 #DISPLAY = pi3d.Display.create(preview_mid_X, preview_mid_Y, w=preview_W, h=preview_H, layer=0, frames_per_second=max_fps)
@@ -166,9 +166,9 @@ while DISPLAY.loop_running():
       DISPLAY.destroy()
       break
 
-  if new_pic:
+  #if new_pic:
     tex.update_ndarray(npa)
-    new_pic = False
+    #new_pic = False
 
   sprite.draw()
   fps_txt.draw()   
