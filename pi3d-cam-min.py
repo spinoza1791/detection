@@ -85,7 +85,7 @@ while DISPLAY.loop_running():
   if new_pic:
     tex.update_ndarray(npa)
     new_pic = False
-  sprite.draw()
+  #sprite.draw()
   fps_txt.draw()
 
   ms = str(int(elapsed_ms*1000))
