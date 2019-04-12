@@ -68,7 +68,7 @@ new_pic = False
 empty_results = 0
 g_input = None
 
-npa = np.zeros((CAMH, CAMW, 4), dtype=np.uint8)
+npa = np.zeros((mdl_dims, mdl_dims, 4), dtype=np.uint8)
 npa[:,:,3] = 255
 new_pic = False
 
