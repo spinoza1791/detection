@@ -54,25 +54,28 @@ dx = 6.1
 yloc = 100.0
 dy = 1.13
 
+fps = "00.0 fps"
+N = 10
+fps_txt = pi3d.String(camera=CAMERA, is_3d=False, font=font, string=fps, x=0, y=preview_H/2 - 10, z=1.0)
+fps_txt.set_shader(txtshader)
+i = 0
+last_tm = time.time()
+
 
 while DISPLAY.loop_running():
   if new_pic:
     tex.update_ndarray(npa)
     new_pic = False
-
   sprite.draw()
-  #sprite.rotateIncZ(1)
-  #sprite.position(xloc, yloc, 5.0)
-  #if xloc > 300.0:
-  #  dx = -2.1
-  #elif xloc < -300.0:
-  #  dx = 2.1
-  #if yloc > 300.0:
-  #  dy = -1.13
-  #elif yloc < -300.0:
-  #  dy = 1.13
-  #xloc += dx
-  #yloc += dy
+  fps_txt.draw()
+  i += 1
+  if i > N:
+    tm = time.time()
+    fps = "{:5.1f}FPS".format(i / (tm - last_tm))
+    fps_txt.quick_change(fps)
+    i = 0
+    last_tm = tm
+
 
   if mykeys.read() == 27:
     mykeys.close()
