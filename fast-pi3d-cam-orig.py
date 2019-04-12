@@ -113,6 +113,7 @@ def start_capture(): # has to be in yet another thread as blocking
     camera.capture_sequence(streams(), format='rgb', use_video_port=True)
 
 t = threading.Thread(target=start_capture)
+t.daemon = True
 t.start()
 
 while not new_pic:
