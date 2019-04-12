@@ -119,9 +119,8 @@ while not new_pic:
   time.sleep(0.01)
 
 ########################################################################
-#DISPLAY = pi3d.Display.create(preview_mid_X, preview_mid_Y, w=preview_W, h=preview_H, layer=0, frames_per_second=max_fps)
-
-DISPLAY = pi3d.Display.create(x=320, y=320, layer=1, frames_per_second=30)
+DISPLAY = pi3d.Display.create(preview_mid_X, preview_mid_Y, w=preview_W, h=preview_H, layer=0, frames_per_second=max_fps)
+#DISPLAY = pi3d.Display.create(x=320, y=320, layer=1, frames_per_second=30)
 DISPLAY.set_background(0.0, 0.0, 0.0, 0.0)
 txtshader = pi3d.Shader("uv_flat")
 linshader = pi3d.Shader('mat_flat')
@@ -168,11 +167,11 @@ while DISPLAY.loop_running():
       DISPLAY.destroy()
       break
 
-#  if new_pic:
-#    tex.update_ndarray(npa)
-#    new_pic = False
+  if new_pic:
+    tex.update_ndarray(npa)
+    new_pic = False
 
- # sprite.draw()
+  sprite.draw()
   fps_txt.draw()   
   ms_txt.draw()
   ms = str(elapsed_ms*1000)
@@ -205,11 +204,6 @@ while DISPLAY.loop_running():
       new_pic = False
   bbox.draw() # i.e. one draw for all boxes
 
-  #if new_pic:
-  #  tex.update_ndarray(npa)
-  #  new_pic = False
-  #sprite.draw()
-  
 # Shut down the processors in an orderly fashion
 while pool:
   done = True
