@@ -113,9 +113,10 @@ opengles.glDisable(GL_CULL_FACE)
 # load bump and reflection textures
 #bumptex = pi3d.Texture("textures/floor_nm.jpg")
 #shinetex = pi3d.Texture(npa)
+txtshader = pi3d.Shader("uv_flat")
 tex = pi3d.Texture(npa)
 sprite = pi3d.Sprite(w=tex.ix, h=tex.iy, z=5.0)
-sprite.set_draw_details(shader, [tex])
+sprite.set_draw_details(txtshader, [tex])
 # load model_loadmodel
 #mymodel = pi3d.Model(file_string='models/teapot.obj', name='teapot')
 #mymodel.set_shader(shader)
