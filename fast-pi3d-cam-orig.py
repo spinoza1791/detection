@@ -64,13 +64,7 @@ class ImageProcessor(threading.Thread):
       # Wait for an image to be written to the stream
       if self.event.wait(1):
         try:
-          if self.stream.tell( if new_pic:
-203
-  tex.update_ndarray(npa)
-204
-  new_pic = False
-205
-sprite.draw()) >= NBYTES:
+          if self.stream.tell() >= NBYTES:
             self.stream.seek(0)
             # python2 doesn't have the getbuffer() method
             #bnp = np.fromstring(self.stream.read(NBYTES),
