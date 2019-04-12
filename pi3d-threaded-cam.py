@@ -68,6 +68,10 @@ new_pic = False
 empty_results = 0
 g_input = None
 
+npa = np.zeros((CAMH, CAMW, 4), dtype=np.uint8)
+npa[:,:,3] = 255
+new_pic = False
+
 # Create a pool of image processors
 done = False
 lock = threading.Lock()
@@ -98,6 +102,7 @@ class ImageProcessor(threading.Thread):
 						self.input_val = np.frombuffer(self.stream.getvalue(), dtype=np.uint8)
 						#self.output = self.engine.DetectWithInputTensor(self.input_val, top_k=max_obj)
 						g_input = self.input_val
+						npa[:,:,0:3] = self.input_val
 						new_pic = True
 				except Exception as e:
 					print(e)
