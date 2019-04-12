@@ -181,7 +181,6 @@ while DISPLAY.loop_running():
     
   if new_pic:
     tex.update_ndarray(npa)
-    sprite.draw()
     start_ms = time.time()
     results = engine.DetectWithInputTensor(g_input, top_k=max_obj)
     elapsed_ms = time.time() - start_ms
@@ -199,6 +198,7 @@ while DISPLAY.loop_running():
         buf.array_buffer[ix:(ix + 8), 1] = coords[Y_IX, 1] + 2 * Y_OFF
       buf.re_init(); # 
       new_pic = False
+  sprite.draw()
   bbox.draw() # i.e. one draw for all boxes
 
 # Shut down the processors in an orderly fashion
