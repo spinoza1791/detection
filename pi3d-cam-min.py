@@ -14,7 +14,7 @@ import tkinter
 npa = None # this is the array for the camera to fill
 new_pic = False # this is the flag to signal when array refilled
 
-max_fps = 90
+max_fps = 60
 mdl_dims = 320
 
 root = tkinter.Tk()
@@ -66,14 +66,23 @@ fps_txt = pi3d.String(camera=CAMERA, is_3d=False, font=font, string=fps, x=0, y=
 fps_txt.set_shader(txtshader)
 i = 0
 last_tm = time.time()
+elapsed_ms = 1000
+ms = str(elapsed_ms)
+ms_txt = pi3d.String(camera=CAMERA, is_3d=False, font=font, string=ms, x=0, y=preview_H/2 - 30, z=1.0)
+ms_txt.set_shader(txtshader)
 
 
 while DISPLAY.loop_running():
+  start_ms = time.time()
   if new_pic:
     tex.update_ndarray(npa)
     new_pic = False
+  elapsed_ms = time.time() - start_ms
   sprite.draw()
   fps_txt.draw()
+  ms_txt.draw()
+	ms = str(elapsed_ms*1000)
+	ms_txt.quick_change(ms)
   i += 1
   if i > N:
     tm = time.time()
