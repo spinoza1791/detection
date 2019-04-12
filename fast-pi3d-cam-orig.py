@@ -180,6 +180,8 @@ while DISPLAY.loop_running():
     last_tm = tm
     
   if new_pic:
+    tex.update_ndarray(npa)
+    sprite.draw()
     start_ms = time.time()
     results = engine.DetectWithInputTensor(g_input, top_k=max_obj)
     elapsed_ms = time.time() - start_ms
@@ -198,10 +200,6 @@ while DISPLAY.loop_running():
       buf.re_init(); # 
       new_pic = False
   bbox.draw() # i.e. one draw for all boxes
-  if new_pic:
-    tex.update_ndarray(npa)
-    new_pic = False
-  sprite.draw()
 
 # Shut down the processors in an orderly fashion
 while pool:
