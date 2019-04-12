@@ -1,7 +1,6 @@
 #!/usr/bin/python
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-import demo
 import pi3d
 import numpy as np
 import picamera
@@ -10,8 +9,17 @@ import threading
 import time
 import io
 from math import cos, sin, radians
+import tkinter
 
-CAMW, CAMH = 640, 320
+root = tkinter.Tk()
+screen_W = root.winfo_screenwidth()
+screen_H = root.winfo_screenheight()
+preview_W = mdl_dims
+preview_H = mdl_dims
+preview_mid_X = int(screen_W/2 - preview_W/2)
+preview_mid_Y = int(screen_H/2 - preview_H/2)
+
+CAMW, CAMH = 320, 320
 NBYTES = CAMW * CAMH * 3
 npa = np.zeros((CAMH, CAMW, 4), dtype=np.uint8)
 npa[:,:,3] = 255
@@ -89,8 +97,8 @@ while not new_pic:
     time.sleep(0.1)
 
 ########################################################################
-DISPLAY = pi3d.Display.create(x=100, y=100,
-                         background=(0.2, 0.4, 0.6, 1))
+DISPLAY = pi3d.Display.create(preview_mid_X, preview_mid_Y, w=preview_W, h=preview_H, layer=1, frames_per_second=max_fps)
+DISPLAY.set_background(0.0, 0.0, 0.0, 0.0)
 shader = pi3d.Shader("uv_reflect")
 flatsh = pi3d.Shader('uv_flat')
 #========================================
