@@ -71,8 +71,8 @@ class ImageProcessor(threading.Thread):
                       bnp = np.array(self.stream.getbuffer(),
                                     dtype=np.uint8).reshape(CAMH, CAMW, 3)
                       
-                      #self.input_val = np.frombuffer(self.stream.getvalue(), dtype=np.uint8)
-                      #g_input = self.input_val
+                      self.input_val = np.frombuffer(self.stream.getvalue(), dtype=np.uint8)
+                      g_input = self.input_val
                         
                       npa[:,:,0:3] = bnp
                       new_pic = True
@@ -171,7 +171,21 @@ while DISPLAY.loop_running():
     new_pic = False
 
   sprite.draw()
-
+	fps_txt.draw()   
+	ms_txt.draw()
+	ms = str(elapsed_ms*1000)
+	i += 1
+	if i > N:
+		tm = time.time()
+		fps = "{:5.1f}FPS".format(i / (tm - last_tm))
+		fps_txt.quick_change(fps)
+		ms_txt.quick_change(ms)
+		i = 0
+		last_tm = tm
+    
+  start_ms = time.time()
+	results = engine.DetectWithInputTensor(g_input, top_k=4)
+	elapsed_ms = time.time() - start_ms
 
 # Shut down the processors in an orderly fashion
 while pool:
