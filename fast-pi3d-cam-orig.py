@@ -58,7 +58,7 @@ class ImageProcessor(threading.Thread):
 
     def run(self):
         # This method runs in a separate thread
-        global done, npa, new_pic, CAMH, CAMW, NBYTES, g_input
+        global done, npa, new_pic, CAMH, CAMW, NBYTES, bnp
         while not self.terminated:
             # Wait for an image to be written to the stream
             if self.event.wait(1):
@@ -71,8 +71,8 @@ class ImageProcessor(threading.Thread):
                       bnp = np.array(self.stream.getbuffer(),
                                     dtype=np.uint8).reshape(CAMH, CAMW, 3)
                       
-                      self.input_val = np.frombuffer(self.stream.getvalue(), dtype=np.uint8)
-                      g_input = self.input_val
+                      #self.input_val = np.frombuffer(self.stream.getvalue(), dtype=np.uint8)
+                      #g_input = self.input_val
                         
                       npa[:,:,0:3] = bnp
                       new_pic = True
@@ -185,8 +185,24 @@ while DISPLAY.loop_running():
     last_tm = tm
     
   start_ms = time.time()
-  results = engine.DetectWithInputTensor(g_input, top_k=4)
+  results = engine.DetectWithInputTensor(bnp, top_k=max_obj)
   elapsed_ms = time.time() - start_ms
+  if new_pic:
+		if results:
+			num_obj = 0
+			for obj in results:
+				num_obj = num_obj + 1   
+				buf = bbox.buf[0] # alias for brevity below
+				buf.array_buffer[:,:3] = 0.0;
+			for j, obj in enumerate(results):
+				coords = (obj.bounding_box - 0.5) * [[1.0, -1.0]] * mdl_dims # broadcasting will fix the arrays size differences
+				score = round(obj.score,2)
+				ix = 8 * j
+				buf.array_buffer[ix:(ix + 8), 0] = coords[X_IX, 0] + 2 * X_OFF
+				buf.array_buffer[ix:(ix + 8), 1] = coords[Y_IX, 1] + 2 * Y_OFF
+			buf.re_init(); # 
+			new_pic = False
+	bbox.draw() # i.e. one draw for all boxes
 
 # Shut down the processors in an orderly fashion
 while pool:
