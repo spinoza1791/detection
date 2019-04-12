@@ -73,12 +73,12 @@ ms_txt.set_shader(txtshader)
 
 
 while DISPLAY.loop_running():
-  start_ms = time.time()
   if new_pic:
     tex.update_ndarray(npa)
     new_pic = False
-  elapsed_ms = time.time() - start_ms
+  start_ms = time.time()
   sprite.draw()
+  elapsed_ms = time.time() - start_ms
   fps_txt.draw()
   ms_txt.draw()
   ms = str(elapsed_ms*1000)
