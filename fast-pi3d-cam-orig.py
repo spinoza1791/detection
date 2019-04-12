@@ -71,8 +71,8 @@ class ImageProcessor(threading.Thread):
                       bnp = np.array(self.stream.getbuffer(),
                                     dtype=np.uint8).reshape(CAMH, CAMW, 3)
                       
-                      self.input_val = np.frombuffer(self.stream.getvalue(), dtype=np.uint8)
-                      g_input = self.input_val
+                      #self.input_val = np.frombuffer(self.stream.getvalue(), dtype=np.uint8)
+                      #g_input = self.input_val
                         
                       npa[:,:,0:3] = bnp
                       new_pic = True
@@ -130,6 +130,7 @@ sprite = pi3d.Sprite(w=tex.ix, h=tex.iy, z=5.0)
 sprite.set_draw_details(shader, [tex])
 
 keybd = pi3d.Keyboard()
+
 font = pi3d.Font("fonts/FreeMono.ttf", font_size=30, color=(0, 255, 0, 255)) # blue green 1.0 alpha
 elapsed_ms = 1000
 ms = str(elapsed_ms)
