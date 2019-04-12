@@ -2,7 +2,7 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 """ Example showing what can be left out. ESC to quit"""
-import demo
+#import demo
 import pi3d
 import numpy as np
 import picamera
