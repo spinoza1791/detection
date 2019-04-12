@@ -42,6 +42,7 @@ npa[:,:,3] = 255
 new_pic = False
 empty_results = 0
 g_input = None
+results = None
 
 # Create a pool of image processors
 done = False
