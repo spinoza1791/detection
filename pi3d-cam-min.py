@@ -13,11 +13,14 @@ import time
 npa = None # this is the array for the camera to fill
 new_pic = False # this is the flag to signal when array refilled
 
+max_fps = 30
+mdl_dims = 320
+
 def get_pics():
   # function to run in thread
   global npa, new_pic
   with picamera.PiCamera() as camera:
-    camera.resolution = (320, 320)
+    camera.resolution = (mdl_dims, mdl_dims)
     with picamera.array.PiRGBArray(camera) as output:
       while True: # loop for ever
         output.truncate(0)
@@ -37,7 +40,8 @@ while not new_pic: # wait for array to be filled first time
     time.sleep(0.1)
 
 ########################################################################
-DISPLAY = pi3d.Display.create(x=150, y=150, frames_per_second=30)
+DISPLAY = pi3d.Display.create(x=mdl_dims, y=mdl_dims, frames_per_second=max_fps)
+DISPLAY.set_background(0.0, 0.0, 0.0, 0.0)
 shader = pi3d.Shader("uv_flat")
 CAMERA = pi3d.Camera(is_3d=False)
 tex = pi3d.Texture(npa)
@@ -57,18 +61,18 @@ while DISPLAY.loop_running():
     new_pic = False
 
   sprite.draw()
-  sprite.rotateIncZ(1)
-  sprite.position(xloc, yloc, 5.0)
-  if xloc > 300.0:
-    dx = -2.1
-  elif xloc < -300.0:
-    dx = 2.1
-  if yloc > 300.0:
-    dy = -1.13
-  elif yloc < -300.0:
-    dy = 1.13
-  xloc += dx
-  yloc += dy
+  #sprite.rotateIncZ(1)
+  #sprite.position(xloc, yloc, 5.0)
+  #if xloc > 300.0:
+  #  dx = -2.1
+  #elif xloc < -300.0:
+  #  dx = 2.1
+  #if yloc > 300.0:
+  #  dy = -1.13
+  #elif yloc < -300.0:
+  #  dy = 1.13
+  #xloc += dx
+  #yloc += dy
 
   if mykeys.read() == 27:
     mykeys.close()
