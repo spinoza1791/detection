@@ -75,7 +75,7 @@ class ImageProcessor(threading.Thread):
             g_input = self.input_val
 
             npa[:,:,0:3] = bnp
-            #new_pic = True
+            new_pic = True
         except Exception as e:
           print(e)
         finally:
@@ -116,8 +116,8 @@ t = threading.Thread(target=start_capture)
 t.daemon = True
 t.start()
 
-#while not new_pic:
-#  time.sleep(0.1)
+while not new_pic:
+  time.sleep(0.1)
 
 ########################################################################
 #DISPLAY = pi3d.Display.create(preview_mid_X, preview_mid_Y, w=preview_W, h=preview_H, layer=0, frames_per_second=max_fps)
@@ -167,9 +167,9 @@ while DISPLAY.loop_running():
       DISPLAY.destroy()
       break
 
-  #if new_pic:
+  if new_pic:
     tex.update_ndarray(npa)
-    #new_pic = False
+    new_pic = False
 
   sprite.draw()
   fps_txt.draw()   
@@ -184,25 +184,25 @@ while DISPLAY.loop_running():
     i = 0
     last_tm = tm
     
-  #if new_pic:
-  start_ms = time.time()
-  if g_input:
-    results = engine.DetectWithInputTensor(g_input, top_k=max_obj)
-  elapsed_ms = time.time() - start_ms
-  if results:
-    num_obj = 0
-    for obj in results:
-      num_obj = num_obj + 1   
-      buf = bbox.buf[0] # alias for brevity below
-      buf.array_buffer[:,:3] = 0.0;
-    for j, obj in enumerate(results):
-      coords = (obj.bounding_box - 0.5) * [[1.0, -1.0]] * mdl_dims # broadcasting will fix the arrays size differences
-      score = round(obj.score,2)
-      ix = 8 * j
-      buf.array_buffer[ix:(ix + 8), 0] = coords[X_IX, 0] + 2 * X_OFF
-      buf.array_buffer[ix:(ix + 8), 1] = coords[Y_IX, 1] + 2 * Y_OFF
-    buf.re_init(); # 
-    #new_pic = False
+  if new_pic:
+    start_ms = time.time()
+    if g_input:
+      results = engine.DetectWithInputTensor(g_input, top_k=max_obj)
+    elapsed_ms = time.time() - start_ms
+    if results:
+      num_obj = 0
+      for obj in results:
+        num_obj = num_obj + 1   
+        buf = bbox.buf[0] # alias for brevity below
+        buf.array_buffer[:,:3] = 0.0;
+      for j, obj in enumerate(results):
+        coords = (obj.bounding_box - 0.5) * [[1.0, -1.0]] * mdl_dims # broadcasting will fix the arrays size differences
+        score = round(obj.score,2)
+        ix = 8 * j
+        buf.array_buffer[ix:(ix + 8), 0] = coords[X_IX, 0] + 2 * X_OFF
+        buf.array_buffer[ix:(ix + 8), 1] = coords[Y_IX, 1] + 2 * Y_OFF
+      buf.re_init(); # 
+      new_pic = False
   bbox.draw() # i.e. one draw for all boxes
 
 # Shut down the processors in an orderly fashion
