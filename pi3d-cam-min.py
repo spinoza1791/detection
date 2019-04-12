@@ -16,6 +16,8 @@ new_pic = False # this is the flag to signal when array refilled
 
 max_fps = 60
 mdl_dims = 320
+start_ms = 1000
+elapsed_ms = 1000
 
 root = tkinter.Tk()
 screen_W = root.winfo_screenwidth()
@@ -33,7 +35,9 @@ def get_pics():
     with picamera.array.PiRGBArray(camera) as output:
       while True: # loop for ever
         output.truncate(0)
+        start_ms = time.time()
         camera.capture(output, format='rgb', use_video_port=True)
+        elapsed_ms = time.time() - start_ms
         if npa is None: # do this once only
           npa = np.zeros(output.array.shape[:2] + (4,), dtype=np.uint8)
           npa[:,:,3] = 255 # fill alpha value
@@ -66,7 +70,6 @@ fps_txt = pi3d.String(camera=CAMERA, is_3d=False, font=font, string=fps, x=0, y=
 fps_txt.set_shader(txtshader)
 i = 0
 last_tm = time.time()
-elapsed_ms = 1000
 ms = str(elapsed_ms)
 ms_txt = pi3d.String(camera=CAMERA, is_3d=False, font=font, string=ms, x=0, y=preview_H/2 - 30, z=1.0)
 ms_txt.set_shader(txtshader)
@@ -76,9 +79,7 @@ while DISPLAY.loop_running():
   if new_pic:
     tex.update_ndarray(npa)
     new_pic = False
-  start_ms = time.time()
   sprite.draw()
-  elapsed_ms = time.time() - start_ms
   fps_txt.draw()
   ms_txt.draw()
   ms = str(elapsed_ms*1000)
