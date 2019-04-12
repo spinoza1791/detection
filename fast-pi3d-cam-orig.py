@@ -111,15 +111,15 @@ from pi3d import opengles, GL_CULL_FACE
 opengles.glDisable(GL_CULL_FACE)
 #========================================
 # load bump and reflection textures
-#bumptex = pi3d.Texture("textures/floor_nm.jpg")
+bumptex = pi3d.Texture("textures/floor_nm.jpg")
 shinetex = pi3d.Texture(npa)
 # load model_loadmodel
-#mymodel = pi3d.Model(file_string='models/teapot.obj', name='teapot')
-#mymodel.set_shader(shader)
-#mymodel.set_normal_shine(bumptex, 0.0, shinetex, 0.7)
+mymodel = pi3d.Model(file_string='models/teapot.obj', name='teapot')
+mymodel.set_shader(shader)
+mymodel.set_normal_shine(bumptex, 0.0, shinetex, 0.7)
 
-#mysphere = pi3d.Sphere(radius=400.0, rx=180, ry=180, invert=True)
-#mysphere.set_draw_details(flatsh, [shinetex], vmult=3.0, umult=3.0)
+mysphere = pi3d.Sphere(radius=400.0, rx=180, ry=180, invert=True)
+mysphere.set_draw_details(flatsh, [shinetex], vmult=3.0, umult=3.0)
 
 # Fetch key presses
 mykeys = pi3d.Keyboard()
@@ -140,11 +140,11 @@ while DISPLAY.loop_running():
     shinetex.update_ndarray(npa)
     new_pic = False
 
-  #mymodel.draw()
-  #mysphere.draw()
-  #mymodel.rotateIncY(0.41)
-  #mymodel.rotateIncZ(0.12)
-  #mymodel.rotateIncX(0.23)
+  mymodel.draw()
+  mysphere.draw()
+  mymodel.rotateIncY(0.41)
+  mymodel.rotateIncZ(0.12)
+  mymodel.rotateIncX(0.23)
 
 # Shut down the processors in an orderly fashion
 while pool:
