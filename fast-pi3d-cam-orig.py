@@ -33,11 +33,11 @@ preview_mid_X = int(screen_W/2 - preview_W/2)
 preview_mid_Y = int(screen_H/2 - preview_H/2)
 
 max_obj = 5
-max_fps = 40
+max_fps = 60
 
 CAMW, CAMH = mdl_dims, mdl_dims
 NBYTES = CAMW * CAMH * 3
-npa = np.zeros((CAMH, CAMW, 4), dtype=np.uint8)
+npa = np.zeros((CAMH, CAMW, 3), dtype=np.uint8)
 npa[:,:,3] = 255
 new_pic = False
 empty_results = 0
@@ -66,14 +66,9 @@ class ImageProcessor(threading.Thread):
         try:
           if self.stream.tell() >= NBYTES:
             self.stream.seek(0)
-            # python2 doesn't have the getbuffer() method
-            #bnp = np.fromstring(self.stream.read(NBYTES),
-            #              dtype=np.uint8).reshape(CAMH, CAMW, 3)
+            g_input= np.frombuffer(self.stream.getvalue(), dtype=np.uint8)
             bnp = np.array(self.stream.getbuffer(), dtype=np.uint8).reshape(CAMH, CAMW, 3)
             npa[:,:,0:3] = bnp         
-            
-            self.input_val = np.frombuffer(self.stream.getvalue(), dtype=np.uint8)
-            g_input = self.input_val
             new_pic = True
         except Exception as e:
           print(e)
