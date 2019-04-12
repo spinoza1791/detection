@@ -12,6 +12,7 @@ from math import cos, sin, radians
 import tkinter
 
 mdl_dims = 320
+max_fps = 30
 
 root = tkinter.Tk()
 screen_W = root.winfo_screenwidth()
@@ -87,7 +88,7 @@ def start_capture(): # has to be in yet another thread as blocking
   with picamera.PiCamera() as camera:
     pool = [ImageProcessor() for i in range(3)]
     camera.resolution = (CAMW, CAMH)
-    camera.framerate = 30
+    camera.framerate = max_fps
     #camera.start_preview()
     time.sleep(2)
     camera.capture_sequence(streams(), format='rgb', use_video_port=True)
