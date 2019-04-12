@@ -11,6 +11,8 @@ import io
 from math import cos, sin, radians
 import tkinter
 
+mdl_dims = 320
+
 root = tkinter.Tk()
 screen_W = root.winfo_screenwidth()
 screen_H = root.winfo_screenheight()
@@ -18,8 +20,6 @@ preview_W = mdl_dims
 preview_H = mdl_dims
 preview_mid_X = int(screen_W/2 - preview_W/2)
 preview_mid_Y = int(screen_H/2 - preview_H/2)
-
-mdl_dims = 320
 
 CAMW, CAMH = mdl_dims, mdl_dims
 NBYTES = CAMW * CAMH * 3
