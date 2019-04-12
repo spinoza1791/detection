@@ -42,7 +42,8 @@ def get_pics():
       while True: # loop for ever
         output.truncate(0)
         start_ms = time.time()
-        camera.capture(output, format='rgb', use_video_port=True)
+        #camera.capture(output, format='rgb', use_video_port=True)
+        camera.capture_sequence(output, format='rgb', use_video_port=True)
         elapsed_ms = time.time() - start_ms
         if npa is None: # do this once only
           npa = np.zeros(output.array.shape[:2] + (4,), dtype=np.uint8)
