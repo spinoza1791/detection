@@ -98,6 +98,7 @@ flatsh = pi3d.Shader('uv_flat')
 from pi3d import opengles, GL_CULL_FACE
 opengles.glDisable(GL_CULL_FACE)
 #========================================
+cam_texture = pi3d.Texture(npa)
 
 # Fetch key presses
 mykeys = pi3d.Keyboard()
@@ -112,7 +113,7 @@ while DISPLAY.loop_running():
       break
 
   if new_pic:
-    #shinetex.update_ndarray(npa)
+    cam_texture.update_ndarray(npa)
     new_pic = False
 
 # Shut down the processors in an orderly fashion
