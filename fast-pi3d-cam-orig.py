@@ -62,28 +62,28 @@ class ImageProcessor(threading.Thread):
     global done, npa, new_pic, CAMH, CAMW, NBYTES, bnp, g_input
     while not self.terminated:
       # Wait for an image to be written to the stream
-      #if self.event.wait(1):
-      try:
-        if self.stream.tell() >= NBYTES:
+      if self.event.wait(1):
+        try:
+          if self.stream.tell() >= NBYTES:
+            self.stream.seek(0)
+            # python2 doesn't have the getbuffer() method
+            #bnp = np.fromstring(self.stream.read(NBYTES),
+            #              dtype=np.uint8).reshape(CAMH, CAMW, 3)
+            #bnp = np.array(self.stream.getbuffer(), dtype=np.uint8).reshape(CAMH, CAMW, 3)
+            #npa[:,:,0:3] = bnp         
+            self.input_val = np.frombuffer(self.stream.getvalue(), dtype=np.uint8)
+            g_input = self.input_val
+            new_pic = True
+        except Exception as e:
+          print(e)
+        finally:
+          # Reset the stream and event
           self.stream.seek(0)
-          # python2 doesn't have the getbuffer() method
-          #bnp = np.fromstring(self.stream.read(NBYTES),
-          #              dtype=np.uint8).reshape(CAMH, CAMW, 3)
-          #bnp = np.array(self.stream.getbuffer(), dtype=np.uint8).reshape(CAMH, CAMW, 3)
-          #npa[:,:,0:3] = bnp         
-          self.input_val = np.frombuffer(self.stream.getvalue(), dtype=np.uint8)
-          g_input = self.input_val
-          new_pic = True
-      except Exception as e:
-        print(e)
-      finally:
-        # Reset the stream and event
-        self.stream.seek(0)
-        self.stream.truncate()
-        self.event.clear()
-        # Return ourselves to the pool
-        with lock:
-          pool.append(self)
+          self.stream.truncate()
+          self.event.clear()
+          # Return ourselves to the pool
+          with lock:
+            pool.append(self)
 
 def streams():
   while not done:
@@ -182,24 +182,24 @@ while DISPLAY.loop_running():
     i = 0
     last_tm = tm
     
-  if new_pic:
-    start_ms = time.time()
-    results = engine.DetectWithInputTensor(g_input, top_k=max_obj)
-    elapsed_ms = time.time() - start_ms
-    if results:
-      num_obj = 0
-      for obj in results:
-        num_obj = num_obj + 1   
-        buf = bbox.buf[0] # alias for brevity below
-        buf.array_buffer[:,:3] = 0.0;
-      for j, obj in enumerate(results):
-        coords = (obj.bounding_box - 0.5) * [[1.0, -1.0]] * mdl_dims # broadcasting will fix the arrays size differences
-        score = round(obj.score,2)
-        ix = 8 * j
-        buf.array_buffer[ix:(ix + 8), 0] = coords[X_IX, 0] + 2 * X_OFF
-        buf.array_buffer[ix:(ix + 8), 1] = coords[Y_IX, 1] + 2 * Y_OFF
-      buf.re_init(); # 
-      new_pic = False
+ # if new_pic:
+  start_ms = time.time()
+  results = engine.DetectWithInputTensor(g_input, top_k=max_obj)
+  elapsed_ms = time.time() - start_ms
+  if results:
+    num_obj = 0
+    for obj in results:
+      num_obj = num_obj + 1   
+      buf = bbox.buf[0] # alias for brevity below
+      buf.array_buffer[:,:3] = 0.0;
+    for j, obj in enumerate(results):
+      coords = (obj.bounding_box - 0.5) * [[1.0, -1.0]] * mdl_dims # broadcasting will fix the arrays size differences
+      score = round(obj.score,2)
+      ix = 8 * j
+      buf.array_buffer[ix:(ix + 8), 0] = coords[X_IX, 0] + 2 * X_OFF
+      buf.array_buffer[ix:(ix + 8), 1] = coords[Y_IX, 1] + 2 * Y_OFF
+    buf.re_init(); # 
+    #new_pic = False
   bbox.draw() # i.e. one draw for all boxes
 
   #if new_pic:
