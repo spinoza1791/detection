@@ -177,7 +177,7 @@ while DISPLAY.loop_running():
   if new_pic:
     tex.update_ndarray(npa)
     start_ms = time.time()
-    results = engine.DetectWithInputTensor(tex, top_k=max_obj)
+    results = engine.DetectWithInputTensor(g_input, top_k=max_obj)
     elapsed_ms = time.time() - start_ms
     if results:
       num_obj = 0
