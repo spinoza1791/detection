@@ -29,7 +29,7 @@ preview_mid_Y = int(screen_H/2 - preview_H/2)
 
 def get_pics():
   # function to run in thread
-  global npa, new_pic, start_ms, elapsed_ms, ms
+  global npa, new_pic, start_ms, elapsed_ms, ms, ms_txt
   with picamera.PiCamera() as camera:
     camera.resolution = (mdl_dims, mdl_dims)
     with picamera.array.PiRGBArray(camera) as output:
