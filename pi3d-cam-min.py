@@ -42,17 +42,13 @@ while not new_pic: # wait for array to be filled first time
 ########################################################################
 DISPLAY = pi3d.Display.create(x=mdl_dims, y=mdl_dims, frames_per_second=max_fps)
 DISPLAY.set_background(0.0, 0.0, 0.0, 0.0)
-shader = pi3d.Shader("uv_flat")
+txtshader = pi3d.Shader("uv_flat")
 CAMERA = pi3d.Camera(is_3d=False)
 tex = pi3d.Texture(npa)
 sprite = pi3d.Sprite(w=tex.ix, h=tex.iy, z=5.0)
-sprite.set_draw_details(shader, [tex])
+sprite.set_draw_details(txtshader, [tex])
 
 mykeys = pi3d.Keyboard()
-xloc = 100.0
-dx = 6.1
-yloc = 100.0
-dy = 1.13
 
 fps = "00.0 fps"
 N = 10
