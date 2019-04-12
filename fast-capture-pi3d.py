@@ -102,8 +102,8 @@ cam_texture = pi3d.Texture(npa)
 
 # Fetch key presses
 mykeys = pi3d.Keyboard()
-#CAMERA = pi3d.Camera.instance()
-CAMERA = pi3d.Camera(is_3d=False)
+CAMERA = pi3d.Camera.instance()
+#CAMERA = pi3d.Camera(is_3d=False)
 
 while DISPLAY.loop_running():
   k = mykeys.read()
