@@ -9,10 +9,18 @@ import threading
 import time
 import io
 from math import cos, sin, radians
+import math
 import tkinter
 
-mdl_dims = 320
-max_fps = 30
+parser = argparse.ArgumentParser()
+parser.add_argument(
+  '--model', help='File path of Tflite model.', required=True)
+parser.add_argument(
+  '--dims', help='Model input dimension', required=True)
+args = parser.parse_args()
+
+mdl_dims = int(args.dims) #dims must be a factor of 32/16 for picamera resolution
+engine = edgetpu.detection.engine.DetectionEngine(args.model)
 
 root = tkinter.Tk()
 screen_W = root.winfo_screenwidth()
@@ -22,11 +30,16 @@ preview_H = mdl_dims
 preview_mid_X = int(screen_W/2 - preview_W/2)
 preview_mid_Y = int(screen_H/2 - preview_H/2)
 
+max_obj = 5
+max_fps = 30
+
 CAMW, CAMH = mdl_dims, mdl_dims
 NBYTES = CAMW * CAMH * 3
 npa = np.zeros((CAMH, CAMW, 4), dtype=np.uint8)
 npa[:,:,3] = 255
 new_pic = False
+empty_results = 0
+g_input = None
 
 # Create a pool of image processors
 done = False
@@ -43,7 +56,7 @@ class ImageProcessor(threading.Thread):
 
     def run(self):
         # This method runs in a separate thread
-        global done, npa, new_pic, CAMH, CAMW, NBYTES
+        global done, npa, new_pic, CAMH, CAMW, NBYTES, g_input
         while not self.terminated:
             # Wait for an image to be written to the stream
             if self.event.wait(1):
@@ -55,6 +68,10 @@ class ImageProcessor(threading.Thread):
                       #              dtype=np.uint8).reshape(CAMH, CAMW, 3)
                       bnp = np.array(self.stream.getbuffer(),
                                     dtype=np.uint8).reshape(CAMH, CAMW, 3)
+                      
+                      self.input_val = np.frombuffer(self.stream.getvalue(), dtype=np.uint8)
+                      g_input = self.input_val
+                        
                       npa[:,:,0:3] = bnp
                       new_pic = True
                 except Exception as e:
@@ -109,6 +126,28 @@ CAMERA = pi3d.Camera(is_3d=False)
 tex = pi3d.Texture(npa)
 sprite = pi3d.Sprite(w=tex.ix, h=tex.iy, z=5.0)
 sprite.set_draw_details(shader, [tex])
+
+keybd = pi3d.Keyboard()
+font = pi3d.Font("fonts/FreeMono.ttf", font_size=30, color=(0, 255, 0, 255)) # blue green 1.0 alpha
+elapsed_ms = 1000
+ms = str(elapsed_ms)
+ms_txt = pi3d.String(camera=CAMERA, is_3d=False, font=font, string=ms, x=0, y=preview_H/2 - 30, z=1.0)
+ms_txt.set_shader(txtshader)
+fps = "00.0 fps"
+N = 10
+fps_txt = pi3d.String(camera=CAMERA, is_3d=False, font=font, string=fps, x=0, y=preview_H/2 - 10, z=1.0)
+fps_txt.set_shader(txtshader)
+i = 0
+last_tm = time.time()
+
+X_OFF = np.array([0, 0, -1, -1, 0, 0, 1, 1])
+Y_OFF = np.array([-1, -1, 0, 0, 1, 1, 0, 0])
+X_IX = np.array([0, 1, 1, 1, 1, 0, 0, 0])
+Y_IX = np.array([0, 0, 0, 1, 1, 1, 1, 0])
+verts = [[0.0, 0.0, 1.0] for i in range(8 * max_obj)] # need a vertex for each end of each side 
+bbox = pi3d.Lines(vertices=verts, material=(1.0,0.8,0.05), closed=False, strip=False, line_width=4) 
+bbox.set_shader(linshader)
+
 
 # Fetch key presses
 mykeys = pi3d.Keyboard()
