@@ -64,7 +64,13 @@ class ImageProcessor(threading.Thread):
       # Wait for an image to be written to the stream
       if self.event.wait(1):
         try:
-          if self.stream.tell() >= NBYTES:
+          if self.stream.tell( if new_pic:
+203
+  tex.update_ndarray(npa)
+204
+  new_pic = False
+205
+sprite.draw()) >= NBYTES:
             self.stream.seek(0)
             # python2 doesn't have the getbuffer() method
             #bnp = np.fromstring(self.stream.read(NBYTES),
@@ -198,11 +204,10 @@ while DISPLAY.loop_running():
       buf.re_init(); # 
       new_pic = False
   bbox.draw() # i.e. one draw for all boxes
-
- if new_pic:
-  tex.update_ndarray(npa)
-  new_pic = False
-sprite.draw()
+  if new_pic:
+    tex.update_ndarray(npa)
+    new_pic = False
+  sprite.draw()
 
 # Shut down the processors in an orderly fashion
 while pool:
