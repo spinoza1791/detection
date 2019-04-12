@@ -170,7 +170,7 @@ while DISPLAY.loop_running():
 #    tex.update_ndarray(npa)
 #    new_pic = False
 
-  sprite.draw()
+ # sprite.draw()
   fps_txt.draw()   
   ms_txt.draw()
   ms = str(elapsed_ms*1000)
@@ -206,7 +206,7 @@ while DISPLAY.loop_running():
   if new_pic:
     tex.update_ndarray(npa)
     new_pic = False
-    
+  sprite.draw() 
 # Shut down the processors in an orderly fashion
 while pool:
   done = True
