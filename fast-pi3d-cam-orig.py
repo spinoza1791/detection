@@ -166,12 +166,7 @@ while DISPLAY.loop_running():
       mykeys.close()
       DISPLAY.destroy()
       break
-
-  if new_pic:
-    tex.update_ndarray(npa)
-    new_pic = False
-
-  sprite.draw()
+  
   fps_txt.draw()   
   ms_txt.draw()
   ms = str(elapsed_ms*1000)
@@ -203,6 +198,11 @@ while DISPLAY.loop_running():
       buf.re_init(); # 
       new_pic = False
   bbox.draw() # i.e. one draw for all boxes
+
+ if new_pic:
+  tex.update_ndarray(npa)
+  new_pic = False
+sprite.draw()
 
 # Shut down the processors in an orderly fashion
 while pool:
