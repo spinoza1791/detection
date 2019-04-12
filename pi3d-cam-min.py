@@ -57,6 +57,7 @@ def get_pics():
         start_ms = time.time()
         camera.capture(output, format='rgb', use_video_port=True)
         elapsed_ms = time.time() - start_ms
+        ms_txt.draw()
         ms = str(elapsed_ms*1000)
         ms_txt.quick_change(ms)
         if npa is None: # do this once only
@@ -81,7 +82,6 @@ while DISPLAY.loop_running():
     new_pic = False
   sprite.draw()
   fps_txt.draw()
-  ms_txt.draw()
   i += 1
   if i > N:
     tm = time.time()
