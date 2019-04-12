@@ -49,57 +49,56 @@ lock = threading.Lock()
 pool = []
 
 class ImageProcessor(threading.Thread):
-    def __init__(self):
-        super(ImageProcessor, self).__init__()
-        self.stream = io.BytesIO()
-        self.event = threading.Event()
-        self.terminated = False
-        self.start()
+  def __init__(self):
+    super(ImageProcessor, self).__init__()
+    self.stream = io.BytesIO()
+    self.event = threading.Event()
+    self.terminated = False
+    self.start()
 
-    def run(self):
-        # This method runs in a separate thread
-        global done, npa, new_pic, CAMH, CAMW, NBYTES, bnp, g_input
-        while not self.terminated:
-            # Wait for an image to be written to the stream
-            if self.event.wait(1):
-                try:
-                    if self.stream.tell() >= NBYTES:
-                      self.stream.seek(0)
-                      # python2 doesn't have the getbuffer() method
-                      #bnp = np.fromstring(self.stream.read(NBYTES),
-                      #              dtype=np.uint8).reshape(CAMH, CAMW, 3)
-                      bnp = np.array(self.stream.getbuffer(),
-                                    dtype=np.uint8).reshape(CAMH, CAMW, 3)
-                      
-                      self.input_val = np.frombuffer(self.stream.getvalue(), dtype=np.uint8)
-                      g_input = self.input_val
-                        
-                      npa[:,:,0:3] = bnp
-                      new_pic = True
-                except Exception as e:
-                  print(e)
-                finally:
-                    # Reset the stream and event
-                    self.stream.seek(0)
-                    self.stream.truncate()
-                    self.event.clear()
-                    # Return ourselves to the pool
-                    with lock:
-                        pool.append(self)
+  def run(self):
+    # This method runs in a separate thread
+    global done, npa, new_pic, CAMH, CAMW, NBYTES, bnp, g_input
+    while not self.terminated:
+      # Wait for an image to be written to the stream
+      if self.event.wait(1):
+        try:
+          if self.stream.tell() >= NBYTES:
+            self.stream.seek(0)
+            # python2 doesn't have the getbuffer() method
+            #bnp = np.fromstring(self.stream.read(NBYTES),
+            #              dtype=np.uint8).reshape(CAMH, CAMW, 3)
+            bnp = np.array(self.stream.getbuffer(), dtype=np.uint8).reshape(CAMH, CAMW, 3)
+
+            self.input_val = np.frombuffer(self.stream.getvalue(), dtype=np.uint8)
+            g_input = self.input_val
+
+            npa[:,:,0:3] = bnp
+            new_pic = True
+        except Exception as e:
+          print(e)
+        finally:
+          # Reset the stream and event
+          self.stream.seek(0)
+          self.stream.truncate()
+          self.event.clear()
+          # Return ourselves to the pool
+          with lock:
+            pool.append(self)
 
 def streams():
-    while not done:
-        with lock:
-            if pool:
-                processor = pool.pop()
-            else:
-                processor = None
-        if processor:
-            yield processor.stream
-            processor.event.set()
-        else:
-            # When the pool is starved, wait a while for it to refill
-            time.sleep(0.1)
+  while not done:
+  with lock:
+    if pool:
+      processor = pool.pop()
+    else:
+      processor = None
+  if processor:
+    yield processor.stream
+    processor.event.set()
+  else:
+    # When the pool is starved, wait a while for it to refill
+    time.sleep(0.1)
 
 
 def start_capture(): # has to be in yet another thread as blocking
@@ -117,7 +116,7 @@ t.daemon = True
 t.start()
 
 while not new_pic:
-    time.sleep(0.1)
+  time.sleep(0.1)
 
 ########################################################################
 #DISPLAY = pi3d.Display.create(preview_mid_X, preview_mid_Y, w=preview_W, h=preview_H, layer=0, frames_per_second=max_fps)
