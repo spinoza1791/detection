@@ -74,7 +74,7 @@ class ImageProcessor(threading.Thread):
             g_input = self.input_val
 
             npa[:,:,0:3] = bnp
-            new_pic = True
+            #new_pic = True
         except Exception as e:
           print(e)
         finally:
@@ -200,7 +200,7 @@ while DISPLAY.loop_running():
       buf.array_buffer[ix:(ix + 8), 0] = coords[X_IX, 0] + 2 * X_OFF
       buf.array_buffer[ix:(ix + 8), 1] = coords[Y_IX, 1] + 2 * Y_OFF
     buf.re_init(); # 
-    new_pic = False
+    #new_pic = False
   bbox.draw() # i.e. one draw for all boxes
 
 # Shut down the processors in an orderly fashion
