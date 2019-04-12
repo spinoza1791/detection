@@ -27,19 +27,9 @@ preview_H = mdl_dims
 preview_mid_X = int(screen_W/2 - preview_W/2)
 preview_mid_Y = int(screen_H/2 - preview_H/2)
 
-fps = "00.0 fps"
-N = 10
-fps_txt = pi3d.String(camera=CAMERA, is_3d=False, font=font, string=fps, x=0, y=preview_H/2 - 10, z=1.0)
-fps_txt.set_shader(txtshader)
-i = 0
-last_tm = time.time()
-ms = str(elapsed_ms)
-ms_txt = pi3d.String(camera=CAMERA, is_3d=False, font=font, string=ms, x=0, y=preview_H/2 - 30, z=1.0)
-ms_txt.set_shader(txtshader)
-
 def get_pics():
   # function to run in thread
-  global npa, new_pic, start_ms, elapsed_ms, ms, ms_txt
+  global npa, new_pic, start_ms, elapsed_ms, ms_display()
   with picamera.PiCamera() as camera:
     camera.resolution = (mdl_dims, mdl_dims)
     with picamera.array.PiRGBArray(camera) as output:
@@ -48,9 +38,7 @@ def get_pics():
         start_ms = time.time()
         camera.capture(output, format='rgb', use_video_port=True)
         elapsed_ms = time.time() - start_ms
-        ms_txt.draw()
-        ms = str(elapsed_ms*1000)
-        ms_txt.quick_change(ms)
+        ms_display(elapsed_ms)
         if npa is None: # do this once only
           npa = np.zeros(output.array.shape[:2] + (4,), dtype=np.uint8)
           npa[:,:,3] = 255 # fill alpha value
@@ -76,12 +64,28 @@ sprite = pi3d.Sprite(w=tex.ix, h=tex.iy, z=5.0)
 sprite.set_draw_details(txtshader, [tex])
 mykeys = pi3d.Keyboard()
 
+fps = "00.0 fps"
+N = 10
+fps_txt = pi3d.String(camera=CAMERA, is_3d=False, font=font, string=fps, x=0, y=preview_H/2 - 10, z=1.0)
+fps_txt.set_shader(txtshader)
+i = 0
+last_tm = time.time()
+ms = str(elapsed_ms)
+ms_txt = pi3d.String(camera=CAMERA, is_3d=False, font=font, string=ms, x=0, y=preview_H/2 - 30, z=1.0)
+ms_txt.set_shader(txtshader)
+
+def ms_display(elapsed_ms)
+global ms_txt
+  ms = str(elapsed_ms*1000)
+  ms_txt.quick_change(ms)
+
 while DISPLAY.loop_running():
   if new_pic:
     tex.update_ndarray(npa)
     new_pic = False
   sprite.draw()
   fps_txt.draw()
+  ms_txt.draw()
   i += 1
   if i > N:
     tm = time.time()
