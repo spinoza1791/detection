@@ -27,6 +27,25 @@ preview_H = mdl_dims
 preview_mid_X = int(screen_W/2 - preview_W/2)
 preview_mid_Y = int(screen_H/2 - preview_H/2)
 
+DISPLAY = pi3d.Display.create(x=mdl_dims, y=mdl_dims, frames_per_second=max_fps)
+DISPLAY.set_background(0.0, 0.0, 0.0, 0.0)
+txtshader = pi3d.Shader("uv_flat")
+font = pi3d.Font("fonts/FreeMono.ttf", font_size=30, color=(0, 255, 0, 255)) # blue green 1.0 alpha
+CAMERA = pi3d.Camera(is_3d=False)
+tex = pi3d.Texture(npa)
+sprite = pi3d.Sprite(w=tex.ix, h=tex.iy, z=5.0)
+sprite.set_draw_details(txtshader, [tex])
+mykeys = pi3d.Keyboard()
+fps = "00.0 fps"
+N = 10
+fps_txt = pi3d.String(camera=CAMERA, is_3d=False, font=font, string=fps, x=0, y=preview_H/2 - 10, z=1.0)
+fps_txt.set_shader(txtshader)
+i = 0
+last_tm = time.time()
+ms = str(elapsed_ms)
+ms_txt = pi3d.String(camera=CAMERA, is_3d=False, font=font, string=ms, x=0, y=preview_H/2 - 30, z=1.0)
+ms_txt.set_shader(txtshader)
+
 def get_pics():
   # function to run in thread
   global npa, new_pic, start_ms, elapsed_ms, ms, ms_txt
@@ -55,27 +74,6 @@ while not new_pic: # wait for array to be filled first time
     time.sleep(0.1)
 
 ########################################################################
-DISPLAY = pi3d.Display.create(x=mdl_dims, y=mdl_dims, frames_per_second=max_fps)
-DISPLAY.set_background(0.0, 0.0, 0.0, 0.0)
-txtshader = pi3d.Shader("uv_flat")
-font = pi3d.Font("fonts/FreeMono.ttf", font_size=30, color=(0, 255, 0, 255)) # blue green 1.0 alpha
-CAMERA = pi3d.Camera(is_3d=False)
-tex = pi3d.Texture(npa)
-sprite = pi3d.Sprite(w=tex.ix, h=tex.iy, z=5.0)
-sprite.set_draw_details(txtshader, [tex])
-
-mykeys = pi3d.Keyboard()
-
-fps = "00.0 fps"
-N = 10
-fps_txt = pi3d.String(camera=CAMERA, is_3d=False, font=font, string=fps, x=0, y=preview_H/2 - 10, z=1.0)
-fps_txt.set_shader(txtshader)
-i = 0
-last_tm = time.time()
-ms = str(elapsed_ms)
-ms_txt = pi3d.String(camera=CAMERA, is_3d=False, font=font, string=ms, x=0, y=preview_H/2 - 30, z=1.0)
-ms_txt.set_shader(txtshader)
-
 
 while DISPLAY.loop_running():
   if new_pic:
