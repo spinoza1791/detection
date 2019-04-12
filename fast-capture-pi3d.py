@@ -11,7 +11,7 @@ import time
 import io
 from math import cos, sin, radians
 
-CAMW, CAMH = 640, 320
+CAMW, CAMH = 320, 320
 NBYTES = CAMW * CAMH * 3
 npa = np.zeros((CAMH, CAMW, 4), dtype=np.uint8)
 npa[:,:,3] = 255
@@ -89,8 +89,8 @@ while not new_pic:
     time.sleep(0.1)
 
 ########################################################################
-DISPLAY = pi3d.Display.create(x=100, y=100,
-                         background=(0.2, 0.4, 0.6, 1))
+DISPLAY = pi3d.Display.create(x=320, y=320, frames_per_second=30)
+DISPLAY.set_background(0.0, 0.0, 0.0, 0.0)
 shader = pi3d.Shader("uv_reflect")
 flatsh = pi3d.Shader('uv_flat')
 #========================================
@@ -99,54 +99,22 @@ flatsh = pi3d.Shader('uv_flat')
 from pi3d import opengles, GL_CULL_FACE
 opengles.glDisable(GL_CULL_FACE)
 #========================================
-# load bump and reflection textures
-bumptex = pi3d.Texture("textures/floor_nm.jpg")
-shinetex = pi3d.Texture(npa)
-# load model_loadmodel
-mymodel = pi3d.Model(file_string='models/teapot.obj', name='teapot')
-mymodel.set_shader(shader)
-mymodel.set_normal_shine(bumptex, 0.0, shinetex, 0.7)
-
-mysphere = pi3d.Sphere(radius=400.0, rx=180, ry=180, invert=True)
-mysphere.set_draw_details(flatsh, [shinetex], vmult=3.0, umult=3.0)
 
 # Fetch key presses
 mykeys = pi3d.Keyboard()
-mymouse = pi3d.Mouse(restrict=False)
-mymouse.start()
-
-CAMERA = pi3d.Camera.instance()
-
-dist = [-4.0, -4.0, -4.0]
-rot = 0.0
-tilt = 0.0
+#CAMERA = pi3d.Camera.instance()
+CAMERA = pi3d.Camera(is_3d=False)
 
 while DISPLAY.loop_running():
   k = mykeys.read()
-  if k >-1:
-    if k==ord('w'):
-      dist = [i + 0.02 for i in dist]
-    if k==ord('s'):
-      dist = [i - 0.02 for i in dist]
-    elif k==27:
+  if k==27:
       mykeys.close()
       DISPLAY.destroy()
       break
 
   if new_pic:
-    shinetex.update_ndarray(npa)
+    #shinetex.update_ndarray(npa)
     new_pic = False
-
-  mx, my = mymouse.position()
-  rot = mx * -0.4
-  tilt = my * 0.2
-  CAMERA.relocate(rot, tilt, [0.0, 0.0, 0.0], dist)
-
-  mymodel.draw()
-  mysphere.draw()
-  mymodel.rotateIncY(0.41)
-  mymodel.rotateIncZ(0.12)
-  mymodel.rotateIncX(0.23)
 
 # Shut down the processors in an orderly fashion
 while pool:
