@@ -161,7 +161,9 @@ def start_capture(): # has to be in yet another thread as blocking
     camera.framerate = max_fps
     camera.start_preview(fullscreen=False, layer=0, window=(preview_mid_X, preview_mid_Y, preview_W, preview_H))
     time.sleep(2)
+    start_ms = time.time()
     camera.capture_sequence(streams(), format='rgb', use_video_port=True)
+    elapsed_ms = time.time() - start_ms
 
 
 t = threading.Thread(target=start_capture)
