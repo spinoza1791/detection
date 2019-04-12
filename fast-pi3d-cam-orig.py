@@ -67,7 +67,7 @@ class ImageProcessor(threading.Thread):
           if self.stream.tell() >= NBYTES:
             self.stream.seek(0)
             g_input = np.frombuffer(self.stream.getvalue(), dtype=np.uint8)
-            bnp = np.array(self.stream.getbuffer(), dtype=np.uint8).reshape(CAMH, CAMW) #, 3)
+            bnp = np.array(self.stream.getbuffer(), dtype=np.uint8).reshape(CAMH, CAMW, 3)
             bnp = (bnp * [0.2989, 0.5870, 0.1140]).sum(axis=3).astype(np.uint8)
             npa[:,:,0:3] = bnp         
             new_pic = True
