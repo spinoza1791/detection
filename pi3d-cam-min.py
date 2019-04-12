@@ -9,12 +9,21 @@ import picamera
 import picamera.array
 import threading
 import time
+import tkinter
 
 npa = None # this is the array for the camera to fill
 new_pic = False # this is the flag to signal when array refilled
 
 max_fps = 30
 mdl_dims = 320
+
+root = tkinter.Tk()
+screen_W = root.winfo_screenwidth()
+screen_H = root.winfo_screenheight()
+preview_W = mdl_dims
+preview_H = mdl_dims
+preview_mid_X = int(screen_W/2 - preview_W/2)
+preview_mid_Y = int(screen_H/2 - preview_H/2)
 
 def get_pics():
   # function to run in thread
