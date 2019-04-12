@@ -69,12 +69,10 @@ class ImageProcessor(threading.Thread):
             # python2 doesn't have the getbuffer() method
             #bnp = np.fromstring(self.stream.read(NBYTES),
             #              dtype=np.uint8).reshape(CAMH, CAMW, 3)
-            bnp = np.array(self.stream.getbuffer(), dtype=np.uint8).reshape(CAMH, CAMW, 3)
-
+            #bnp = np.array(self.stream.getbuffer(), dtype=np.uint8).reshape(CAMH, CAMW, 3)
+            #npa[:,:,0:3] = bnp         
             self.input_val = np.frombuffer(self.stream.getvalue(), dtype=np.uint8)
             g_input = self.input_val
-
-            npa[:,:,0:3] = bnp
             new_pic = True
         except Exception as e:
           print(e)
@@ -117,7 +115,7 @@ t.daemon = True
 t.start()
 
 while not new_pic:
-  time.sleep(0.1)
+  time.sleep(0.01)
 
 ########################################################################
 #DISPLAY = pi3d.Display.create(preview_mid_X, preview_mid_Y, w=preview_W, h=preview_H, layer=0, frames_per_second=max_fps)
