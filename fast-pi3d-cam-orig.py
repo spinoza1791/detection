@@ -115,15 +115,15 @@ opengles.glDisable(GL_CULL_FACE)
 #shinetex = pi3d.Texture(npa)
 txtshader = pi3d.Shader("uv_flat")
 tex = pi3d.Texture(npa)
-#sprite = pi3d.Sprite(w=tex.ix, h=tex.iy, z=5.0)
-#sprite.set_draw_details(txtshader, [tex])
+sprite = pi3d.Sprite(w=tex.ix, h=tex.iy, z=5.0)
+sprite.set_draw_details(txtshader, [tex])
 # load model_loadmodel
 #mymodel = pi3d.Model(file_string='models/teapot.obj', name='teapot')
 #mymodel.set_shader(shader)
 #mymodel.set_normal_shine(bumptex, 0.0, shinetex, 0.7)
 
-mysphere = pi3d.Sphere(radius=400.0, rx=180, ry=180, invert=True)
-mysphere.set_draw_details(flatsh, [tex], vmult=3.0, umult=3.0)
+#mysphere = pi3d.Sphere(radius=400.0, rx=180, ry=180, invert=True)
+#mysphere.set_draw_details(flatsh, [tex], vmult=3.0, umult=3.0)
 
 # Fetch key presses
 mykeys = pi3d.Keyboard()
@@ -143,9 +143,9 @@ while DISPLAY.loop_running():
   if new_pic:
     tex.update_ndarray(npa)
     new_pic = False
-    #sprite.draw()
+  sprite.draw()
   #mymodel.draw()
-  mysphere.draw()
+  #mysphere.draw()
   #mymodel.rotateIncY(0.41)
   #mymodel.rotateIncZ(0.12)
   #mymodel.rotateIncX(0.23)
