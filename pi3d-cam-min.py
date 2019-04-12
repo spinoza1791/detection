@@ -36,6 +36,7 @@ tex = pi3d.Texture(npa)
 sprite = pi3d.Sprite(w=tex.ix, h=tex.iy, z=5.0)
 sprite.set_draw_details(txtshader, [tex])
 mykeys = pi3d.Keyboard()
+
 fps = "00.0 fps"
 N = 10
 fps_txt = pi3d.String(camera=CAMERA, is_3d=False, font=font, string=fps, x=0, y=preview_H/2 - 10, z=1.0)
