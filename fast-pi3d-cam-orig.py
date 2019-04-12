@@ -123,11 +123,12 @@ while not new_pic:
 
 DISPLAY = pi3d.Display.create(x=320, y=320, frames_per_second=30)
 DISPLAY.set_background(0.0, 0.0, 0.0, 0.0)
-shader = pi3d.Shader("uv_flat")
+txtshader = pi3d.Shader("uv_flat")
+linshader = pi3d.Shader('mat_flat')
 CAMERA = pi3d.Camera(is_3d=False)
 tex = pi3d.Texture(npa)
 sprite = pi3d.Sprite(w=tex.ix, h=tex.iy, z=5.0)
-sprite.set_draw_details(shader, [tex])
+sprite.set_draw_details(txtshader, [tex])
 
 keybd = pi3d.Keyboard()
 
