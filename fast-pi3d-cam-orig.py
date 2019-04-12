@@ -100,39 +100,20 @@ while not new_pic:
     time.sleep(0.1)
 
 ########################################################################
-DISPLAY = pi3d.Display.create(preview_mid_X, preview_mid_Y, w=preview_W, h=preview_H, layer=0, frames_per_second=max_fps)
+#DISPLAY = pi3d.Display.create(preview_mid_X, preview_mid_Y, w=preview_W, h=preview_H, layer=0, frames_per_second=max_fps)
+
+DISPLAY = pi3d.Display.create(x=320, y=320, frames_per_second=30)
 DISPLAY.set_background(0.0, 0.0, 0.0, 0.0)
-shader = pi3d.Shader("uv_reflect")
-flatsh = pi3d.Shader('uv_flat')
-#========================================
-# this is a bit of a one off because the texture has transparent parts
-# comment out and google to see why it's included here.
-from pi3d import opengles, GL_CULL_FACE
-opengles.glDisable(GL_CULL_FACE)
-#========================================
-# load bump and reflection textures
-#bumptex = pi3d.Texture("textures/floor_nm.jpg")
-#shinetex = pi3d.Texture(npa)
-txtshader = pi3d.Shader("uv_flat")
+shader = pi3d.Shader("uv_flat")
+CAMERA = pi3d.Camera(is_3d=False)
 tex = pi3d.Texture(npa)
 sprite = pi3d.Sprite(w=tex.ix, h=tex.iy, z=5.0)
-#sprite = pi3d.Sprite(w=320, h=320, z=5.0)
-#sprite.set_draw_details(txtshader, [tex])
-#sprite.set_draw_details(flatsh, [tex], vmult=3.0, umult=3.0)
-# load model_loadmodel
-#mymodel = pi3d.Model(file_string='models/teapot.obj', name='teapot')
-#mymodel.set_shader(shader)
-#mymodel.set_normal_shine(bumptex, 0.0, shinetex, 0.7)
-
-mysphere = pi3d.Sphere(radius=400.0, rx=180, ry=180, invert=True)
-mysphere.set_draw_details(flatsh, [tex], vmult=3.0, umult=3.0)
+sprite.set_draw_details(shader, [tex])
 
 # Fetch key presses
 mykeys = pi3d.Keyboard()
-#mymouse = pi3d.Mouse(restrict=False)
-#mymouse.start()
 
-CAMERA = pi3d.Camera.instance()
+#CAMERA = pi3d.Camera.instance()
 
 while DISPLAY.loop_running():
   k = mykeys.read()
@@ -145,12 +126,9 @@ while DISPLAY.loop_running():
   if new_pic:
     tex.update_ndarray(npa)
     new_pic = False
-  #sprite.draw()
-  #mymodel.draw()
-  mysphere.draw()
-  #mymodel.rotateIncY(0.41)
-  #mymodel.rotateIncZ(0.12)
-  #mymodel.rotateIncX(0.23)
+
+  sprite.draw()
+
 
 # Shut down the processors in an orderly fashion
 while pool:
