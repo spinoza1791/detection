@@ -108,8 +108,9 @@ def start_capture(): # has to be in yet another thread as blocking
     pool = [ImageProcessor() for i in range(3)]
     camera.resolution = (CAMW, CAMH)
     camera.framerate = max_fps
-    camera.capture_sequence(streams(), format='rgb', use_video_port=True)
+    camera.start_preview(fullscreen=False, layer=0, window=(preview_mid_X, preview_mid_Y, preview_W, preview_H))
     time.sleep(1)
+    camera.capture_sequence(streams(), format='rgb', use_video_port=True)
 
 t = threading.Thread(target=start_capture)
 t.daemon = True
@@ -121,7 +122,7 @@ while not new_pic:
 ########################################################################
 #DISPLAY = pi3d.Display.create(preview_mid_X, preview_mid_Y, w=preview_W, h=preview_H, layer=0, frames_per_second=max_fps)
 
-DISPLAY = pi3d.Display.create(x=320, y=320, frames_per_second=30)
+DISPLAY = pi3d.Display.create(x=320, y=320, layer=1,frames_per_second=30)
 DISPLAY.set_background(0.0, 0.0, 0.0, 0.0)
 txtshader = pi3d.Shader("uv_flat")
 linshader = pi3d.Shader('mat_flat')
