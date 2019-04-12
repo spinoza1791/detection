@@ -27,12 +27,6 @@ preview_H = mdl_dims
 preview_mid_X = int(screen_W/2 - preview_W/2)
 preview_mid_Y = int(screen_H/2 - preview_H/2)
 
-def ms_display(elapsed_ms):
-  global ms_txt
-  ms = str(elapsed_ms*1000)
-  ms_txt.draw()
-  ms_txt.quick_change(ms)
-
 def get_pics():
   # function to run in thread
   global npa, new_pic, elapsed_ms
@@ -41,10 +35,10 @@ def get_pics():
     with picamera.array.PiRGBArray(camera) as output:
       while True: # loop for ever
         output.truncate(0)
-        start_ms = time.time()
+        #start_ms = time.time()
         #camera.capture(output, format='rgb', use_video_port=True)
         camera.capture_sequence(output, format='rgb', use_video_port=True)
-        elapsed_ms = time.time() - start_ms
+        #elapsed_ms = time.time() - start_ms
         if npa is None: # do this once only
           npa = np.zeros(output.array.shape[:2] + (4,), dtype=np.uint8)
           npa[:,:,3] = 255 # fill alpha value
