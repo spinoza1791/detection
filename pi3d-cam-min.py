@@ -67,7 +67,7 @@ txtshader = pi3d.Shader("uv_flat")
 font = pi3d.Font("fonts/FreeMono.ttf", font_size=30, color=(0, 255, 0, 255)) # blue green 1.0 alpha
 CAMERA = pi3d.Camera(is_3d=False)
 tex = pi3d.Texture(npa)
-sprite = pi3d.Sprite(w=tex.ix, h=tex.iy, z=5.0)
+sprite = pi3d.Sprite(w=tex.ix, h=tex.iy, z=1.0)
 sprite.set_draw_details(txtshader, [tex])
 mykeys = pi3d.Keyboard()
 
