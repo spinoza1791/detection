@@ -161,10 +161,7 @@ def start_capture(): # has to be in yet another thread as blocking
     camera.framerate = max_fps
     camera.start_preview(fullscreen=False, layer=0, window=(preview_mid_X, preview_mid_Y, preview_W, preview_H))
     time.sleep(2)
-    start_ms = time.time()
     camera.capture_sequence(streams(), format='rgb', use_video_port=True)
-    elapsed_ms = time.time() - start_ms
-
 
 t = threading.Thread(target=start_capture)
 t.start()
@@ -185,7 +182,9 @@ while DISPLAY.loop_running():
 		i = 0
 		last_tm = tm
 	#if new_pic:  
+	start_ms = time.time()
 	results = engine.DetectWithInputTensor(g_input, top_k=4)
+	elapsed_ms = time.time() - start_ms
 	if new_pic:
 		if results:
 			num_obj = 0
