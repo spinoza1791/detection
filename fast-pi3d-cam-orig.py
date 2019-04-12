@@ -191,15 +191,15 @@ while DISPLAY.loop_running():
     if results:
       num_obj = 0
       for obj in results:
-	num_obj = num_obj + 1   
-	buf = bbox.buf[0] # alias for brevity below
-	buf.array_buffer[:,:3] = 0.0;
+        num_obj = num_obj + 1   
+        buf = bbox.buf[0] # alias for brevity below
+        buf.array_buffer[:,:3] = 0.0;
       for j, obj in enumerate(results):
-	coords = (obj.bounding_box - 0.5) * [[1.0, -1.0]] * mdl_dims # broadcasting will fix the arrays size differences
-	score = round(obj.score,2)
-	ix = 8 * j
-	buf.array_buffer[ix:(ix + 8), 0] = coords[X_IX, 0] + 2 * X_OFF
-	buf.array_buffer[ix:(ix + 8), 1] = coords[Y_IX, 1] + 2 * Y_OFF
+        coords = (obj.bounding_box - 0.5) * [[1.0, -1.0]] * mdl_dims # broadcasting will fix the arrays size differences
+        score = round(obj.score,2)
+        ix = 8 * j
+        buf.array_buffer[ix:(ix + 8), 0] = coords[X_IX, 0] + 2 * X_OFF
+        buf.array_buffer[ix:(ix + 8), 1] = coords[Y_IX, 1] + 2 * Y_OFF
       buf.re_init(); # 
       new_pic = False
   bbox.draw() # i.e. one draw for all boxes
