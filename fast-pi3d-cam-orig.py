@@ -19,7 +19,9 @@ preview_H = mdl_dims
 preview_mid_X = int(screen_W/2 - preview_W/2)
 preview_mid_Y = int(screen_H/2 - preview_H/2)
 
-CAMW, CAMH = 320, 320
+mdl_dims = 320
+
+CAMW, CAMH = mdl_dims, mdl_dims
 NBYTES = CAMW * CAMH * 3
 npa = np.zeros((CAMH, CAMW, 4), dtype=np.uint8)
 npa[:,:,3] = 255
