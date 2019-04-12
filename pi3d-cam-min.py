@@ -14,7 +14,7 @@ import tkinter
 npa = None # this is the array for the camera to fill
 new_pic = False # this is the flag to signal when array refilled
 
-max_fps = 60
+max_fps = 90
 mdl_dims = 320
 
 root = tkinter.Tk()
