@@ -58,7 +58,7 @@ class ImageProcessor(threading.Thread):
 
     def run(self):
         # This method runs in a separate thread
-        global done, npa, new_pic, CAMH, CAMW, NBYTES, bnp
+        global done, npa, new_pic, CAMH, CAMW, NBYTES, bnp, g_input
         while not self.terminated:
             # Wait for an image to be written to the stream
             if self.event.wait(1):
@@ -71,8 +71,8 @@ class ImageProcessor(threading.Thread):
                       bnp = np.array(self.stream.getbuffer(),
                                     dtype=np.uint8).reshape(CAMH, CAMW, 3)
                       
-                      #self.input_val = np.frombuffer(self.stream.getvalue(), dtype=np.uint8)
-                      #g_input = self.input_val
+                      self.input_val = np.frombuffer(self.stream.getvalue(), dtype=np.uint8)
+                      g_input = self.input_val
                         
                       npa[:,:,0:3] = bnp
                       new_pic = True
