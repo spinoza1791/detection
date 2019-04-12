@@ -62,28 +62,28 @@ class ImageProcessor(threading.Thread):
     global done, npa, new_pic, CAMH, CAMW, NBYTES, bnp, g_input
     while not self.terminated:
       # Wait for an image to be written to the stream
-      if self.event.wait(1):
-        try:
-          if self.stream.tell() >= NBYTES:
-            self.stream.seek(0)
-            # python2 doesn't have the getbuffer() method
-            #bnp = np.fromstring(self.stream.read(NBYTES),
-            #              dtype=np.uint8).reshape(CAMH, CAMW, 3)
-            #bnp = np.array(self.stream.getbuffer(), dtype=np.uint8).reshape(CAMH, CAMW, 3)
-            #npa[:,:,0:3] = bnp         
-            self.input_val = np.frombuffer(self.stream.getvalue(), dtype=np.uint8)
-            g_input = self.input_val
-            new_pic = True
-        except Exception as e:
-          print(e)
-        finally:
-          # Reset the stream and event
+      #if self.event.wait(1):
+      try:
+        if self.stream.tell() >= NBYTES:
           self.stream.seek(0)
-          self.stream.truncate()
-          self.event.clear()
-          # Return ourselves to the pool
-          with lock:
-            pool.append(self)
+          # python2 doesn't have the getbuffer() method
+          #bnp = np.fromstring(self.stream.read(NBYTES),
+          #              dtype=np.uint8).reshape(CAMH, CAMW, 3)
+          #bnp = np.array(self.stream.getbuffer(), dtype=np.uint8).reshape(CAMH, CAMW, 3)
+          #npa[:,:,0:3] = bnp         
+          self.input_val = np.frombuffer(self.stream.getvalue(), dtype=np.uint8)
+          g_input = self.input_val
+          new_pic = True
+      except Exception as e:
+        print(e)
+      finally:
+        # Reset the stream and event
+        self.stream.seek(0)
+        self.stream.truncate()
+        self.event.clear()
+        # Return ourselves to the pool
+        with lock:
+          pool.append(self)
 
 def streams():
   while not done:
