@@ -27,6 +27,16 @@ preview_H = mdl_dims
 preview_mid_X = int(screen_W/2 - preview_W/2)
 preview_mid_Y = int(screen_H/2 - preview_H/2)
 
+DISPLAY = pi3d.Display.create(x=mdl_dims, y=mdl_dims, frames_per_second=max_fps)
+DISPLAY.set_background(0.0, 0.0, 0.0, 0.0)
+txtshader = pi3d.Shader("uv_flat")
+font = pi3d.Font("fonts/FreeMono.ttf", font_size=30, color=(0, 255, 0, 255)) # blue green 1.0 alpha
+CAMERA = pi3d.Camera(is_3d=False)
+tex = pi3d.Texture(npa)
+sprite = pi3d.Sprite(w=tex.ix, h=tex.iy, z=5.0)
+sprite.set_draw_details(txtshader, [tex])
+mykeys = pi3d.Keyboard()
+
 def get_pics():
   # function to run in thread
   global npa, new_pic
@@ -47,18 +57,15 @@ def get_pics():
         time.sleep(0.05)
 
 ##########################################################################
+t = threading.Thread(target=get_pics) # set up and start capture thread
+t.daemon = True
+t.start()
 
+while not new_pic: # wait for array to be filled first time
+    time.sleep(0.1)
 
 ########################################################################
-DISPLAY = pi3d.Display.create(x=mdl_dims, y=mdl_dims, frames_per_second=max_fps)
-DISPLAY.set_background(0.0, 0.0, 0.0, 0.0)
-txtshader = pi3d.Shader("uv_flat")
-font = pi3d.Font("fonts/FreeMono.ttf", font_size=30, color=(0, 255, 0, 255)) # blue green 1.0 alpha
-CAMERA = pi3d.Camera(is_3d=False)
-tex = pi3d.Texture(npa)
-sprite = pi3d.Sprite(w=tex.ix, h=tex.iy, z=5.0)
-sprite.set_draw_details(txtshader, [tex])
-mykeys = pi3d.Keyboard()
+
 
 fps = "00.0 fps"
 N = 10
@@ -75,13 +82,6 @@ def ms_display(elapsed_ms):
   ms = str(elapsed_ms*1000)
   ms_txt.draw()
   ms_txt.quick_change(ms)
-  
-t = threading.Thread(target=get_pics) # set up and start capture thread
-t.daemon = True
-t.start()
-
-while not new_pic: # wait for array to be filled first time
-    time.sleep(0.1)
 
 while DISPLAY.loop_running():
   if new_pic:
