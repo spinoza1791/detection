@@ -184,10 +184,10 @@ while DISPLAY.loop_running():
     i = 0
     last_tm = tm
     
-  start_ms = time.time()
-  results = engine.DetectWithInputTensor(bnp, top_k=max_obj)
-  elapsed_ms = time.time() - start_ms
   if new_pic:
+    start_ms = time.time()
+    results = engine.DetectWithInputTensor(g_input, top_k=max_obj)
+    elapsed_ms = time.time() - start_ms
     if results:
       num_obj = 0
       for obj in results:
