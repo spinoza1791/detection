@@ -29,7 +29,7 @@ preview_mid_Y = int(screen_H/2 - preview_H/2)
 
 def get_pics():
   # function to run in thread
-  global npa, new_pic, start_ms, elapsed_ms, ms_display()
+  global npa, new_pic
   with picamera.PiCamera() as camera:
     camera.resolution = (mdl_dims, mdl_dims)
     with picamera.array.PiRGBArray(camera) as output:
@@ -77,6 +77,7 @@ ms_txt.set_shader(txtshader)
 def ms_display(elapsed_ms)
 global ms_txt
   ms = str(elapsed_ms*1000)
+  ms_txt.draw()
   ms_txt.quick_change(ms)
 
 while DISPLAY.loop_running():
@@ -85,7 +86,6 @@ while DISPLAY.loop_running():
     new_pic = False
   sprite.draw()
   fps_txt.draw()
-  ms_txt.draw()
   i += 1
   if i > N:
     tm = time.time()
