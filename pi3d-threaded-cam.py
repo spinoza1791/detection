@@ -159,7 +159,7 @@ def start_capture(): # has to be in yet another thread as blocking
     pool = [ImageProcessor() for i in range(3)]
     camera.resolution = (mdl_dims, mdl_dims)
     camera.framerate = max_fps
-    #camera.start_preview(fullscreen=False, layer=0, window=(preview_mid_X, preview_mid_Y, preview_W, preview_H))
+    camera.start_preview(fullscreen=False, layer=0, window=(preview_mid_X, preview_mid_Y, preview_W, preview_H))
     #time.sleep(2)
     camera.capture_sequence(streams(), format='rgb', use_video_port=True)
 
