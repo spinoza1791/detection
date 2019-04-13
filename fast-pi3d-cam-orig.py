@@ -32,7 +32,7 @@ preview_H = mdl_dims
 preview_mid_X = int(screen_W/2 - preview_W/2)
 preview_mid_Y = int(screen_H/2 - preview_H/2)
 
-max_obj = 5
+max_obj = 15
 max_fps = 60
 max_cam = 40
 
