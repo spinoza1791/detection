@@ -67,12 +67,12 @@ class ImageProcessor(threading.Thread):
         try:
           if self.stream.tell() >= NBYTES:
             self.stream.seek(0)
-            #getbuf = np.array(self.stream.getbuffer(), dtype=np.uint8)
+            g_input = np.array(self.stream.getbuffer(), dtype=np.uint8).resize(307200)
             #graybuf = (getbuf * [0.2989, 0.5870, 0.1140]).sum(axis=2).astype(np.uint8)
             #graybuf.resize((307200))
             #print("gray_sz:" + str(graybuf.size))
             #print("gray_shape:" + str(graybuf.shape))
-            g_input = np.frombuffer(self.stream.getvalue(), dtype=np.uint8).resize(307200)
+            #g_input = np.frombuffer(self.stream.getvalue(), dtype=np.uint8)
             #print("stream_sz:" + str(g_input.size))
             #print("stream_shape:" + str(g_input.shape))
             #g_input.resize((320, 320, 3))
