@@ -66,7 +66,7 @@ class ImageProcessor(threading.Thread):
         try:
           if self.stream.tell() >= NBYTES:
             self.stream.seek(0)
-            getbuf = np.array(self.stream.getbuffer(), dtype=np.uint8).reshape(CAMH, CAMW, 3)
+            getbuf = np.array(self.stream.getbuffer(), dtype=np.uint8)
             graybuf = (getbuf * [0.2989, 0.5870, 0.1140]).sum(axis=2).astype(np.uint8)
             graybuf.resize((307200))
             print("gray_sz:" + str(graybuf.size))
