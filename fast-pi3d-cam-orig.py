@@ -70,10 +70,8 @@ class ImageProcessor(threading.Thread):
             bnp = np.array(self.stream.getbuffer(), dtype=np.uint8).reshape(CAMH, CAMW, 3)
             #npa = np.zeros((CAMH, CAMW, 4), dtype=np.uint8)
             bnp = (bnp * [0.2989, 0.5870, 0.1140]).sum(axis=2).astype(np.uint8)
-            pad = np.zeros((CAMH, CAMW, 3), dtype=bnp.dtype)
-            concat = np.concatenate((bnp, pad), axis=1)
-            concat.reshape(CAMH, CAMW, 3)
-            npa[:,:,0:3] = concat         
+            bnp.resize((320, 320, 3))
+            npa[:,:,0:3] = bnp         
             new_pic = True
         except Exception as e:
           print(e)
