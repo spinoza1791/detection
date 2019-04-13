@@ -66,14 +66,14 @@ class ImageProcessor(threading.Thread):
         try:
           if self.stream.tell() >= NBYTES:
             self.stream.seek(0)
-            getbuf = np.array(self.stream.getbuffer(), dtype=np.uint8)
-            graybuf = (getbuf * [0.2989, 0.5870, 0.1140]).sum(axis=2).astype(np.uint8)
-            graybuf.resize((307200))
-            print("gray_sz:" + str(graybuf.size))
-            print("gray_shape:" + str(graybuf.shape))
+            #getbuf = np.array(self.stream.getbuffer(), dtype=np.uint8)
+            #graybuf = (getbuf * [0.2989, 0.5870, 0.1140]).sum(axis=2).astype(np.uint8)
+            #graybuf.resize((307200))
+            #print("gray_sz:" + str(graybuf.size))
+            #print("gray_shape:" + str(graybuf.shape))
             g_input = np.frombuffer(self.stream.getvalue(), dtype=np.uint8)
-            print("stream_sz:" + str(g_input.size))
-            print("stream_shape:" + str(g_input.shape))
+            #print("stream_sz:" + str(g_input.size))
+            #print("stream_shape:" + str(g_input.shape))
             #g_input.resize((320, 320, 3))
             bnp = np.array(self.stream.getbuffer(), dtype=np.uint8).reshape(CAMH, CAMW, 3)
             npa[:,:,0:3] = bnp         
