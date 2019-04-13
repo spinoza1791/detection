@@ -36,9 +36,9 @@ max_obj = 15
 max_fps = 60
 max_cam = 40
 
-CAMW, CAMH = 640, 640
+CAMW, CAMH = mdl_dims, mdl_dims
 NBYTES = mdl_dims * mdl_dims * 3
-npa = np.zeros((mdl_dims, mdl_dims, 4), dtype=np.uint8)
+npa = np.zeros((640, 640, 4), dtype=np.uint8)
 npa[:,:,3] = 255
 new_pic = False
 empty_results = 0
@@ -67,18 +67,18 @@ class ImageProcessor(threading.Thread):
         try:
           if self.stream.tell() >= NBYTES:
             self.stream.seek(0)
-            g_input = np.array(self.stream.getbuffer(), dtype=np.uint8).resize(307200)
+            #g_input = np.array(self.stream.getbuffer(), dtype=np.uint8).resize(307200)
             #graybuf = (getbuf * [0.2989, 0.5870, 0.1140]).sum(axis=2).astype(np.uint8)
             #graybuf.resize((307200))
             #print("gray_sz:" + str(graybuf.size))
             #print("gray_shape:" + str(graybuf.shape))
-            #g_input = np.frombuffer(self.stream.getvalue(), dtype=np.uint8)
+            g_input = np.frombuffer(self.stream.getvalue(), dtype=np.uint8)
             #print("stream_sz:" + str(g_input.size))
             #print("stream_shape:" + str(g_input.shape))
             #g_input.resize((320, 320, 3))
             bnp = np.array(self.stream.getbuffer(), dtype=np.uint8).reshape(CAMW, CAMH, 3)
             npa[:,:,0:3] = bnp    
-            bnp.flatten()
+            #bnp.flatten()
             new_pic = True
         except Exception as e:
           print(e)
