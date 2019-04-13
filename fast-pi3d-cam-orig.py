@@ -36,7 +36,7 @@ max_obj = 15
 max_fps = 60
 max_cam = 40
 
-CAMW, CAMH = mdl_dims, mdl_dims
+CAMW, CAMH = 640, 640
 NBYTES = CAMW * CAMH * 3
 npa = np.zeros((CAMH, CAMW, 4), dtype=np.uint8)
 npa[:,:,3] = 255
@@ -75,7 +75,7 @@ class ImageProcessor(threading.Thread):
             g_input = np.frombuffer(self.stream.getvalue(), dtype=np.uint8)
             #print("stream_sz:" + str(g_input.size))
             #print("stream_shape:" + str(g_input.shape))
-            #g_input.resize((320, 320, 3))
+            g_input.resize((320, 320, 3))
             bnp = np.array(self.stream.getbuffer(), dtype=np.uint8).reshape(CAMH, CAMW, 3)
             npa[:,:,0:3] = bnp         
             new_pic = True
@@ -123,7 +123,7 @@ while not new_pic:
   time.sleep(0.01)
 
 ########################################################################
-DISPLAY = pi3d.Display.create(preview_mid_X, preview_mid_Y, w=640, h=640, layer=0, frames_per_second=max_fps)
+DISPLAY = pi3d.Display.create(preview_mid_X, preview_mid_Y, w=preview_W, h=preview_H, layer=0, frames_per_second=max_fps)
 #DISPLAY = pi3d.Display.create(x=320, y=320, layer=1, frames_per_second=30)
 DISPLAY.set_background(0.0, 0.0, 0.0, 0.0)
 txtshader = pi3d.Shader("uv_flat")
