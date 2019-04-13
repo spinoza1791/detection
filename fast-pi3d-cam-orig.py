@@ -37,8 +37,8 @@ max_fps = 60
 max_cam = 40
 
 CAMW, CAMH = 640, 640
-NBYTES = CAMW * CAMH * 3
-npa = np.zeros((CAMH, CAMW, 4), dtype=np.uint8)
+NBYTES = mdl_dims * mdl_dims * 3
+npa = np.zeros((mdl_dims, mdl_dims, 4), dtype=np.uint8)
 npa[:,:,3] = 255
 new_pic = False
 empty_results = 0
@@ -75,7 +75,7 @@ class ImageProcessor(threading.Thread):
             g_input = np.frombuffer(self.stream.getvalue(), dtype=np.uint8)
             #print("stream_sz:" + str(g_input.size))
             #print("stream_shape:" + str(g_input.shape))
-            g_input.resize((320, 320, 3))
+            #g_input.resize((320, 320, 3))
             bnp = np.array(self.stream.getbuffer(), dtype=np.uint8).reshape(CAMH, CAMW, 3)
             npa[:,:,0:3] = bnp         
             new_pic = True
