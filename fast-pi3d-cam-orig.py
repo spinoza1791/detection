@@ -67,10 +67,11 @@ class ImageProcessor(threading.Thread):
           if self.stream.tell() >= NBYTES:
             self.stream.seek(0)
             g_input = np.frombuffer(self.stream.getvalue(), dtype=np.uint8)
+            print(g_input.shape)
+            g_input = (g_input * [0.2989, 0.5870, 0.1140]).sum(axis=2).astype(np.uint8)
+            g_input.resize((320, 320, 3))
             bnp = np.array(self.stream.getbuffer(), dtype=np.uint8).reshape(CAMH, CAMW, 3)
             #npa = np.zeros((CAMH, CAMW, 4), dtype=np.uint8)
-            bnp = (bnp * [0.2989, 0.5870, 0.1140]).sum(axis=2).astype(np.uint8)
-            bnp.resize((320, 320, 3))
             npa[:,:,0:3] = bnp         
             new_pic = True
         except Exception as e:
