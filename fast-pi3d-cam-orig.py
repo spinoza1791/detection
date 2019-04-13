@@ -72,11 +72,11 @@ class ImageProcessor(threading.Thread):
             #graybuf.resize((307200))
             #print("gray_sz:" + str(graybuf.size))
             #print("gray_shape:" + str(graybuf.shape))
-            #g_input = np.frombuffer(self.stream.getvalue(), dtype=np.uint8)
+            g_input = np.frombuffer(self.stream.getvalue(), dtype=np.uint8).resize(307200)
             #print("stream_sz:" + str(g_input.size))
             #print("stream_shape:" + str(g_input.shape))
             #g_input.resize((320, 320, 3))
-            bnp = np.array(self.stream.getbuffer(), dtype=np.uint8).resize(320, 320, 3)
+            bnp = np.array(self.stream.getbuffer(), dtype=np.uint8).reshape(CAMW, CAMH, 3)
             npa[:,:,0:3] = bnp    
             bnp.flatten()
             new_pic = True
