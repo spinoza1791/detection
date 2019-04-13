@@ -71,8 +71,7 @@ class ImageProcessor(threading.Thread):
             #npa = np.zeros((CAMH, CAMW, 4), dtype=np.uint8)
             bnp = (bnp * [0.2989, 0.5870, 0.1140]).sum(axis=2).astype(np.uint8)
             pad = np.zeros((CAMH, CAMW, 3), dtype=bnp.dtype)
-            concat = np.concatenate((bnp, pad, axis=1)
-            #bnp = bnp.reshape(CAMH, CAMW, 3)
+            concat = np.concatenate((bnp, pad), axis=1)
             npa[:,:,0:3] = concat         
             new_pic = True
         except Exception as e:
