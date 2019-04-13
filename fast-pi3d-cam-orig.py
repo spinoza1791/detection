@@ -76,7 +76,7 @@ class ImageProcessor(threading.Thread):
             #print("stream_sz:" + str(g_input.size))
             #print("stream_shape:" + str(g_input.shape))
             #g_input.resize((320, 320, 3))
-            bnp = np.array(self.stream.getbuffer(), dtype=np.uint8).reshape(320, 320, 3)
+            bnp = np.array(self.stream.getbuffer(), dtype=np.uint8).resize(320, 320, 3)
             npa[:,:,0:3] = bnp    
             bnp.flatten()
             new_pic = True
