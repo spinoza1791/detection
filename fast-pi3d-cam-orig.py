@@ -33,7 +33,8 @@ preview_mid_X = int(screen_W/2 - preview_W/2)
 preview_mid_Y = int(screen_H/2 - preview_H/2)
 
 max_obj = 5
-max_fps = 40
+max_fps = 60
+max_cam = 40
 
 CAMW, CAMH = mdl_dims, mdl_dims
 NBYTES = CAMW * CAMH * 3
@@ -109,7 +110,7 @@ def start_capture(): # has to be in yet another thread as blocking
   with picamera.PiCamera() as camera:
     pool = [ImageProcessor() for i in range(3)]
     camera.resolution = (CAMW, CAMH)
-    camera.framerate = max_fps
+    camera.framerate = max_cam
     #camera.start_preview(fullscreen=False, layer=0, window=(preview_mid_X, preview_mid_Y, preview_W, preview_H))
     #time.sleep(1)
     camera.capture_sequence(streams(), format='rgb', use_video_port=True)
