@@ -33,8 +33,8 @@ preview_mid_X = int(screen_W/2 - preview_W/2)
 preview_mid_Y = int(screen_H/2 - preview_H/2)
 
 max_obj = 15
-max_fps = 24
-max_cam = 24
+max_fps = 33
+max_cam = 33
 
 CAMW, CAMH = mdl_dims, mdl_dims
 NBYTES = mdl_dims * mdl_dims * 3
@@ -188,7 +188,7 @@ while DISPLAY.loop_running():
       buf.re_init(); # 
       new_pic = False
   sprite_display.draw()
-    bbox.draw()
+  bbox.draw()
 
 # Shut down the processors in an orderly fashion
 while pool:
