@@ -38,7 +38,7 @@ max_cam = 40
 
 CAMW, CAMH = mdl_dims, mdl_dims
 NBYTES = mdl_dims * mdl_dims * 3
-npa = np.zeros((640, 640, 4), dtype=np.uint8)
+npa = np.zeros((mdl_dims, mdl_dims, 4), dtype=np.uint8)
 npa[:,:,3] = 255
 new_pic = False
 empty_results = 0
@@ -67,10 +67,10 @@ class ImageProcessor(threading.Thread):
         try:
           if self.stream.tell() >= NBYTES:
             self.stream.seek(0)
-            g_input = np.frombuffer(self.stream.getvalue(), dtype=np.uint8)
+            #g_input = np.frombuffer(self.stream.getvalue(), dtype=np.uint8)
             bnp = np.array(self.stream.getbuffer(), dtype=np.uint8).reshape(CAMW, CAMH, 3)
             npa[:,:,0:3] = bnp    
-            #bnp.flatten()
+            bnp.flatten()
             new_pic = True
         except Exception as e:
           print(e)
@@ -115,7 +115,6 @@ while not new_pic:
 
 ########################################################################
 DISPLAY = pi3d.Display.create(preview_mid_X, preview_mid_Y, w=preview_W, h=preview_H, layer=0, frames_per_second=max_fps)
-#DISPLAY = pi3d.Display.create(x=320, y=320, layer=1, frames_per_second=30)
 DISPLAY.set_background(0.0, 0.0, 0.0, 0.0)
 txtshader = pi3d.Shader("uv_flat")
 linshader = pi3d.Shader('mat_flat')
@@ -125,8 +124,6 @@ CAMERA = pi3d.Camera(is_3d=False)
 tex = pi3d.Texture(npa)
 sprite_display = pi3d.Sprite(w=tex.ix, h=tex.iy, z=5.0)
 sprite_display.set_draw_details(txtshader, [tex])
-
-keybd = pi3d.Keyboard()
 
 font = pi3d.Font("fonts/FreeMono.ttf", font_size=30, color=(0, 255, 0, 255)) # blue green 1.0 alpha
 elapsed_ms = 1000
