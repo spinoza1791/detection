@@ -187,7 +187,7 @@ while DISPLAY.loop_running():
         buf.array_buffer[ix:(ix + 8), 1] = coords[Y_IX, 1] + 2 * Y_OFF
       buf.re_init(); # 
       new_pic = False
-    sprite_display.draw()
+  sprite_display.draw()
     bbox.draw()
 
 # Shut down the processors in an orderly fashion
