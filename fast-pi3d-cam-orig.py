@@ -34,7 +34,7 @@ preview_mid_Y = int(screen_H/2 - preview_H/2)
 
 max_obj = 15
 max_fps = 60
-max_cam = 40
+max_cam = 30
 
 CAMW, CAMH = mdl_dims, mdl_dims
 NBYTES = mdl_dims * mdl_dims * 3
