@@ -33,7 +33,7 @@ preview_mid_X = int(screen_W/2 - preview_W/2)
 preview_mid_Y = int(screen_H/2 - preview_H/2)
 
 max_obj = 15
-max_fps = 60
+max_fps = 24
 max_cam = 24
 
 CAMW, CAMH = mdl_dims, mdl_dims
@@ -94,7 +94,7 @@ def streams():
       processor.event.set()
     else:
       # When the pool is starved, wait a while for it to refill
-      time.sleep(0.1)
+      time.sleep(0.01)
 
 
 def start_capture(): # has to be in yet another thread as blocking
@@ -111,7 +111,7 @@ t.daemon = True
 t.start()
 
 while not new_pic:
-  time.sleep(0.1)
+  time.sleep(0.01)
 
 ########################################################################
 DISPLAY = pi3d.Display.create(preview_mid_X, preview_mid_Y, w=preview_W, h=preview_H, layer=1, frames_per_second=max_fps)
