@@ -67,15 +67,7 @@ class ImageProcessor(threading.Thread):
         try:
           if self.stream.tell() >= NBYTES:
             self.stream.seek(0)
-            #g_input = np.array(self.stream.getbuffer(), dtype=np.uint8).resize(307200)
-            #graybuf = (getbuf * [0.2989, 0.5870, 0.1140]).sum(axis=2).astype(np.uint8)
-            #graybuf.resize((307200))
-            #print("gray_sz:" + str(graybuf.size))
-            #print("gray_shape:" + str(graybuf.shape))
             g_input = np.frombuffer(self.stream.getvalue(), dtype=np.uint8)
-            #print("stream_sz:" + str(g_input.size))
-            #print("stream_shape:" + str(g_input.shape))
-            #g_input.resize((320, 320, 3))
             bnp = np.array(self.stream.getbuffer(), dtype=np.uint8).reshape(CAMW, CAMH, 3)
             npa[:,:,0:3] = bnp    
             #bnp.flatten()
@@ -112,8 +104,6 @@ def start_capture(): # has to be in yet another thread as blocking
     pool = [ImageProcessor() for i in range(3)]
     camera.resolution = (CAMW, CAMH)
     camera.framerate = max_cam
-    #camera.start_preview(fullscreen=False, layer=0, window=(preview_mid_X, preview_mid_Y, preview_W, preview_H))
-    #time.sleep(1)
     camera.capture_sequence(streams(), format='rgb', use_video_port=True)
 
 t = threading.Thread(target=start_capture)
@@ -121,7 +111,7 @@ t.daemon = True
 t.start()
 
 while not new_pic:
-  time.sleep(0.01)
+  time.sleep(0.1)
 
 ########################################################################
 DISPLAY = pi3d.Display.create(preview_mid_X, preview_mid_Y, w=preview_W, h=preview_H, layer=0, frames_per_second=max_fps)
@@ -133,8 +123,8 @@ CAMERA = pi3d.Camera(is_3d=False)
 
 #Use pi3d as the camera preview
 tex = pi3d.Texture(npa)
-sprite = pi3d.Sprite(w=tex.ix, h=tex.iy, z=5.0)
-sprite.set_draw_details(txtshader, [tex])
+sprite_display = pi3d.Sprite(w=tex.ix, h=tex.iy, z=5.0)
+sprite_display.set_draw_details(txtshader, [tex])
 
 keybd = pi3d.Keyboard()
 
@@ -158,11 +148,8 @@ verts = [[0.0, 0.0, 1.0] for i in range(8 * max_obj)] # need a vertex for each e
 bbox = pi3d.Lines(vertices=verts, material=(1.0,0.8,0.05), closed=False, strip=False, line_width=4) 
 bbox.set_shader(linshader)
 
-
 # Fetch key presses
 mykeys = pi3d.Keyboard()
-
-#CAMERA = pi3d.Camera.instance()
 
 while DISPLAY.loop_running():
   k = mykeys.read()
@@ -203,7 +190,7 @@ while DISPLAY.loop_running():
         buf.array_buffer[ix:(ix + 8), 1] = coords[Y_IX, 1] + 2 * Y_OFF
       buf.re_init(); # 
       new_pic = False
-  sprite.draw()
+  sprite_display.draw()
   bbox.draw() # i.e. one draw for all boxes
 
 # Shut down the processors in an orderly fashion
