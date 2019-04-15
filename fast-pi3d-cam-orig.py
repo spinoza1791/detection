@@ -67,10 +67,9 @@ class ImageProcessor(threading.Thread):
         try:
           if self.stream.tell() >= NBYTES:
             self.stream.seek(0)
-            #g_input = np.frombuffer(self.stream.getvalue(), dtype=np.uint8)
+            g_input = np.frombuffer(self.stream.getvalue(), dtype=np.uint8)
             bnp = np.array(self.stream.getbuffer(), dtype=np.uint8).reshape(CAMW, CAMH, 3)
             npa[:,:,0:3] = bnp    
-            bnp.flatten()
             new_pic = True
         except Exception as e:
           print(e)
@@ -171,7 +170,7 @@ while DISPLAY.loop_running():
   if new_pic:
     tex.update_ndarray(npa)
     start_ms = time.time()
-    results = engine.DetectWithInputTensor(bnp, top_k=max_obj)
+    results = engine.DetectWithInputTensor(g_input, top_k=max_obj)
     elapsed_ms = time.time() - start_ms
     if results:
       num_obj = 0
