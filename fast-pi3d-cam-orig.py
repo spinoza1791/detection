@@ -103,6 +103,7 @@ def start_capture(): # has to be in yet another thread as blocking
     pool = [ImageProcessor() for i in range(3)]
     camera.resolution = (CAMW, CAMH)
     camera.framerate = max_cam
+    camera.start_preview(fullscreen=False, layer=0, window=(preview_mid_X, preview_mid_Y, preview_W, preview_H))
     camera.capture_sequence(streams(), format='rgb', use_video_port=True)
 
 t = threading.Thread(target=start_capture)
@@ -113,7 +114,7 @@ while not new_pic:
   time.sleep(0.1)
 
 ########################################################################
-DISPLAY = pi3d.Display.create(preview_mid_X, preview_mid_Y, w=preview_W, h=preview_H, layer=0, frames_per_second=max_fps)
+DISPLAY = pi3d.Display.create(preview_mid_X, preview_mid_Y, w=preview_W, h=preview_H, layer=1, frames_per_second=max_fps)
 DISPLAY.set_background(0.0, 0.0, 0.0, 0.0)
 txtshader = pi3d.Shader("uv_flat")
 linshader = pi3d.Shader('mat_flat')
@@ -186,7 +187,7 @@ while DISPLAY.loop_running():
         buf.array_buffer[ix:(ix + 8), 1] = coords[Y_IX, 1] + 2 * Y_OFF
       buf.re_init(); # 
       new_pic = False
-  sprite_display.draw()
+  #sprite_display.draw()
   bbox.draw() # i.e. one draw for all boxes
 
 # Shut down the processors in an orderly fashion
