@@ -118,7 +118,7 @@ def main():
 		img = pycam.get_image()
 		#img = pygame.transform.scale(img,(resized_x, resized_y))
 		#if img and video_off == False:
-			#screen.blit(img, (0,0))
+		screen.blit(img, (0,0))
 					
 		#img = pygame.transform.scale(img,(mdl_dims,mdl_dims))
 		img_arr = pygame.surfarray.pixels3d(img)
