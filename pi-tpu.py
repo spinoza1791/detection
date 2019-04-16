@@ -78,7 +78,7 @@ def main():
 
 	pygame.init()
 	pygame.camera.init()
-	screen = pygame.display.set_mode((640,640), pygame.RESIZABLE)
+	screen = pygame.display.set_mode((cam_res_x,cam_res_y), pygame.RESIZABLE)
 	pygame.display.set_caption('Object Detection')
 	pycam = pygame.camera.Camera("/dev/video0",(cam_res_x,cam_res_y)) #, "YUV")
 	pycam.start() 
