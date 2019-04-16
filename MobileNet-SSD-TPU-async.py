@@ -164,8 +164,8 @@ if __name__ == '__main__':
     label    = ReadLabelFile(args.label)
     cam_arg = args.cam
 
-    camera_width = 320
-    camera_height = 320
+    camera_width = 96
+    camera_height = 96
     vidfps = 60
 
     try:
