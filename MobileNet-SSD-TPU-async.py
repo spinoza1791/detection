@@ -74,6 +74,7 @@ def camThread(label, results, frameBuffer, camera_width, camera_height, vidfps, 
             #imdraw = overlay_on_image(frames, res, label, camera_width, camera_height)
             lastresults = res
         else:
+            ph = None
             #imdraw = overlay_on_image(frames, lastresults, label, camera_width, camera_height)
 
         #cv2.imshow('Camera', imdraw)
