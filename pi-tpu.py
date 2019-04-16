@@ -114,7 +114,7 @@ def main():
 		img = pycam.get_image()
 		img = pygame.transform.scale(img,(resized_x, resized_y))
 		if img and video_off == False:
-			screen.blit(img, (0,0))
+			#screen.blit(img, (0,0))
 					
 		img = pygame.transform.scale(img,(mdl_dims,mdl_dims))
 		img_arr = pygame.surfarray.pixels3d(img)
@@ -178,6 +178,7 @@ def main():
 			fps = "fps:{:5.1f} ".format(i / (tm - last_tm))
 			i = 0
 			last_tm = tm
+			print(fps + " FPS")
 			
 		fps_thresh = fps + "    thresh:" + str(thresh)
 		fps_fnt = fnt.render(fps_thresh, True, (255,255,0))
@@ -195,7 +196,7 @@ def main():
 			elif event.type == pygame.VIDEORESIZE:
 				screen = pygame.display.set_mode((event.w,event.h),pygame.RESIZABLE)
 		
-		pygame.display.update()
+		#pygame.display.update()
 				
 
 if __name__ == '__main__':
