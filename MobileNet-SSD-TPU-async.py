@@ -76,7 +76,7 @@ def camThread(label, results, frameBuffer, camera_width, camera_height, vidfps, 
         else:
             imdraw = overlay_on_image(frames, lastresults, label, camera_width, camera_height)
 
-        cv2.imshow('Camera', imdraw)
+        #cv2.imshow('Camera', imdraw)
 
         if cv2.waitKey(1)&0xFF == ord('q'):
             break
@@ -90,6 +90,7 @@ def camThread(label, results, frameBuffer, camera_width, camera_height, vidfps, 
             detectframecount = 0
             time1 = 0
             time2 = 0
+            print("Playback FPS: " + fps + "Detection FPS: " + detectfps)
         t2 = time.perf_counter()
         elapsedTime = t2-t1
         time1 += 1/elapsedTime
@@ -113,7 +114,7 @@ def inferencer(results, frameBuffer, model, camera_width, camera_height):
 
         tinf = time.perf_counter()
         ans = engine.DetectWithImage(prepimg, threshold=0.5, keep_aspect_ratio=True, relative_coord=False, top_k=10)
-        print(time.perf_counter() - tinf, "sec")
+        #print(time.perf_counter() - tinf, "sec")
         results.put(ans)
 
 
@@ -164,8 +165,8 @@ if __name__ == '__main__':
     label    = ReadLabelFile(args.label)
     cam_arg = args.cam
 
-    camera_width = 96
-    camera_height = 96
+    camera_width = 320
+    camera_height = 320
     vidfps = 40
 
     try:
