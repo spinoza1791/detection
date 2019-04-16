@@ -54,7 +54,7 @@ def camThread(label, results, frameBuffer, camera_width, camera_height, vidfps, 
     cam.set(cv2.CAP_PROP_FRAME_WIDTH, camera_width)
     cam.set(cv2.CAP_PROP_FRAME_HEIGHT, camera_height)
     window_name = "Camera"
-    #cv2.namedWindow(window_name, cv2.WINDOW_AUTOSIZE)
+    cv2.namedWindow(window_name, cv2.WINDOW_AUTOSIZE)
 
     while True:
         t1 = time.perf_counter()
@@ -71,13 +71,12 @@ def camThread(label, results, frameBuffer, camera_width, camera_height, vidfps, 
         if not results.empty():
             res = results.get(False)
             detectframecount += 1
-            #imdraw = overlay_on_image(frames, res, label, camera_width, camera_height)
+            imdraw = overlay_on_image(frames, res, label, camera_width, camera_height)
             lastresults = res
         else:
-            ph = None
-            #imdraw = overlay_on_image(frames, lastresults, label, camera_width, camera_height)
+            imdraw = overlay_on_image(frames, lastresults, label, camera_width, camera_height)
 
-        #cv2.imshow('Camera', imdraw)
+        cv2.imshow('Camera', imdraw)
 
         if cv2.waitKey(1)&0xFF == ord('q'):
             break
