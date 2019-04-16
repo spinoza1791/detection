@@ -126,14 +126,13 @@ def main():
 			#print(img_arr.shape)
 			#print(img_arr.size)
 			
-		img_arr = np.swapaxes(img_arr,0,1)
-		#img_arr = pygame.PixelArray.transpose(img_arr) #requires pygame.PixelArray object
-		img_arr = np.ascontiguousarray(img_arr)
-		frame = io.BytesIO(img_arr)
-		frame_buf_val = np.frombuffer(frame.getvalue(), dtype=np.uint8)
-		print(frame_buf_val)
+		#img_arr = np.swapaxes(img_arr,0,1)
+		#img_arr = np.ascontiguousarray(img_arr)
+		#frame = io.BytesIO(img_arr)
+		#frame_buf_val = np.frombuffer(frame.getvalue(), dtype=np.uint8)
+		#print(frame_buf_val)
 		start_ms = time.time()
-		results = engine.DetectWithImage(img, threshold=thresh, keep_aspect_ratio=False, relative_coord=False, top_k=max_obj)
+		results = engine.DetectWithImage(img_arr, threshold=thresh, keep_aspect_ratio=False, relative_coord=False, top_k=max_obj)
 		#results = engine.DetectWithInputTensor(frame_buf_val, threshold=thresh, top_k=max_obj)
 		elapsed_ms = time.time() - start_ms
 		#pygame.surfarray.blit_array(screen, img_arr)	
