@@ -86,9 +86,7 @@ def main():
 	else:
 		print("No camera found!")
 		exit
-	#pycam = pygame.camera.Camera("/dev/video0",(cam_res_x,cam_res_y))
 	pycam.start() 
-	clock = pygame.time.Clock()
 	pygame.font.init()
 	fnt_sz = 18
 	fnt = pygame.font.SysFont('Arial', fnt_sz)
@@ -119,7 +117,10 @@ def main():
 	img = pygame.transform.scale(img,(mdl_dims,mdl_dims))
 	
 	while True:
+		screen = pygame.display.get_surface() #get the surface of the current active display
+		resized_x,resized_y = size = screen.get_width(), screen.get_height()
 		img = pycam.get_image()
+		img = pygame.transform.scale(img,(resized_x, resized_y))
 		#if img and video_off == False:
 		screen.blit(img, (0,0))
 					
@@ -200,9 +201,6 @@ def main():
 				sys.exit()
 			elif event.type == pygame.VIDEORESIZE:
 				screen = pygame.display.set_mode((event.w,event.h),pygame.RESIZABLE)
-				screen = pygame.display.get_surface() #get the surface of the current active display
-				resized_x,resized_y = size = screen.get_width(), screen.get_height()
-				img = pygame.transform.scale(img,(resized_x, resized_y))
 		
 		pygame.display.update()
 				
