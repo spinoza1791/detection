@@ -117,12 +117,12 @@ def main():
 			screen.blit(img, (0,0))
 					
 		img = pygame.transform.scale(img,(mdl_dims,mdl_dims))
-		if gray:
-			img_arr = grayscale(img)
+		#if gray:
+		#	img_arr = grayscale(img)
 			#print(img_arr.shape)
 			#print(img_arr.size)
-		else:
-			img_arr = fullcolor(img)
+		#else:
+		#	img_arr = fullcolor(img)
 			#print(img_arr.shape)
 			#print(img_arr.size)
 			
@@ -132,6 +132,7 @@ def main():
 		#frame_buf_val = np.frombuffer(frame.getvalue(), dtype=np.uint8)
 		#print(frame_buf_val)
 		start_ms = time.time()
+		img_arr = pygame.surfarray.pixels2d(img)
 		results = engine.DetectWithImage(img_arr, threshold=thresh, keep_aspect_ratio=False, relative_coord=False, top_k=max_obj)
 		#results = engine.DetectWithInputTensor(frame_buf_val, threshold=thresh, top_k=max_obj)
 		elapsed_ms = time.time() - start_ms
