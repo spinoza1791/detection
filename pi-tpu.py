@@ -95,7 +95,7 @@ def main():
 		return arr
 
 	def fullcolor(img):
-		arr = pygame.surfarray.array3d(img)
+		arr = pygame.surfarray.pixels3d(img)
 		return arr
 	
 	x1=x2=y1=y2=0
@@ -117,6 +117,7 @@ def main():
 			screen.blit(img, (0,0))
 					
 		img = pygame.transform.scale(img,(mdl_dims,mdl_dims))
+		img_arr = pygame.surfarray.pixels3d(img)
 		#if gray:
 		#	img_arr = grayscale(img)
 			#print(img_arr.shape)
