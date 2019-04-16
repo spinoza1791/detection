@@ -193,14 +193,12 @@ def main():
 			keys = pygame.key.get_pressed()
 			if(keys[pygame.K_ESCAPE] == 1):
 				pycam.stop()
-				#pygame.quit()
-				##camera.close()
 				pygame.display.quit()
 				sys.exit()
 			elif event.type == pygame.VIDEORESIZE:
 				screen = pygame.display.set_mode((event.w,event.h),pygame.RESIZABLE)
 		
-		#pygame.display.update()
+		pygame.display.update()
 				
 
 if __name__ == '__main__':
