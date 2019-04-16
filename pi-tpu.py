@@ -113,7 +113,7 @@ def main():
 		resized_x,resized_y = size = screen.get_width(), screen.get_height()
 		img = pycam.get_image()
 		img = pygame.transform.scale(img,(resized_x, resized_y))
-		if img and video_off == False:
+		#if img and video_off == False:
 			#screen.blit(img, (0,0))
 					
 		img = pygame.transform.scale(img,(mdl_dims,mdl_dims))
