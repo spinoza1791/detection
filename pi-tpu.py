@@ -80,9 +80,13 @@ def main():
 	pygame.camera.init()
 	screen = pygame.display.set_mode((cam_res_x,cam_res_y), pygame.RESIZABLE)
 	pygame.display.set_caption('Object Detection')
-	cam_path = pygame.camera.list_cameras
+	camlist = pygame.camera.list_cameras()
+	if camlist:
+	    pycam = pygame.caemra.Camera(camlist[0],(cam_res_x,cam_res_y))
+	else:
+		print("No camera found!")
+		exit
 	#pycam = pygame.camera.Camera("/dev/video0",(cam_res_x,cam_res_y))
-	pycam = pygame.camera.Camera(cam_path,(cam_res_x,cam_res_y))
 	pycam.start() 
 	clock = pygame.time.Clock()
 	pygame.font.init()
