@@ -166,7 +166,7 @@ if __name__ == '__main__':
 
     camera_width = 96
     camera_height = 96
-    vidfps = 60
+    vidfps = 40
 
     try:
         mp.set_start_method('forkserver')
