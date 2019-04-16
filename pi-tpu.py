@@ -132,7 +132,7 @@ def main():
 		#frame_buf_val = np.frombuffer(frame.getvalue(), dtype=np.uint8)
 		#print(frame_buf_val)
 		start_ms = time.time()
-		img_arr = pygame.surfarray.pixels2d(img)
+		img_arr = pygame.surfarray.array2d(img)
 		results = engine.DetectWithImage(img_arr, threshold=thresh, keep_aspect_ratio=False, relative_coord=False, top_k=max_obj)
 		#results = engine.DetectWithInputTensor(frame_buf_val, threshold=thresh, top_k=max_obj)
 		elapsed_ms = time.time() - start_ms
