@@ -80,9 +80,9 @@ def main():
 	pygame.camera.init()
 	screen = pygame.display.set_mode((cam_res_x,cam_res_y), pygame.RESIZABLE)
 	pygame.display.set_caption('Object Detection')
-	pygame.camera.list_cameras = list_cameras
+	cam_path = pygame.camera.list_cameras
 	#pycam = pygame.camera.Camera("/dev/video0",(cam_res_x,cam_res_y))
-	pycam = pygame.camera.Camera(list_cameras,(cam_res_x,cam_res_y))
+	pycam = pygame.camera.Camera(cam_path,(cam_res_x,cam_res_y))
 	pycam.start() 
 	clock = pygame.time.Clock()
 	pygame.font.init()
