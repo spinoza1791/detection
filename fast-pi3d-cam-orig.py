@@ -169,6 +169,7 @@ while DISPLAY.loop_running():
     ms_avg = int(ms_total / (N + 1))
     ms_str = str(ms_avg)
     ms_txt.quick_change(ms_str)
+    ms_total = 0
     if frame_rate_set and ms_avg > 0:
       max_cam = int(1000 / ms_avg)
       print("Setting framerate to:" +  str(max_cam))
