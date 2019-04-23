@@ -162,17 +162,17 @@ while DISPLAY.loop_running():
   i += 1
   if i > N:
     tm = time.time()
-    fps = "{:5.1f}FPS".format(i / (tm - last_tm))
+    fps = "{:5.1f} fps".format(i / (tm - last_tm))
     fps_txt.quick_change(fps)
     i = 0
     last_tm = tm
     ms_avg = int(ms_total / (N + 1))
-    ms_str = str(ms_avg)
+    ms_str = "Detection in" + str(ms_avg) + " ms"
     ms_txt.quick_change(ms_str)
     ms_total = 0
     if frame_rate_set and ms_avg > 0:
       max_cam = int(1000 / ms_avg)
-      print("Setting framerate to:" +  str(max_cam))
+      print("Matching framerate to:" +  str(max_cam) + " fps")
       camera.framerate = max_cam
       frame_rate_set = False
     
