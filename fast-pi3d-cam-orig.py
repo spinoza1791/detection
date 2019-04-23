@@ -112,7 +112,7 @@ while not new_pic:
   time.sleep(0.01)
 
 ########################################################################
-DISPLAY = pi3d.Display.create(preview_mid_X, preview_mid_Y, w=preview_W, h=preview_H, layer=1, frames_per_second=max_fps)
+DISPLAY = pi3d.Display.create(preview_mid_X, preview_mid_Y, w=preview_W, h=preview_H, layer=1) #, frames_per_second=max_fps)
 DISPLAY.set_background(0.0, 0.0, 0.0, 0.0)
 txtshader = pi3d.Shader("uv_flat")
 linshader = pi3d.Shader('mat_flat')
@@ -128,7 +128,7 @@ elapsed_ms = 0
 N = 100
 ms_total = 0
 ms_avg = int(ms_total / (N + 1))
-ms_str = "Detection in" + str(ms_avg) + " ms"
+ms_str = "Detection " + str(ms_avg) + " ms"
 ms_txt = pi3d.String(camera=CAMERA, is_3d=False, font=font, string=ms_str, x=0, y=preview_H/2 - 30, z=1.0)
 ms_txt.set_shader(txtshader)
 
