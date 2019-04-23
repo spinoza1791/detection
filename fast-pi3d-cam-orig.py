@@ -171,7 +171,8 @@ while DISPLAY.loop_running():
     ms_avg = round(ms_total / (N + 1))
     ms_str = str(ms_avg)
     ms_txt.quick_change(ms_str)
-    camera.framerate = round(1000 / ms_avg)
+    if ms_avg > 0:
+      camera.framerate = round(1000 / ms_avg)
     ms_total = 0
     
   if new_pic:
