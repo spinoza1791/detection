@@ -122,22 +122,25 @@ CAMERA = pi3d.Camera(is_3d=False)
 tex = pi3d.Texture(npa)
 sprite_display = pi3d.Sprite(w=tex.ix, h=tex.iy, z=2.0)
 sprite_display.set_draw_details(txtshader, [tex])
-
 font = pi3d.Font("fonts/FreeMono.ttf", font_size=18, color=(255, 255, 255, 255)) # blue green 1.0 alpha
+
 elapsed_ms = 0
-ms_str = "000 ms"
+N = 100
+ms_total = 0
+ms_avg = int(ms_total / (N + 1))
+ms_str = "Detection in" + str(ms_avg) + " ms"
 ms_txt = pi3d.String(camera=CAMERA, is_3d=False, font=font, string=ms_str, x=0, y=preview_H/2 - 30, z=1.0)
 ms_txt.set_shader(txtshader)
-ms_total = 0
-ms_avg = 0
-fps = "00.0 fps"
-N = 100
-frame_rate_set = True
-  
+
+i = 0
+tm = time.time()
+last_tm = time.time()
+fps = "{:5.1f} fps".format(i / (tm - last_tm))
+frame_rate_set = True 
 fps_txt = pi3d.String(camera=CAMERA, is_3d=False, font=font, string=fps, x=0, y=preview_H/2 - 10, z=1.0)
 fps_txt.set_shader(txtshader)
-i = 0
-last_tm = time.time()
+
+
 
 X_OFF = np.array([0, 0, -1, -1, 0, 0, 1, 1])
 Y_OFF = np.array([-1, -1, 0, 0, 1, 1, 0, 0])
