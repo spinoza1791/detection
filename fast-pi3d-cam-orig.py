@@ -161,7 +161,7 @@ while DISPLAY.loop_running():
   fps_txt.draw()   
   ms_txt.draw()
   ms = str(elapsed_ms*1000)
-  ms_total = ms_total + ms
+  ms_total = ms_total + (elapsed_ms*1000)
   i += 1
   if i > N:
     tm = time.time()
@@ -169,7 +169,7 @@ while DISPLAY.loop_running():
     fps_txt.quick_change(fps)
     i = 0
     last_tm = tm
-    ms_avg = int(ms_total / (N + 1))
+    ms_avg = str(ms_total / (N + 1))
     ms_txt.quick_change(ms_avg)
     camera.framerate = int(1000 / ms_avg)
     ms_total = 0
