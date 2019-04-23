@@ -130,8 +130,10 @@ elapsed_ms = 1000
 ms = str(elapsed_ms)
 ms_txt = pi3d.String(camera=CAMERA, is_3d=False, font=font, string=ms, x=0, y=preview_H/2 - 30, z=1.0)
 ms_txt.set_shader(txtshader)
+ms_cnt = 0
+max_cnt = 25
 fps = "00.0 fps"
-N = 10
+N = 25
 fps_txt = pi3d.String(camera=CAMERA, is_3d=False, font=font, string=fps, x=0, y=preview_H/2 - 10, z=1.0)
 fps_txt.set_shader(txtshader)
 i = 0
@@ -159,14 +161,18 @@ while DISPLAY.loop_running():
   fps_txt.draw()   
   ms_txt.draw()
   ms = str(elapsed_ms*1000)
+  ms_total = ms_total + ms
   i += 1
   if i > N:
     tm = time.time()
     fps = "{:5.1f}FPS".format(i / (tm - last_tm))
     fps_txt.quick_change(fps)
-    ms_txt.quick_change(ms)
     i = 0
     last_tm = tm
+    ms_avg = int(ms_total / (N + 1))
+    ms_txt.quick_change(ms_avg)
+    camera.framerate = int(1000 / ms_avg)
+    ms_total = 0
     
   if new_pic:
     tex.update_ndarray(npa)
