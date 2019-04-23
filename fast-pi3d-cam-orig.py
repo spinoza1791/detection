@@ -195,7 +195,7 @@ while DISPLAY.loop_running():
         y1 = round(bbox_list[1] * mdl_dims) 
         x2 = round(bbox_list[2]) 
         y2 = round(bbox_list[3]* mdl_dims) 
-        label_txt = pi3d.String(x=x2, y=-y2, z=1.0)
+        label_txt = pi3d.String(camera=CAMERA, is_3d=False, font=lbl_font, string=label, x=x2, y=-y2, z=1.0)
         label_txt.quick_change(label)
         num_obj = num_obj + 1
         buf = bbox.buf[0] # alias for brevity below
