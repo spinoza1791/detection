@@ -98,7 +98,7 @@ def streams():
 
 
 def start_capture(): # has to be in yet another thread as blocking
-  global CAMW, CAMH, pool
+  global CAMW, CAMH, pool, camera
   with picamera.PiCamera() as camera:
     pool = [ImageProcessor() for i in range(4)]
     camera.resolution = (CAMW, CAMH)
