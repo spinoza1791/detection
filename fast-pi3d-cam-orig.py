@@ -170,7 +170,7 @@ while DISPLAY.loop_running():
     i = 0
     last_tm = tm
     ms_avg = int(ms_total / (N + 1))
-    ms_str = "Detection in" + str(ms_avg) + " ms"
+    ms_str = "Detection " + str(ms_avg) + " ms"
     ms_txt.quick_change(ms_str)
     ms_total = 0
     if frame_rate_set and ms_avg > 0:
