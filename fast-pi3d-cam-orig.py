@@ -120,12 +120,12 @@ CAMERA = pi3d.Camera(is_3d=False)
 
 #Use pi3d as the camera preview
 tex = pi3d.Texture(npa)
-sprite_display = pi3d.Sprite(w=tex.ix, h=tex.iy, z=5.0)
+sprite_display = pi3d.Sprite(w=tex.ix, h=tex.iy, z=2.0)
 sprite_display.set_draw_details(txtshader, [tex])
 
-font = pi3d.Font("fonts/FreeMono.ttf", font_size=30, color=(0, 255, 0, 255)) # blue green 1.0 alpha
+font = pi3d.Font("fonts/FreeMono.ttf", font_size=18, color=(255, 255, 255, 255)) # blue green 1.0 alpha
 elapsed_ms = 0
-ms_str = str(elapsed_ms)
+ms_str = "000 ms"
 ms_txt = pi3d.String(camera=CAMERA, is_3d=False, font=font, string=ms_str, x=0, y=preview_H/2 - 30, z=1.0)
 ms_txt.set_shader(txtshader)
 ms_total = 0
@@ -144,7 +144,7 @@ Y_OFF = np.array([-1, -1, 0, 0, 1, 1, 0, 0])
 X_IX = np.array([0, 1, 1, 1, 1, 0, 0, 0])
 Y_IX = np.array([0, 0, 0, 1, 1, 1, 1, 0])
 verts = [[0.0, 0.0, 1.0] for i in range(8 * max_obj)] # need a vertex for each end of each side 
-bbox = pi3d.Lines(vertices=verts, material=(1.0,0.8,0.05), closed=False, strip=False, line_width=4) 
+bbox = pi3d.Lines(vertices=verts, material=(1.0,0.8,0.05), closed=False, strip=False, line_width=3) 
 bbox.set_shader(linshader)
 
 # Fetch key presses
@@ -166,11 +166,11 @@ while DISPLAY.loop_running():
     fps_txt.quick_change(fps)
     i = 0
     last_tm = tm
-    ms_avg = round(ms_total / (N + 1))
+    ms_avg = int(ms_total / (N + 1))
     ms_str = str(ms_avg)
     ms_txt.quick_change(ms_str)
     if frame_rate_set and ms_avg > 0:
-      max_cam = round(1000 / ms_avg)
+      max_cam = int(1000 / ms_avg)
       print("Setting framerate to:" +  str(max_cam))
       camera.framerate = max_cam
       frame_rate_set = False
