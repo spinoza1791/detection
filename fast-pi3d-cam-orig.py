@@ -128,14 +128,14 @@ elapsed_ms = 0
 N = 100
 ms_total = 0
 ms_avg = int(ms_total / (N + 1))
-ms_str = "Detection " + str(ms_avg) + " ms"
+ms_str = "Detection " + "000" + " ms"
 ms_txt = pi3d.String(camera=CAMERA, is_3d=False, font=font, string=ms_str, x=0, y=preview_H/2 - 30, z=1.0)
 ms_txt.set_shader(txtshader)
 
 i = 0
 tm = time.time()
 last_tm = time.time()
-fps = "{:5.1f} fps".format(i / (tm - last_tm))
+fps = "{:5f} fps".format(i / (tm - last_tm))
 frame_rate_set = True 
 fps_txt = pi3d.String(camera=CAMERA, is_3d=False, font=font, string=fps, x=0, y=preview_H/2 - 10, z=1.0)
 fps_txt.set_shader(txtshader)
