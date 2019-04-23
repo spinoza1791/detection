@@ -135,12 +135,15 @@ ms_txt.set_shader(txtshader)
 i = 0
 tm = time.time()
 last_tm = time.time()
-fps = "{:5f} fps".format(i / (tm - last_tm))
+fps = "{:5.1f} fps".format(i / (tm - last_tm))
 frame_rate_set = True 
 fps_txt = pi3d.String(camera=CAMERA, is_3d=False, font=font, string=fps, x=0, y=preview_H/2 - 10, z=1.0)
 fps_txt.set_shader(txtshader)
 
-
+lbl_font = pi3d.Font("fonts/FreeMono.ttf", font_size=14, color=(0, 255, 255, 255)) 
+label = "face"
+label_txt = pi3d.String(camera=CAMERA, is_3d=False, font=lbl_font, string=label, x=0, y=preview_H/2 - 50, z=1.0)
+label_txt.set_shader(txtshader)
 
 X_OFF = np.array([0, 0, -1, -1, 0, 0, 1, 1])
 Y_OFF = np.array([-1, -1, 0, 0, 1, 1, 0, 0])
@@ -187,7 +190,13 @@ while DISPLAY.loop_running():
     if results:
       num_obj = 0
       for obj in results:
-        num_obj = num_obj + 1   
+        bbox_list = obj.bounding_box.flatten().tolist()
+				x1 = round(bbox[0] * mdl_dims) 
+				y1 = round(bbox[1] * mdl_dims) 
+				x2 = round(bbox[2] * mdl_dims) 
+				y2 = round(bbox[3] * mdl_dims) 
+        label_txt = pi3d.String(camera=CAMERA, is_3d=False, font=font, string=label, x=x1, y=y1, z=1.0)
+        num_obj = num_obj + 1
         buf = bbox.buf[0] # alias for brevity below
         buf.array_buffer[:,:3] = 0.0;
       for j, obj in enumerate(results):
@@ -202,6 +211,7 @@ while DISPLAY.loop_running():
   bbox.draw()
   fps_txt.draw()   
   ms_txt.draw()
+  labels.draw()
 
 # Shut down the processors in an orderly fashion
 while pool:
