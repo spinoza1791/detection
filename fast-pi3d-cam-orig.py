@@ -130,8 +130,8 @@ elapsed_ms = 1000
 ms = str(elapsed_ms)
 ms_txt = pi3d.String(camera=CAMERA, is_3d=False, font=font, string=ms, x=0, y=preview_H/2 - 30, z=1.0)
 ms_txt.set_shader(txtshader)
-ms_cnt = 0
-max_cnt = 25
+ms_total = 0
+ms_avg = 0
 fps = "00.0 fps"
 N = 25
 fps_txt = pi3d.String(camera=CAMERA, is_3d=False, font=font, string=fps, x=0, y=preview_H/2 - 10, z=1.0)
