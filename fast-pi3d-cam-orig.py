@@ -124,7 +124,7 @@ sprite_display = pi3d.Sprite(w=tex.ix, h=tex.iy, z=5.0)
 sprite_display.set_draw_details(txtshader, [tex])
 
 font = pi3d.Font("fonts/FreeMono.ttf", font_size=30, color=(0, 255, 0, 255)) # blue green 1.0 alpha
-elapsed_ms = 1000
+elapsed_ms = 0
 ms_str = str(elapsed_ms)
 ms_txt = pi3d.String(camera=CAMERA, is_3d=False, font=font, string=ms_str, x=0, y=preview_H/2 - 30, z=1.0)
 ms_txt.set_shader(txtshader)
@@ -171,7 +171,7 @@ while DISPLAY.loop_running():
     ms_avg = round(ms_total / (N + 1))
     ms_str = str(ms_avg)
     ms_txt.quick_change(ms_str)
-    if frame_rate_set:
+    if frame_rate_set and ms_avg > 0:
       max_cam = round(1000 / ms_avg)
       print("Setting framerate to:" +  str(max_cam))
       camera.framerate = max_cam
