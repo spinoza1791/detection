@@ -99,10 +99,8 @@ def streams():
 
 def start_capture(): # has to be in yet another thread as blocking
   global CAMW, CAMH, pool, camera
-  with picamera.PiCamera() as camera:
+  with picamera.PiCamera(resolution=(CAMW, CAMH), framerate=max_cam) as camera:
     pool = [ImageProcessor() for i in range(4)]
-    camera.resolution = (CAMW, CAMH)
-    camera.framerate = max_cam
     #camera.start_preview(fullscreen=False, layer=0, window=(preview_mid_X, preview_mid_Y, preview_W, preview_H))
     camera.capture_sequence(streams(), format='rgb', use_video_port=True)
 
@@ -127,13 +125,15 @@ sprite_display.set_draw_details(txtshader, [tex])
 
 font = pi3d.Font("fonts/FreeMono.ttf", font_size=30, color=(0, 255, 0, 255)) # blue green 1.0 alpha
 elapsed_ms = 1000
-ms = str(elapsed_ms)
-ms_txt = pi3d.String(camera=CAMERA, is_3d=False, font=font, string=ms, x=0, y=preview_H/2 - 30, z=1.0)
+ms_str = str(elapsed_ms)
+ms_txt = pi3d.String(camera=CAMERA, is_3d=False, font=font, string=ms_str, x=0, y=preview_H/2 - 30, z=1.0)
 ms_txt.set_shader(txtshader)
 ms_total = 0
 ms_avg = 0
 fps = "00.0 fps"
-N = 25
+N = 100
+frame_rate_set = True
+  
 fps_txt = pi3d.String(camera=CAMERA, is_3d=False, font=font, string=fps, x=0, y=preview_H/2 - 10, z=1.0)
 fps_txt.set_shader(txtshader)
 i = 0
@@ -171,11 +171,11 @@ while DISPLAY.loop_running():
     ms_avg = round(ms_total / (N + 1))
     ms_str = str(ms_avg)
     ms_txt.quick_change(ms_str)
-    max_cam = round(1000 / ms_avg)
-    print("cam rate:" +  str(max_cam))
-    if max_cam > 20:
+    if frame_rate_set:
+      max_cam = round(1000 / ms_avg)
+      print("Setting framerate to:" +  str(max_cam))
       camera.framerate = max_cam
-    ms_total = 0
+      frame_rate_set = False
     
   if new_pic:
     tex.update_ndarray(npa)
