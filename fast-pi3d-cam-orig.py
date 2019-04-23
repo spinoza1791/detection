@@ -157,9 +157,7 @@ while DISPLAY.loop_running():
       mykeys.close()
       DISPLAY.destroy()
       break
-  
-  fps_txt.draw()   
-  ms_txt.draw()
+
   ms_total = ms_total + (elapsed_ms*1000)
   i += 1
   if i > N:
@@ -198,6 +196,8 @@ while DISPLAY.loop_running():
       new_pic = False
   sprite_display.draw()
   bbox.draw()
+  fps_txt.draw()   
+  ms_txt.draw()
 
 # Shut down the processors in an orderly fashion
 while pool:
