@@ -191,10 +191,10 @@ while DISPLAY.loop_running():
       num_obj = 0
       for obj in results:
         bbox_list = obj.bounding_box.flatten().tolist()
-        x1 = round(bbox[0] * mdl_dims) 
-        y1 = round(bbox[1] * mdl_dims) 
-        x2 = round(bbox[2] * mdl_dims) 
-        y2 = round(bbox[3] * mdl_dims) 
+        x1 = round(bbox_list[0] * mdl_dims) 
+        y1 = round(bbox_list[1] * mdl_dims) 
+        x2 = round(bbox_list[2] * mdl_dims) 
+        y2 = round(bbox_list[3] * mdl_dims) 
         label_txt = pi3d.String(camera=CAMERA, is_3d=False, font=font, string=label, x=x1, y=y1, z=1.0)
         num_obj = num_obj + 1
         buf = bbox.buf[0] # alias for brevity below
