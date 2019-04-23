@@ -211,7 +211,7 @@ while DISPLAY.loop_running():
   bbox.draw()
   fps_txt.draw()   
   ms_txt.draw()
-  labels.draw()
+  label_txt.draw()
 
 # Shut down the processors in an orderly fashion
 while pool:
