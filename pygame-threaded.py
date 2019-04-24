@@ -21,10 +21,55 @@ parser = argparse.ArgumentParser()
 parser.add_argument(
   '--model', help='File path of Tflite model.', required=True)
 parser.add_argument(
+  '--labels', help='labels file path OR no arg will prompt for label name', required=False)
+parser.add_argument(
   '--dims', help='Model input dimension', required=True)
+parser.add_argument(
+  '--max_obj', help='Maximum objects detected [>= 1], default=1', default=1, required=False)
+parser.add_argument(
+  '--thresh', help='Threshold confidence [0.1-1.0], default=0.3', default=0.3, required=False)
+parser.add_argument(
+  '--video_off', help='Video display off, for increased FPS', action='store_true', required=False)
+parser.add_argument(
+  '--cam_res', help='Set camera resolution, examples: 96, 128, 256, 352, 384, 480, 640, 1920', default=352, required=False)
+if len(sys.argv[0:])==0:
+  parser.print_help()
+  #parser.print_usage() # for just the usage line
+  parser.exit()
 args = parser.parse_args()
 
-mdl_dims = int(args.dims) #dims must be a factor of 32/16 for picamera resolution
+if args.labels:
+  with open(args.labels, 'r') as f:
+    pairs = (l.strip().split(maxsplit=1) for l in f.readlines())
+    labels = dict((int(k), v) for k, v in pairs)
+else:
+  lbl_input = input("Type label name for this single object model:")
+  if lbl_input:
+    labels = {0: lbl_input}
+  else:
+    labels = {0: 'object'}			
+
+mdl_dims = int(args.dims)
+
+if args.max_obj:
+  max_obj = int(args.max_obj)
+  if max_obj < 1:
+    max_obj = 1
+
+if args.thresh:
+  thresh = float(args.thresh)
+  if thresh < 0.1 or thresh > 1.0:
+    thresh = 0.3	
+
+video_off = False
+if args.video_off :
+  video_off = True
+
+if args.cam_res:
+  cam_res_x=cam_res_y= int(args.cam_res)
+else:		
+  cam_res_x=cam_res_y= 352
+    
 engine = edgetpu.detection.engine.DetectionEngine(args.model)
 
 root = tkinter.Tk()
@@ -38,15 +83,6 @@ preview_mid_Y = int(screen_H/2 - preview_H/2)
 max_obj = 15
 max_fps = 60
 max_cam = 33
-
-CAMW, CAMH = mdl_dims, mdl_dims
-NBYTES = mdl_dims * mdl_dims * 3
-npa = np.zeros((mdl_dims, mdl_dims, 4), dtype=np.uint8)
-npa[:,:,3] = 255
-new_pic = False
-empty_results = 0
-g_input = None
-results = None
 
 # Create a pool of image processors
 done = False
@@ -63,25 +99,27 @@ class ImageProcessor(threading.Thread):
 
   def run(self):
     # This method runs in a separate thread
-    global done, npa, new_pic, CAMH, CAMW, NBYTES, bnp, g_input
+    global frame_buf_val, screen, pycam, new_pic, CAMH, CAMW, NBYTES, resized_x, resized_Y
     while not self.terminated:
       # Wait for an image to be written to the stream
       if self.event.wait(1):
         try:
-          if self.stream.tell() >= NBYTES:
-            self.stream.seek(0)
-            g_input = np.frombuffer(self.stream.getvalue(), dtype=np.uint8)
-            bnp = np.array(self.stream.getbuffer(), dtype=np.uint8).reshape(CAMW, CAMH, 3)
-            npa[:,:,0:3] = bnp    
-            new_pic = True
+          screen = pygame.display.get_surface() #get the surface of the current active display
+          resized_x,resized_y = size = screen.get_width(), screen.get_height()
+          img = pycam.get_image()
+          img = pygame.transform.scale(img,(resized_x, resized_y))
+          #if img and video_off == False:
+          screen.blit(img, (0,0))
+          detect_img = pygame.transform.scale(img,(mdl_dims,mdl_dims))
+          img_arr = pygame.surfarray.pixels3d(detect_img)	
+          img_arr = np.swapaxes(img_arr,0,1)
+          img_arr = np.ascontiguousarray(img_arr)
+          frame = io.BytesIO(img_arr)
+          frame_buf_val = np.frombuffer(frame.getvalue(), dtype=np.uint8) 
+          new_pic = True
         except Exception as e:
           print(e)
         finally:
-          # Reset the stream and event
-          self.stream.seek(0)
-          self.stream.truncate()
-          self.event.clear()
-          # Return ourselves to the pool
           with lock:
             pool.append(self)
 
@@ -101,11 +139,19 @@ def streams():
 
 
 def start_capture(): # has to be in yet another thread as blocking
-  global CAMW, CAMH, pool, camera
-  with picamera.PiCamera(resolution=(CAMW, CAMH), framerate=max_cam) as camera:
-    pool = [ImageProcessor() for i in range(4)]
-    #camera.start_preview(fullscreen=False, layer=0, window=(preview_mid_X, preview_mid_Y, preview_W, preview_H))
-    camera.capture_sequence(streams(), format='rgb', use_video_port=True)
+  global pygame, pycam, screen, resized_x, resized_y, mdl_dims
+  pygame.init()
+  pygame.camera.init()
+  screen = pygame.display.set_mode((cam_res_x,cam_res_y), pygame.RESIZABLE)
+  pygame.display.set_caption('Object Detection')
+  camlist = pygame.camera.list_cameras()
+  if camlist:
+      pycam = pygame.camera.Camera(camlist[0],(cam_res_x,cam_res_y))
+  else:
+    print("No camera found!")
+    exit
+  pycam.start() 
+  pygame.font.init()
 
 t = threading.Thread(target=start_capture)
 t.daemon = True
@@ -115,102 +161,84 @@ while not new_pic:
   time.sleep(0.001)
 
 ########################################################################
-DISPLAY = pi3d.Display.create(preview_mid_X, preview_mid_Y, w=preview_W, h=preview_H, layer=1) #, frames_per_second=max_fps)
-DISPLAY.set_background(0.0, 0.0, 0.0, 0.0)
-txtshader = pi3d.Shader("uv_flat")
-linshader = pi3d.Shader('mat_flat')
-CAMERA = pi3d.Camera(is_3d=False)
-
-#Use pi3d as the camera preview
-tex = pi3d.Texture(npa)
-sprite_display = pi3d.Sprite(w=tex.ix, h=tex.iy, z=2.0)
-sprite_display.set_draw_details(txtshader, [tex])
-font = pi3d.Font("fonts/FreeMono.ttf", font_size=18, color=(255, 255, 255, 255)) # blue green 1.0 alpha
-
-elapsed_ms = 0
-N = 100
-ms_total = 0
-ms_avg = int(ms_total / (N + 1))
-ms_str = "Detection " + "000" + " ms"
-ms_txt = pi3d.String(camera=CAMERA, is_3d=False, font=font, string=ms_str, x=0, y=preview_H/2 - 30, z=1.0)
-ms_txt.set_shader(txtshader)
-
-i = 0
-tm = time.time()
+fnt_sz = 18
+fnt = pygame.font.SysFont('Arial', fnt_sz)
+x1=x2=y1=y2=0
 last_tm = time.time()
-fps = "{:5.1f} fps".format(i / (tm - last_tm))
-frame_rate_set = True 
-fps_txt = pi3d.String(camera=CAMERA, is_3d=False, font=font, string=fps, x=0, y=preview_H/2 - 10, z=1.0)
-fps_txt.set_shader(txtshader)
+start_ms = time.time()
+elapsed_ms = time.time()
+i = 0
+results = None
+fps = "00.0 fps"
+N = 10
+ms = "00"
 
-lbl_font = pi3d.Font("fonts/FreeMono.ttf", font_size=14, color=(0, 255, 255, 255)) 
-label = "face"
-label_txt = pi3d.String(camera=CAMERA, is_3d=False, font=lbl_font, string=label, x=0, y=preview_H/2 - 50, z=1.0)
-label_txt.set_shader(txtshader)
-
-X_OFF = np.array([0, 0, -1, -1, 0, 0, 1, 1])
-Y_OFF = np.array([-1, -1, 0, 0, 1, 1, 0, 0])
-X_IX = np.array([0, 1, 1, 1, 1, 0, 0, 0])
-Y_IX = np.array([0, 0, 0, 1, 1, 1, 1, 0])
-verts = [[0.0, 0.0, 1.0] for i in range(8 * max_obj)] # need a vertex for each end of each side 
-bbox = pi3d.Lines(vertices=verts, material=(1.0,0.8,0.05), closed=False, strip=False, line_width=3) 
-bbox.set_shader(linshader)
-
-# Fetch key presses
-mykeys = pi3d.Keyboard()
-
-while DISPLAY.loop_running():
-  ms_total = ms_total + (elapsed_ms*1000)
-  i += 1
-  if i > N:
-    tm = time.time()
-    fps = "{:5.1f} fps".format(i / (tm - last_tm))
-    fps_txt.quick_change(fps)
-    i = 0
-    last_tm = tm
-    ms_avg = int(ms_total / (N + 1))
-    ms_str = "Detection " + str(ms_avg) + " ms"
-    ms_txt.quick_change(ms_str)
-    ms_total = 0
-    if frame_rate_set and ms_avg > 0:
-      max_cam = int(1000 / ms_avg)
-      print("Matching framerate to:" +  str(max_cam) + " fps")
-      camera.framerate = max_cam
-      frame_rate_set = False
-    
+while True:
   if new_pic:
-    tex.update_ndarray(npa)
     start_ms = time.time()
-    results = engine.DetectWithInputTensor(g_input, top_k=max_obj)
+    results = engine.DetectWithInputTensor(frame_buf_val, threshold=thresh, top_k=max_obj)
     elapsed_ms = time.time() - start_ms
+    #pygame.surfarray.blit_array(screen, img_arr)	
+    i += 1
     if results:
       num_obj = 0
       for obj in results:
         num_obj = num_obj + 1
-        buf = bbox.buf[0] # alias for brevity below
-        buf.array_buffer[:,:3] = 0.0;
-        for j, obj in enumerate(results):
-          coords = (obj.bounding_box - 0.5) * [[1.0, -1.0]] * mdl_dims # broadcasting will fix the arrays size differences
-          score = round(obj.score,2)
-          ix = 8 * j
-          buf.array_buffer[ix:(ix + 8), 0] = coords[X_IX, 0] + 2 * X_OFF
-          buf.array_buffer[ix:(ix + 8), 1] = coords[Y_IX, 1] + 2 * Y_OFF
-        buf.re_init(); # 
-        new_pic = False
-  sprite_display.draw()
-  bbox.draw()
-  fps_txt.draw()   
-  ms_txt.draw()
-  #label_txt.draw()
+      for obj in results:
+        bbox = obj.bounding_box.flatten().tolist()
+        label_id = int(round(obj.label_id,1))
+        class_label = "%s" % (labels[label_id])
+        fnt_class_label = fnt.render(class_label, True, (255,255,255))
+        fnt_class_label_width = fnt_class_label.get_rect().width
+        screen.blit(fnt_class_label,(x1, y1-fnt_sz))
+        score = round(obj.score,2)
+        x1 = round(bbox[0] * resized_x) 
+        y1 = round(bbox[1] * resized_y) 
+        x2 = round(bbox[2] * resized_x) 
+        y2 = round(bbox[3] * resized_y) 
+        rect_width = x2 - x1
+        rect_height = y2 - y1
+        class_score = "%.2f" % (score)
+        fnt_class_score = fnt.render(class_score, True, (0,255,255))
+        fnt_class_score_width = fnt_class_score.get_rect().width
+        screen.blit(fnt_class_score,(x2-fnt_class_score_width, y1-fnt_sz))
+        if i > N:
+          ms = "(%d%s%d) %s%.2fms" % (num_obj, "/", max_obj, "objects detected in ", elapsed_ms*1000)
+        fnt_ms = fnt.render(ms, True, (255,255,255))
+        fnt_ms_width = fnt_ms.get_rect().width
+        screen.blit(fnt_ms,((resized_x / 2 ) - (fnt_ms_width / 2), 0))
+        bbox_rect = pygame.draw.rect(screen, (0,255,0), (x1, y1, rect_width, rect_height), 4)
+    else:
+      if i > N:
+        ms = "%s %.2fms" % ("No objects detected in", elapsed_ms*1000)
+      fnt_ms = fnt.render(ms, True, (255,0,0))
+      fnt_ms_width = fnt_ms.get_rect().width
+      screen.blit(fnt_ms,((resized_x / 2 ) - (fnt_ms_width / 2), 0))
+    new_pic = False
 
-  k = mykeys.read()
-  if k >-1:
-    if k==27:
-      mykeys.close()
-      camera.close()
-      DISPLAY.destroy()
-      break
+    if i > N:
+      tm = time.time()
+      fps = "fps:{:5.1f} ".format(i / (tm - last_tm))
+      i = 0
+      last_tm = tm
+      print(fps + " FPS")
 
+    fps_thresh = fps + "    thresh:" + str(thresh)
+    fps_fnt = fnt.render(fps_thresh, True, (255,255,0))
+    fps_width = fps_fnt.get_rect().width
+    screen.blit(fps_fnt,((resized_x / 2) - (fps_width / 2), 20))
+
+    for event in pygame.event.get():
+      keys = pygame.key.get_pressed()
+      if(keys[pygame.K_ESCAPE] == 1):
+        pycam.stop()
+        pygame.display.quit()
+        sys.exit()
+      elif event.type == pygame.VIDEORESIZE:
+        screen = pygame.display.set_mode((event.w,event.h),pygame.RESIZABLE)
+
+    pygame.display.update()
+    
 # Shut down the processors in an orderly fashion
 while pool:
   done = True
