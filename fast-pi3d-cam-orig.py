@@ -94,7 +94,7 @@ def streams():
       processor.event.set()
     else:
       # When the pool is starved, wait a while for it to refill
-      time.sleep(0.01)
+      time.sleep(0.1)
 
 
 def start_capture(): # has to be in yet another thread as blocking
@@ -157,15 +157,6 @@ bbox.set_shader(linshader)
 mykeys = pi3d.Keyboard()
 
 while DISPLAY.loop_running():
-  k = mykeys.read()
-  if k >-1:
-    if k==27:
-      mykeys.close()
-      camera.close()
-      DISPLAY.destroy()
-      t.close()
-      break
-
   ms_total = ms_total + (elapsed_ms*1000)
   i += 1
   if i > N:
@@ -216,6 +207,15 @@ while DISPLAY.loop_running():
   ms_txt.draw()
   label_txt.draw()
 
+  k = mykeys.read()
+  if k >-1:
+  if k==27:
+    mykeys.close()
+    camera.close()
+    DISPLAY.destroy()
+    t.stop()
+    break
+
 # Shut down the processors in an orderly fashion
 while pool:
   done = True
@@ -223,3 +223,4 @@ while pool:
     processor = pool.pop()
   processor.terminated = True
   processor.join()
+  sys.exit()
