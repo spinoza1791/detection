@@ -82,6 +82,7 @@ preview_mid_Y = int(screen_H/2 - preview_H/2)
 max_obj = 15
 max_fps = 60
 max_cam = 33
+new_pic = False
 
 # Create a pool of image processors
 done = False
