@@ -83,6 +83,7 @@ max_obj = 15
 max_fps = 60
 max_cam = 33
 new_pic = False
+CAMW, CAMH = mdl_dims, mdl_dims
 
 # Create a pool of image processors
 done = False
@@ -99,7 +100,7 @@ class ImageProcessor(threading.Thread):
 
   def run(self):
     # This method runs in a separate thread
-    global frame_buf_val, screen, pycam, new_pic, CAMH, CAMW, NBYTES, resized_x, resized_Y
+    global frame_buf_val, screen, pycam, new_pic, resized_x, resized_y
     while not self.terminated:
       # Wait for an image to be written to the stream
       if self.event.wait(1):
