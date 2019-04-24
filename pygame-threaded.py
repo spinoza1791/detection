@@ -105,12 +105,6 @@ class ImageProcessor(threading.Thread):
       # Wait for an image to be written to the stream
       if self.event.wait(1):
         try:
-          screen = pygame.display.get_surface() #get the surface of the current active display
-          resized_x,resized_y = size = screen.get_width(), screen.get_height()
-          img = pycam.get_image()
-          img = pygame.transform.scale(img,(resized_x, resized_y))
-          #if img and video_off == False:
-          screen.blit(img, (0,0))
           detect_img = pygame.transform.scale(img,(mdl_dims,mdl_dims))
           img_arr = pygame.surfarray.pixels3d(detect_img)	
           img_arr = np.swapaxes(img_arr,0,1)
@@ -175,6 +169,12 @@ N = 10
 ms = "00"
 
 while True:
+  screen = pygame.display.get_surface() #get the surface of the current active display
+  resized_x,resized_y = size = screen.get_width(), screen.get_height()
+  img = pycam.get_image()
+  img = pygame.transform.scale(img,(resized_x, resized_y))
+  #if img and video_off == False:
+  screen.blit(img, (0,0))
   if new_pic:
     start_ms = time.time()
     results = engine.DetectWithInputTensor(frame_buf_val, threshold=thresh, top_k=max_obj)
