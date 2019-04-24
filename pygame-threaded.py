@@ -100,7 +100,7 @@ class ImageProcessor(threading.Thread):
 
   def run(self):
     # This method runs in a separate thread
-    global frame_buf_val, screen, pycam, new_pic, resized_x, resized_y
+    global img, mdl_dims, frame_buf_val, new_pic, frame_buf_val
     while not self.terminated:
       # Wait for an image to be written to the stream
       if self.event.wait(1):
@@ -132,21 +132,14 @@ def streams():
       # When the pool is starved, wait a while for it to refill
       time.sleep(0.001)
 
-
-def start_capture(): # has to be in yet another thread as blocking
-  global pygame, pycam, screen, resized_x, resized_y, mdl_dims
-  pygame.init()
-  pygame.camera.init()
-  screen = pygame.display.set_mode((cam_res_x,cam_res_y), pygame.RESIZABLE)
-  pygame.display.set_caption('Object Detection')
-  camlist = pygame.camera.list_cameras()
-  if camlist:
-      pycam = pygame.camera.Camera(camlist[0],(cam_res_x,cam_res_y))
-  else:
-    print("No camera found!")
-    exit
-  pycam.start() 
-  pygame.font.init()
+def start_capture(): 
+  global img
+  screen = pygame.display.get_surface() #get the surface of the current active display
+  resized_x,resized_y = screen.get_width(), screen.get_height()
+  img = pycam.get_image()
+  img = pygame.transform.scale(img,(resized_x, resized_y))
+  #if img and video_off == False:
+  screen.blit(img, (0,0))
 
 t = threading.Thread(target=start_capture)
 t.daemon = True
@@ -156,6 +149,18 @@ while not new_pic:
   time.sleep(0.001)
 
 ########################################################################
+pygame.init()
+pygame.camera.init()
+screen = pygame.display.set_mode((cam_res_x,cam_res_y), pygame.RESIZABLE)
+pygame.display.set_caption('Object Detection')
+camlist = pygame.camera.list_cameras()
+if camlist:
+    pycam = pygame.camera.Camera(camlist[0],(cam_res_x,cam_res_y))
+else:
+  print("No camera found!")
+  exit
+pycam.start() 
+pygame.font.init()
 fnt_sz = 18
 fnt = pygame.font.SysFont('Arial', fnt_sz)
 x1=x2=y1=y2=0
@@ -169,12 +174,6 @@ N = 10
 ms = "00"
 
 while True:
-  screen = pygame.display.get_surface() #get the surface of the current active display
-  resized_x,resized_y = size = screen.get_width(), screen.get_height()
-  img = pycam.get_image()
-  img = pygame.transform.scale(img,(resized_x, resized_y))
-  #if img and video_off == False:
-  screen.blit(img, (0,0))
   if new_pic:
     start_ms = time.time()
     results = engine.DetectWithInputTensor(frame_buf_val, threshold=thresh, top_k=max_obj)
