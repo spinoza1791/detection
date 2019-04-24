@@ -104,7 +104,7 @@ def start_capture(): # has to be in yet another thread as blocking
     #camera.start_preview(fullscreen=False, layer=0, window=(preview_mid_X, preview_mid_Y, preview_W, preview_H))
     camera.capture_sequence(streams(), format='rgb', use_video_port=True)
 
-t = threading.Thread(target=start_capture)
+t = threading.Thread(target=start_capture, args=(msg_queue, stop_event))
 t.daemon = True
 t.start()
 
@@ -161,7 +161,9 @@ while DISPLAY.loop_running():
   if k >-1:
     if k==27:
       mykeys.close()
+      camera.close()
       DISPLAY.destroy()
+      stop_event.set()
       break
 
   ms_total = ms_total + (elapsed_ms*1000)
