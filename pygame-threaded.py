@@ -7,8 +7,7 @@ import numpy as np
 import picamera
 import picamera.array
 import threading
-import time
-import io, sys
+import io, sys, os, time
 from math import cos, sin, radians
 import math
 import tkinter
