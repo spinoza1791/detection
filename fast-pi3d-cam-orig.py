@@ -193,7 +193,7 @@ while DISPLAY.loop_running():
           buf.array_buffer[ix:(ix + 8), 0] = coords[X_IX, 0] + 2 * X_OFF
           buf.array_buffer[ix:(ix + 8), 1] = coords[Y_IX, 1] + 2 * Y_OFF
         buf.re_init(); # 
-      new_pic = False
+     new_pic = False
   sprite_display.draw()
   bbox.draw()
   fps_txt.draw()   
