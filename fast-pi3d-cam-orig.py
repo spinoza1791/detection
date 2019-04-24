@@ -209,12 +209,12 @@ while DISPLAY.loop_running():
 
   k = mykeys.read()
   if k >-1:
-  if k==27:
-    mykeys.close()
-    camera.close()
-    DISPLAY.destroy()
-    t.stop()
-    break
+    if k==27:
+      mykeys.close()
+      camera.close()
+      DISPLAY.destroy()
+      t.stop()
+      break
 
 # Shut down the processors in an orderly fashion
 while pool:
