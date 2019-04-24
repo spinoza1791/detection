@@ -213,7 +213,6 @@ while DISPLAY.loop_running():
       mykeys.close()
       camera.close()
       DISPLAY.destroy()
-      t.stop()
       break
 
 # Shut down the processors in an orderly fashion
