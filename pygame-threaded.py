@@ -238,7 +238,7 @@ while True:
       elif event.type == pygame.VIDEORESIZE:
         screen = pygame.display.set_mode((event.w,event.h),pygame.RESIZABLE)
 
-    pygame.display.update()
+  pygame.display.update()
     
 # Shut down the processors in an orderly fashion
 while pool:
