@@ -94,7 +94,7 @@ def streams():
       processor.event.set()
     else:
       # When the pool is starved, wait a while for it to refill
-      time.sleep(0.1)
+      time.sleep(0.001)
 
 
 def start_capture(): # has to be in yet another thread as blocking
@@ -109,7 +109,7 @@ t.daemon = True
 t.start()
 
 while not new_pic:
-  time.sleep(0.1)
+  time.sleep(0.001)
 
 ########################################################################
 DISPLAY = pi3d.Display.create(preview_mid_X, preview_mid_Y, w=preview_W, h=preview_H, layer=1) #, frames_per_second=max_fps)
