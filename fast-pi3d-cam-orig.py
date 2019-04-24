@@ -104,12 +104,12 @@ def start_capture(): # has to be in yet another thread as blocking
     #camera.start_preview(fullscreen=False, layer=0, window=(preview_mid_X, preview_mid_Y, preview_W, preview_H))
     camera.capture_sequence(streams(), format='rgb', use_video_port=True)
 
-t = threading.Thread(target=start_capture, args=(msg_queue, stop_event))
+t = threading.Thread(target=start_capture)
 t.daemon = True
 t.start()
 
 while not new_pic:
-  time.sleep(0.01)
+  time.sleep(0.1)
 
 ########################################################################
 DISPLAY = pi3d.Display.create(preview_mid_X, preview_mid_Y, w=preview_W, h=preview_H, layer=1) #, frames_per_second=max_fps)
@@ -163,7 +163,7 @@ while DISPLAY.loop_running():
       mykeys.close()
       camera.close()
       DISPLAY.destroy()
-      stop_event.set()
+      t.close()
       break
 
   ms_total = ms_total + (elapsed_ms*1000)
