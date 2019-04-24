@@ -7,7 +7,7 @@ import picamera
 import picamera.array
 import threading
 import time
-import io
+import io, sys
 from math import cos, sin, radians
 import math
 import tkinter
@@ -183,13 +183,6 @@ while DISPLAY.loop_running():
     if results:
       num_obj = 0
       for obj in results:
-        bbox_list = obj.bounding_box.flatten().tolist()
-        x1 = round(bbox_list[0] * mdl_dims / 2) 
-        y1 = round(bbox_list[1] * mdl_dims / 2) 
-        x2 = round(bbox_list[2] * mdl_dims) 
-        y2 = round(bbox_list[3] * mdl_dims) 
-        label_txt = pi3d.String(camera=CAMERA, is_3d=False, font=lbl_font, string=label, x=x1, y=y1, z=1.0)
-        label_txt.quick_change(label)
         num_obj = num_obj + 1
         buf = bbox.buf[0] # alias for brevity below
         buf.array_buffer[:,:3] = 0.0;
@@ -205,7 +198,7 @@ while DISPLAY.loop_running():
   bbox.draw()
   fps_txt.draw()   
   ms_txt.draw()
-  label_txt.draw()
+  #label_txt.draw()
 
   k = mykeys.read()
   if k >-1:
