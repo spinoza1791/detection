@@ -132,7 +132,7 @@ def streams():
       time.sleep(0.001)
 
 def start_capture(): 
-  global img, pycam, resized_x, resized_y, cam_res_x, cam_res_y
+  global pycam, resized_x, resized_y, cam_res_x, cam_res_y
   pygame.init()
   pygame.camera.init()
   screen = pygame.display.set_mode((cam_res_x,cam_res_y), pygame.RESIZABLE)
@@ -167,6 +167,7 @@ N = 10
 ms = "00"
 
 while True:
+  print("started the loop of draemes")
   screen = pygame.display.get_surface() #get the surface of the current active display
   resized_x,resized_y = mdl_dims, mdl_dims #screen.get_width(), screen.get_height()
   img = pycam.get_image()
