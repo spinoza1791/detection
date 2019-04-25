@@ -145,12 +145,6 @@ def start_capture():
     print("No camera found!")
     exit
   pycam.start() 
-  screen = pygame.display.get_surface() #get the surface of the current active display
-  resized_x,resized_y = mdl_dims, mdl_dims #screen.get_width(), screen.get_height()
-  img = pycam.get_image()
-  img = pygame.transform.scale(img,(resized_x,resized_y))
-  screen.blit(img, (0,0))
-  pygame.display.update()
 
 t = threading.Thread(target=start_capture)
 t.daemon = True
@@ -174,6 +168,11 @@ N = 10
 ms = "00"
 
 while True:
+  screen = pygame.display.get_surface() #get the surface of the current active display
+  resized_x,resized_y = mdl_dims, mdl_dims #screen.get_width(), screen.get_height()
+  img = pycam.get_image()
+  img = pygame.transform.scale(img,(resized_x,resized_y))
+  screen.blit(img, (0,0))
   if new_pic:
     start_ms = time.time()
     results = engine.DetectWithInputTensor(frame_buf_val, threshold=thresh, top_k=max_obj)
