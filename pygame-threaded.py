@@ -133,7 +133,7 @@ def streams():
       time.sleep(0.001)
 
 def start_capture(): 
-  global img, resized_x, resized_y
+  global img, pycam, resized_x, resized_y
   img = pycam.get_image()
   if resized_x and resized_y:
     img = pygame.transform.scale(img,(resized_x, resized_y))
