@@ -83,7 +83,6 @@ max_obj = 15
 max_fps = 60
 max_cam = 33
 new_pic = False
-CAMW, CAMH = mdl_dims, mdl_dims
 
 # Create a pool of image processors
 done = False
@@ -133,7 +132,7 @@ def streams():
       time.sleep(0.001)
 
 def start_capture(): 
-  global img, pycam, resized_x, resized_y
+  global img, pycam, resized_x, resized_y, cam_res_x, cam_res_y
   pygame.init()
   pygame.camera.init()
   screen = pygame.display.set_mode((cam_res_x,cam_res_y), pygame.RESIZABLE)
