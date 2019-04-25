@@ -105,12 +105,6 @@ class ImageProcessor(threading.Thread):
       # Wait for an image to be written to the stream
       if self.event.wait(1):
         try:
-          screen = pygame.display.get_surface() #get the surface of the current active display
-          resized_x,resized_y = mdl_dims #screen.get_width(), screen.get_height()
-          img = pycam.get_image()
-          img = pygame.transform.scale(img,(resized_x,resized_y))
-          screen.blit(img, (0,0))
-          pygame.display.update()
           detect_img = pygame.transform.scale(img,(mdl_dims,mdl_dims))
           img_arr = pygame.surfarray.pixels3d(detect_img)	
           img_arr = np.swapaxes(img_arr,0,1)
@@ -140,6 +134,23 @@ def streams():
 
 def start_capture(): 
   global img, pycam, resized_x, resized_y
+  pygame.init()
+  pygame.camera.init()
+  screen = pygame.display.set_mode((cam_res_x,cam_res_y), pygame.RESIZABLE)
+  pygame.display.set_caption('Object Detection')
+  camlist = pygame.camera.list_cameras()
+  if camlist:
+      pycam = pygame.camera.Camera(camlist[0],(cam_res_x,cam_res_y))
+  else:
+    print("No camera found!")
+    exit
+  pycam.start() 
+  screen = pygame.display.get_surface() #get the surface of the current active display
+  resized_x,resized_y = mdl_dims #screen.get_width(), screen.get_height()
+  img = pycam.get_image()
+  img = pygame.transform.scale(img,(resized_x,resized_y))
+  screen.blit(img, (0,0))
+  pygame.display.update()
 
 t = threading.Thread(target=start_capture)
 t.daemon = True
@@ -149,17 +160,6 @@ while not new_pic:
   time.sleep(0.001)
 
 ########################################################################
-pygame.init()
-pygame.camera.init()
-screen = pygame.display.set_mode((cam_res_x,cam_res_y), pygame.RESIZABLE)
-pygame.display.set_caption('Object Detection')
-camlist = pygame.camera.list_cameras()
-if camlist:
-    pycam = pygame.camera.Camera(camlist[0],(cam_res_x,cam_res_y))
-else:
-  print("No camera found!")
-  exit
-pycam.start() 
 pygame.font.init()
 fnt_sz = 18
 fnt = pygame.font.SysFont('Arial', fnt_sz)
