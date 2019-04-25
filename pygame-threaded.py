@@ -134,6 +134,17 @@ def streams():
 
 def start_capture(): 
   global img, pycam, resized_x, resized_y
+  pygame.init()
+  pygame.camera.init()
+  screen = pygame.display.set_mode((cam_res_x,cam_res_y), pygame.RESIZABLE)
+  pygame.display.set_caption('Object Detection')
+  camlist = pygame.camera.list_cameras()
+  if camlist:
+      pycam = pygame.camera.Camera(camlist[0],(cam_res_x,cam_res_y))
+  else:
+    print("No camera found!")
+    exit
+  pycam.start() 
   img = pycam.get_image()
   if resized_x and resized_y:
     img = pygame.transform.scale(img,(resized_x, resized_y))
@@ -147,17 +158,6 @@ while not new_pic:
   time.sleep(0.001)
 
 ########################################################################
-pygame.init()
-pygame.camera.init()
-screen = pygame.display.set_mode((cam_res_x,cam_res_y), pygame.RESIZABLE)
-pygame.display.set_caption('Object Detection')
-camlist = pygame.camera.list_cameras()
-if camlist:
-    pycam = pygame.camera.Camera(camlist[0],(cam_res_x,cam_res_y))
-else:
-  print("No camera found!")
-  exit
-pycam.start() 
 pygame.font.init()
 fnt_sz = 18
 fnt = pygame.font.SysFont('Arial', fnt_sz)
