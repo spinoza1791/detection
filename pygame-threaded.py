@@ -133,13 +133,11 @@ def streams():
       time.sleep(0.001)
 
 def start_capture(): 
-  global img
-  screen = pygame.display.get_surface() #get the surface of the current active display
-  resized_x,resized_y = screen.get_width(), screen.get_height()
+  global img, resized_x, resized_y
   img = pycam.get_image()
-  img = pygame.transform.scale(img,(resized_x, resized_y))
-  #if img and video_off == False:
-  screen.blit(img, (0,0))
+  if resized_x and resized_y:
+    img = pygame.transform.scale(img,(resized_x, resized_y))
+    screen.blit(img, (0,0))
 
 t = threading.Thread(target=start_capture)
 t.daemon = True
@@ -174,6 +172,8 @@ N = 10
 ms = "00"
 
 while True:
+  screen = pygame.display.get_surface() #get the surface of the current active display
+  resized_x, resized_y = screen.get_width(), screen.get_height()
   if new_pic:
     start_ms = time.time()
     results = engine.DetectWithInputTensor(frame_buf_val, threshold=thresh, top_k=max_obj)
