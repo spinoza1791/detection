@@ -114,7 +114,7 @@ def main():
 	display_screen_thread.start()
 	
 	while True:
-		#img = pycam.get_image()
+		img = pycam.get_image()
 		#img = pygame.transform.scale(img,(resized_x, resized_y))	
 		#screen.blit(img, (0,0))					
 		detect_img = pygame.transform.scale(img,(mdl_dims,mdl_dims))
