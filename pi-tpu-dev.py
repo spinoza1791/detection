@@ -99,7 +99,7 @@ def main():
 	resized_x,resized_y = size = screen.get_width(), screen.get_height()
 	
 	def display_screen(pycam):
-		global mdl_dims
+		global mdl_dims, screen, img
 		while True:
 			yield (
 			screen = pygame.display.get_surface() 
