@@ -9,6 +9,7 @@ import pygame.camera
 import numpy as np
 import edgetpu.detection.engine
 import os
+import threading
 
 os.environ['SDL_VIDEO_CENTERED'] = '1'
 
@@ -26,8 +27,6 @@ def main():
 	  '--thresh', help='Threshold confidence [0.1-1.0], default=0.3', default=0.3, required=False)
 	parser.add_argument(
 	  '--video_off', help='Video display off, for increased FPS', action='store_true', required=False)
-	parser.add_argument(
-	  '--gray', help='Grayscale detection for increased FPS', action='store_true', required=False)
 	parser.add_argument(
 	  '--cam_res', help='Set camera resolution, examples: 96, 128, 256, 352, 384, 480, 640, 1920', default=352, required=False)
 	if len(sys.argv[0:])==0:
@@ -64,10 +63,6 @@ def main():
 	if args.video_off :
 		video_off = True
 		
-	gray = False
-	if args.gray :
-		gray = True
-		
 	if args.cam_res:
 		cam_res_x=cam_res_y= int(args.cam_res)
 	else:		
@@ -91,17 +86,6 @@ def main():
 	fnt_sz = 18
 	fnt = pygame.font.SysFont('Arial', fnt_sz)
 	
-	def grayscale(img):
-		arr = pygame.surfarray.pixels3d(img)
-		#arr = arr.dot([0.298, 0.587, 0.114])[:,:,None].repeat(3,axis=2)
-		avgs = [[(r*0.298 + g*0.587 + b*0.114) for (r,g,b) in col] for col in arr]
-		arr = np.array([[[avg,avg,avg] for avg in col] for col in avgs])
-		return arr
-
-	def fullcolor(img):
-		arr = pygame.surfarray.pixels3d(img)
-		return arr
-	
 	x1=x2=y1=y2=0
 	last_tm = time.time()
 	start_ms = time.time()
@@ -113,28 +97,28 @@ def main():
 	ms = "00"
 	screen = pygame.display.get_surface() #get the surface of the current active display
 	resized_x,resized_y = size = screen.get_width(), screen.get_height()
-	img = pycam.get_image()
-	img = pygame.transform.scale(img,(mdl_dims,mdl_dims))
+	
+	def display_screen(pycam):
+		global mdl_dims
+		while True:
+			yield (
+			screen = pygame.display.get_surface() 
+			resized_x,resized_y = size = screen.get_width(), screen.get_height()
+			img = pycam.get_image()
+			img = pygame.transform.scale(img,(mdl_dims,mdl_dims))
+			screen.blit(img, (0,0))
+			)
+	
+	display_screen_thread = threading.Thread(target=display_screen, args=[pycam])
+	display_screen_thread.daemon = True
+	display_screen_thread.start()
 	
 	while True:
-		screen = pygame.display.get_surface() #get the surface of the current active display
-		resized_x,resized_y = size = screen.get_width(), screen.get_height()
-		img = pycam.get_image()
-		img = pygame.transform.scale(img,(resized_x, resized_y))
-		#if img and video_off == False:
-		screen.blit(img, (0,0))
-					
+		#img = pycam.get_image()
+		#img = pygame.transform.scale(img,(resized_x, resized_y))	
+		#screen.blit(img, (0,0))					
 		detect_img = pygame.transform.scale(img,(mdl_dims,mdl_dims))
-		img_arr = pygame.surfarray.pixels3d(detect_img)
-		#if gray:
-		#	img_arr = grayscale(img)
-			#print(img_arr.shape)
-			#print(img_arr.size)
-		#else:
-		#	img_arr = fullcolor(img)
-			#print(img_arr.shape)
-			#print(img_arr.size)
-			
+		img_arr = pygame.surfarray.pixels3d(detect_img)			
 		img_arr = np.swapaxes(img_arr,0,1)
 		img_arr = np.ascontiguousarray(img_arr)
 		frame = io.BytesIO(img_arr)
