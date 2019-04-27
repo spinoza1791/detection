@@ -101,13 +101,13 @@ def main():
 	def display_screen(pycam):
 		global mdl_dims, screen, img
 		while True:
-			yield (
-			screen = pygame.display.get_surface() 
+			#yield (
+			screen = pygame.display.get_surface()
 			resized_x,resized_y = size = screen.get_width(), screen.get_height()
 			img = pycam.get_image()
 			img = pygame.transform.scale(img,(mdl_dims,mdl_dims))
 			screen.blit(img, (0,0))
-			)
+			#)
 	
 	display_screen_thread = threading.Thread(target=display_screen, args=[pycam])
 	display_screen_thread.daemon = True
