@@ -68,7 +68,6 @@ def main():
 	else:		
 		cam_res_x=cam_res_y= 352		
 
-	engine = edgetpu.detection.engine.DetectionEngine(args.model)
 	img = None
 	
 	class PyCam:
@@ -113,7 +112,9 @@ def main():
 			self.stopped = True
 	
 	class Detection:
-		def __init__(self):
+		def __init__(self, *args):
+        		self.args = args
+			self.engine = edgetpu.detection.engine.DetectionEngine(args)
 			self.results = None
 
 		def start(self):
@@ -129,9 +130,9 @@ def main():
 				self.img_arr = np.ascontiguousarray(self.img_arr)
 				self.frame_bytes = io.BytesIO(self.img_arr)
 				self.frame_buf_val = np.frombuffer(self.frame_bytes.getvalue(), dtype=np.uint8)
-				#print(frame_buf_val)
+				print(self.frame_buf_val)
 				#start_ms = time.time()
-				self.results = engine.DetectWithInputTensor(self.frame_buf_val, threshold=0.6, top_k=10)
+				self.results = self.engine.DetectWithInputTensor(self.frame_buf_val, threshold=0.6, top_k=10)
 				#elapsed_ms = time.time() - start_ms
 			if self.stopped:
 				return
@@ -145,7 +146,7 @@ def main():
 			self.stopped = True
 			
 	pycam_thread = PyCam().start()
-	detection_thread = Detection().start()
+	detection_thread = Detection(args.model).start()
 	
 	pygame.font.init()
 	fnt_sz = 18
