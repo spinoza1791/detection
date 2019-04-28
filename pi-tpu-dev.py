@@ -100,8 +100,9 @@ def main():
 			while True:
 				c.acquire()
 				self.frame = self.pycam.get_image()				
-				img = self.frame
-				c.notify_all()
+				if self.frame:
+					img = self.frame
+					c.notify_all()
 				#frame = pygame.transform.scale(frame,(resized_x, resized_y))	
 				self.screen.blit(self.frame, (0,0))
 				else:
