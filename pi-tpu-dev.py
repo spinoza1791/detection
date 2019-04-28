@@ -97,9 +97,9 @@ def main():
 			screen.blit(img, (0,0))
 			#)
 	
-	display_screen_thread = threading.Thread(target=display_screen, args=[mdl_dims, cam_res_x, cam_res_y])
-	display_screen_thread.daemon = True
-	display_screen_thread.start()
+	screen_thread = threading.Thread(target=display_thread, args=[mdl_dims, cam_res_x, cam_res_y])
+	screen_thread.daemon = True
+	screen_thread.start()
 
 	x1=x2=y1=y2=0
 	last_tm = time.time()
@@ -183,7 +183,6 @@ def main():
 			if(keys[pygame.K_ESCAPE] == 1):
 				pycam.stop()
 				pygame.display.quit()
-				display_screen_thread.exit()
 				sys.exit()
 			elif event.type == pygame.VIDEORESIZE:
 				screen = pygame.display.set_mode((event.w,event.h),pygame.RESIZABLE)
