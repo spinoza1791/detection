@@ -114,7 +114,6 @@ def main():
 			# indicate that the thread should be stopped
 			self.stopped = True
 	
-	pycam_thread.daemon = True
 	pycam_thread = PiVideoStream().start()
 
 	pygame.font.init()
