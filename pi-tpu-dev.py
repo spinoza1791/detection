@@ -178,7 +178,7 @@ def main():
 			#results = engine.DetectWithInputTensor(frame_buf_val, threshold=thresh, top_k=max_obj)
 			#elapsed_ms = time.time() - start_ms
 			#pygame.surfarray.blit_array(screen, img_arr)	
-			i += 1
+		i += 1
 		if results:
 			num_obj = 0
 			for obj in results:
