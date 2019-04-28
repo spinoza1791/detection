@@ -72,7 +72,7 @@ def main():
 	engine = edgetpu.detection.engine.DetectionEngine(args.model)
 	
 	def display_thread(mdl_dims, cam_res_x, cam_res_y):
-		global pycam
+		global pycam, screen, img
 		pygame.init()
 		pygame.camera.init()
 		screen = pygame.display.set_mode((cam_res_x,cam_res_y), pygame.RESIZABLE)
