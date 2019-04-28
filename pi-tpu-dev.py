@@ -99,16 +99,16 @@ def main():
 		def update(self):
 			global img
 			while True:
-				c.acquire()
+				#c.acquire()
 				self.frame = self.pycam.get_image()				
 				if self.frame:
 					img = self.frame
-					c.notify_all()
+					#c.notify_all()
 					#frame = pygame.transform.scale(frame,(resized_x, resized_y))	
 					self.screen.blit(self.frame, (0,0))
 				#else:
 				#	c.wait()
-				c.release()
+				#c.release()
 				if self.stopped:
 					self.pycam.stop()
 					pygame.display.quit()
@@ -131,7 +131,7 @@ def main():
 		def update(self):
 			global img
 			while True:
-				c.acquire()
+				#c.acquire()
 				if img:
 					print("img is not None")
 					self.detect_img = pygame.transform.scale(img,(320,320))
@@ -144,10 +144,10 @@ def main():
 					#start_ms = time.time()
 					self.results = self.engine.DetectWithInputTensor(self.frame_buf_val, threshold=0.6, top_k=10)
 					#elapsed_ms = time.time() - start_ms
-					c.notify_all()
+					#c.notify_all()
 				#else:
 				#	c.wait()
-				c.release()
+				#c.release()
 			if self.stopped:
 				return
 		def read(self):
