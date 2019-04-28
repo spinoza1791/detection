@@ -76,11 +76,11 @@ def main():
 		def __init__(self, resolution=(320, 320), framerate=32):
 			pygame.init()
 			pygame.camera.init()
-			self.screen = self.pygame.display.set_mode((resolution), pygame.RESIZABLE)
+			self.screen = pygame.display.set_mode((resolution), pygame.RESIZABLE)
 			pygame.display.set_caption('Object Detection')
 			self.camlist = pygame.camera.list_cameras()
 			if self.camlist:
-			    self.pycam = self.pygame.camera.Camera(self.camlist[0],(resolution))
+			    self.pycam = pygame.camera.Camera(self.camlist[0],(resolution))
 			else:
 				print("No camera found!")
 				exit
