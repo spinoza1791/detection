@@ -123,13 +123,13 @@ def main():
 	pygame.camera.init()
 	screen = pygame.display.set_mode((cam_res_x,cam_res_y), pygame.RESIZABLE)
 	pygame.display.set_caption('Object Detection')
-	camlist = pygame.camera.list_cameras()
-	if camlist:
-	    pycam = pygame.camera.Camera(camlist[0],(cam_res_x,cam_res_y))
-	else:
-		print("No camera found!")
-		exit
-	pycam.start() 
+	#camlist = pygame.camera.list_cameras()
+	#if camlist:
+	#    pycam = pygame.camera.Camera(camlist[0],(cam_res_x,cam_res_y))
+	#else:
+#		print("No camera found!")
+	#	exit
+	#pycam.start() 
 	pygame.font.init()
 	fnt_sz = 18
 	fnt = pygame.font.SysFont('Arial', fnt_sz)
