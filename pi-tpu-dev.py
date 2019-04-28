@@ -101,6 +101,7 @@ def main():
 				self.frame = self.pycam.get_image()
 				#frame = pygame.transform.scale(frame,(resized_x, resized_y))	
 				self.screen.blit(self.frame, (0,0))
+				pygame.display.update()
 				if self.stopped:
 					self.pycam.stop()
 					pygame.display.quit()
@@ -113,6 +114,7 @@ def main():
 			# indicate that the thread should be stopped
 			self.stopped = True
 	
+	pycam_thread.daemon = True
 	pycam_thread = PiVideoStream().start()
 
 	pygame.font.init()
@@ -206,7 +208,7 @@ def main():
 			elif event.type == pygame.VIDEORESIZE:
 				screen = pygame.display.set_mode((event.w,event.h),pygame.RESIZABLE)
 		
-		pygame.display.update()
+		#pygame.display.update()
 				
 
 if __name__ == '__main__':
