@@ -106,8 +106,8 @@ def main():
 					c.notify_all()
 					#frame = pygame.transform.scale(frame,(resized_x, resized_y))	
 					self.screen.blit(self.frame, (0,0))
-				else:
-					c.wait()
+				#else:
+				#	c.wait()
 				c.release()
 				if self.stopped:
 					self.pycam.stop()
@@ -145,8 +145,8 @@ def main():
 					self.results = self.engine.DetectWithInputTensor(self.frame_buf_val, threshold=0.6, top_k=10)
 					#elapsed_ms = time.time() - start_ms
 					c.notify_all()
-				else:
-					c.wait()
+				#else:
+				#	c.wait()
 				c.release()
 			if self.stopped:
 				return
