@@ -70,7 +70,7 @@ def main():
 		cam_res_x=cam_res_y= 352
 		
 	c = threading.Condition()
-	img = None
+	global img = None
 	
 	class PyCam:
 		def __init__(self, resolution=(320, 320)):
@@ -180,6 +180,7 @@ def main():
 		#img = pygame.transform.scale(img,(resized_x, resized_y))	
 		#screen.blit(img, (0,0))
 		while img:
+			print("got image")
 		#results = detection_thread.read()
 			detect_img = pygame.transform.scale(img,(mdl_dims,mdl_dims))
 			img_arr = pygame.surfarray.pixels3d(detect_img)			
