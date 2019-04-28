@@ -134,7 +134,7 @@ def main():
 		#img = pycam.get_image()
 		#img = pygame.transform.scale(img,(resized_x, resized_y))	
 		#screen.blit(img, (0,0))
-		if !img:
+		if img:
 			detect_img = pygame.transform.scale(img,(mdl_dims,mdl_dims))
 			img_arr = pygame.surfarray.pixels3d(detect_img)			
 			img_arr = np.swapaxes(img_arr,0,1)
@@ -147,7 +147,7 @@ def main():
 			elapsed_ms = time.time() - start_ms
 			#pygame.surfarray.blit_array(screen, img_arr)	
 			i += 1
-		if !results:
+		if results:
 			num_obj = 0
 			for obj in results:
 				num_obj = num_obj + 1
@@ -168,20 +168,20 @@ def main():
 				class_score = "%.2f" % (score)
 				fnt_class_score = fnt.render(class_score, True, (0,255,255))
 				fnt_class_score_width = fnt_class_score.get_rect().width
-				screen.blit(fnt_class_score,(x2-fnt_class_score_width, y1-fnt_sz))
+				#screen.blit(fnt_class_score,(x2-fnt_class_score_width, y1-fnt_sz))
 				if i > N:
 					ms = "(%d%s%d) %s%.2fms" % (num_obj, "/", max_obj, "objects detected in ", elapsed_ms*1000)
 				fnt_ms = fnt.render(ms, True, (255,255,255))
 				fnt_ms_width = fnt_ms.get_rect().width
-				screen.blit(fnt_ms,((resized_x / 2 ) - (fnt_ms_width / 2), 0))
-				bbox_rect = pygame.draw.rect(screen, (0,255,0), (x1, y1, rect_width, rect_height), 4)
+				#screen.blit(fnt_ms,((resized_x / 2 ) - (fnt_ms_width / 2), 0))
+				#bbox_rect = pygame.draw.rect(screen, (0,255,0), (x1, y1, rect_width, rect_height), 4)
 
 		else:
 			if i > N:
 				ms = "%s %.2fms" % ("No objects detected in", elapsed_ms*1000)
 			fnt_ms = fnt.render(ms, True, (255,0,0))
 			fnt_ms_width = fnt_ms.get_rect().width
-			screen.blit(fnt_ms,((resized_x / 2 ) - (fnt_ms_width / 2), 0))
+			#screen.blit(fnt_ms,((resized_x / 2 ) - (fnt_ms_width / 2), 0))
 				
 		if i > N:
 			tm = time.time()
