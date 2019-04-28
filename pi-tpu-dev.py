@@ -76,6 +76,7 @@ def main():
 	
 	class PyCam:
 		def __init__(self, resolution=(320, 320)):
+			global img
 			pygame.init()
 			pygame.camera.init()
 			self.screen = pygame.display.set_mode((320, 320), pygame.RESIZABLE)
