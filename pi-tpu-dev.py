@@ -84,7 +84,7 @@ def main():
 			else:
 				print("No camera found!")
 				exit
-			self.pycam.start() 
+			pycam.start() 
 
 			# initialize the frame and the variable used to indicate
 			# if the thread should be stopped
