@@ -70,22 +70,37 @@ def main():
 		
 
 	engine = edgetpu.detection.engine.DetectionEngine(args.model)
-
-	pygame.init()
-	pygame.camera.init()
-	screen = pygame.display.set_mode((cam_res_x,cam_res_y), pygame.RESIZABLE)
-	pygame.display.set_caption('Object Detection')
-	camlist = pygame.camera.list_cameras()
-	if camlist:
-	    pycam = pygame.camera.Camera(camlist[0],(cam_res_x,cam_res_y))
-	else:
-		print("No camera found!")
-		exit
-	pycam.start() 
-	pygame.font.init()
-	fnt_sz = 18
-	fnt = pygame.font.SysFont('Arial', fnt_sz)
 	
+	def display_thread(mdl_dims, cam_res_x, cam_res_y):
+		global pycam
+		pygame.init()
+		pygame.camera.init()
+		screen = pygame.display.set_mode((cam_res_x,cam_res_y), pygame.RESIZABLE)
+		pygame.display.set_caption('Object Detection')
+		camlist = pygame.camera.list_cameras()
+		if camlist:
+		    pycam = pygame.camera.Camera(camlist[0],(cam_res_x,cam_res_y))
+		else:
+			print("No camera found!")
+			exit
+		pycam.start() 
+		pygame.font.init()
+		fnt_sz = 18
+		fnt = pygame.font.SysFont('Arial', fnt_sz)
+		while True:
+			#yield (
+			print("thread running")
+			#screen = pygame.display.get_surface()
+			#resized_x,resized_y = size = screen.get_width(), screen.get_height()
+			img = pycam.get_image()
+			img = pygame.transform.scale(img,(mdl_dims,mdl_dims))
+			screen.blit(img, (0,0))
+			#)
+	
+	display_screen_thread = threading.Thread(target=display_screen, args=[mdl_dims, cam_res_x, cam_res_y])
+	display_screen_thread.daemon = True
+	display_screen_thread.start()
+
 	x1=x2=y1=y2=0
 	last_tm = time.time()
 	start_ms = time.time()
@@ -98,22 +113,6 @@ def main():
 	screen = pygame.display.get_surface() #get the surface of the current active display
 	resized_x,resized_y = size = screen.get_width(), screen.get_height()
 	img = pycam.get_image()
-	
-	def display_screen(pycam):
-		global mdl_dims, screen, img
-		while True:
-			#yield (
-			print("thread running")
-			screen = pygame.display.get_surface()
-			resized_x,resized_y = size = screen.get_width(), screen.get_height()
-			img = pycam.get_image()
-			img = pygame.transform.scale(img,(mdl_dims,mdl_dims))
-			screen.blit(img, (0,0))
-			#)
-	
-	display_screen_thread = threading.Thread(target=display_screen, args=[pycam])
-	display_screen_thread.daemon = True
-	display_screen_thread.start()
 	
 	while True:
 		img = pycam.get_image()
