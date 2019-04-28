@@ -95,15 +95,14 @@ def main():
 			return self
 		
 		def update(self):
-			global img
 			while True:
 				#c.acquire()
 				self.frame = self.pycam.get_image()				
-				if self.frame:
-					img = self.frame
+				#if self.frame:
+					#img = self.frame
 					#c.notify_all()
 					#frame = pygame.transform.scale(frame,(resized_x, resized_y))	
-					self.screen.blit(self.frame, (0,0))
+				self.screen.blit(self.frame, (0,0))
 				#else:
 				#	c.wait()
 				#c.release()
@@ -181,8 +180,7 @@ def main():
 		#img = pycam.get_image()
 		#img = pygame.transform.scale(img,(resized_x, resized_y))	
 		#screen.blit(img, (0,0))
-		while img:
-			print("got image")
+		if img:
 		#results = detection_thread.read()
 			detect_img = pygame.transform.scale(img,(mdl_dims,mdl_dims))
 			img_arr = pygame.surfarray.pixels3d(detect_img)			
