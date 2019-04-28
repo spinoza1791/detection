@@ -87,7 +87,8 @@ def main():
 			# if the thread should be stopped
 			self.frame = None
 			self.stopped = False
-				def start(self):
+			
+		def start(self):
 			# start the thread to read frames from the video stream
 			Thread(target=self.update, args=()).start()
 			return self
