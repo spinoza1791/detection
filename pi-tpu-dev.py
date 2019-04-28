@@ -74,14 +74,17 @@ def main():
 	
 	class PiVideoStream:
 		def __init__(self, resolution=(320, 320), framerate=32):
-			# initialize the camera and stream
-			self.camera = PiCamera()
-			self.camera.resolution = resolution
-			self.camera.framerate = framerate
-			self.rawCapture = PiRGBArray(self.camera, size=resolution)
-			self.camera.start_preview(fullscreen=False, layer=0, window=(960, 540, 320, 320))
-			self.stream = self.camera.capture_continuous(self.rawCapture,
-				format="bgr", use_video_port=True)
+			self.pygame.init()
+			self.pygame.camera.init()
+			self.screen = self.pygame.display.set_mode((resolution), self.pygame.RESIZABLE)
+			self.pygame.display.set_caption('Object Detection')
+			self.camlist = self.pygame.camera.list_cameras()
+			if self.camlist:
+			    self.pycam = self.pygame.camera.Camera(self.camlist[0],(resolution))
+			else:
+				print("No camera found!")
+				exit
+			self.pycam.start() 
 
 			# initialize the frame and the variable used to indicate
 			# if the thread should be stopped
@@ -94,20 +97,13 @@ def main():
 			return self
 
 		def update(self):
-			# keep looping infinitely until the thread is stopped
-			for f in self.stream:
-				# grab the frame from the stream and clear the stream in
-				# preparation for the next frame
-				self.frame = f.array
-				self.rawCapture.truncate(0)
-
-				# if the thread indicator variable is set, stop the thread
-				# and resource camera resources
-				if self.stopped:
-					self.stream.close()
-					self.rawCapture.close()
-					self.camera.close()
-					return
+			frame = pycam.get_image()
+			frame = pygame.transform.scale(frame,(resized_x, resized_y))	
+			screen.blit(frame, (0,0))
+			if self.stopped:
+				self.pycam.stop()
+				self.pygame.display.quit()
+				return
 		def read(self):
 			# return the frame most recently read
 			return self.frame
@@ -116,21 +112,8 @@ def main():
 			# indicate that the thread should be stopped
 			self.stopped = True
 	
-	cap_stream = PiVideoStream().start()
-	
-	time.sleep(2.0)
+	pycam_thread = PiVideoStream().start()
 
-	pygame.init()
-	pygame.camera.init()
-	screen = pygame.display.set_mode((cam_res_x,cam_res_y), pygame.RESIZABLE)
-	pygame.display.set_caption('Object Detection')
-	#camlist = pygame.camera.list_cameras()
-	#if camlist:
-	#    pycam = pygame.camera.Camera(camlist[0],(cam_res_x,cam_res_y))
-	#else:
-#		print("No camera found!")
-	#	exit
-	#pycam.start() 
 	pygame.font.init()
 	fnt_sz = 18
 	fnt = pygame.font.SysFont('Arial', fnt_sz)
@@ -148,7 +131,7 @@ def main():
 	#img = pycam.get_image()
 	
 	while True:
-		img = cap_stream.read()
+		img = pycam_thread.read()
 		#img = pycam.get_image()
 		#img = pygame.transform.scale(img,(resized_x, resized_y))	
 		#screen.blit(img, (0,0))
