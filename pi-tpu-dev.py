@@ -122,7 +122,7 @@ def main():
 
 		def update(self):
 			global img
-			if img:
+			while img:
 				self.detect_img = pygame.transform.scale(img,(320,320))
 				self.img_arr = pygame.surfarray.pixels3d(self.detect_img)			
 				self.img_arr = np.swapaxes(self.img_arr,0,1)
@@ -133,8 +133,6 @@ def main():
 				#start_ms = time.time()
 				self.results = engine.DetectWithInputTensor(self.frame_buf_val, threshold=0.6, top_k=10)
 				#elapsed_ms = time.time() - start_ms
-			else:
-				print("No img")
 			if self.stopped:
 				return
 		def read(self):
