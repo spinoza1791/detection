@@ -98,9 +98,9 @@ def main():
 
 		def update(self):
 			while True:
-				frame = self.pycam.get_image()
+				self.frame = self.pycam.get_image()
 				#frame = pygame.transform.scale(frame,(resized_x, resized_y))	
-				screen.blit(frame, (0,0))
+				self.screen.blit(self.frame, (0,0))
 				print("screen.blit")
 				if self.stopped:
 					self.pycam.stop()
