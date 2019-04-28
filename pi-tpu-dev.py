@@ -200,7 +200,7 @@ def main():
 		for event in pygame.event.get():
 			keys = pygame.key.get_pressed()
 			if(keys[pygame.K_ESCAPE] == 1):
-				pycam.stop()
+				#pycam.stop()
 				pygame.display.quit()
 				sys.exit()
 			elif event.type == pygame.VIDEORESIZE:
