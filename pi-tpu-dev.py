@@ -69,6 +69,7 @@ def main():
 		cam_res_x=cam_res_y= 352		
 
 	engine = edgetpu.detection.engine.DetectionEngine(args.model)
+	img = None
 	
 	class PyCam:
 		def __init__(self, resolution=(320, 320), framerate=32):
@@ -180,7 +181,7 @@ def main():
 			#results = engine.DetectWithInputTensor(frame_buf_val, threshold=thresh, top_k=max_obj)
 			#elapsed_ms = time.time() - start_ms
 			#pygame.surfarray.blit_array(screen, img_arr)	
-		i += 1
+			i += 1
 		if results:
 			num_obj = 0
 			for obj in results:
