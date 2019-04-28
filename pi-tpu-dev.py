@@ -9,7 +9,9 @@ import pygame.camera
 import numpy as np
 import edgetpu.detection.engine
 import os
-import threading
+from picamera.array import PiRGBArray
+from picamera import PiCamera
+from threading import Thread
 
 os.environ['SDL_VIDEO_CENTERED'] = '1'
 
@@ -66,41 +68,70 @@ def main():
 	if args.cam_res:
 		cam_res_x=cam_res_y= int(args.cam_res)
 	else:		
-		cam_res_x=cam_res_y= 352
-		
+		cam_res_x=cam_res_y= 352		
 
 	engine = edgetpu.detection.engine.DetectionEngine(args.model)
 	
-	def display_thread(mdl_dims, cam_res_x, cam_res_y):
-		global pycam, screen, img
-		pygame.init()
-		pygame.camera.init()
-		screen = pygame.display.set_mode((cam_res_x,cam_res_y), pygame.RESIZABLE)
-		pygame.display.set_caption('Object Detection')
-		camlist = pygame.camera.list_cameras()
-		if camlist:
-		    pycam = pygame.camera.Camera(camlist[0],(cam_res_x,cam_res_y))
-		else:
-			print("No camera found!")
-			exit
-		pycam.start() 
-		pygame.font.init()
-		fnt_sz = 18
-		fnt = pygame.font.SysFont('Arial', fnt_sz)
-		while True:
-			#yield (
-			print("thread running")
-			#screen = pygame.display.get_surface()
-			#resized_x,resized_y = size = screen.get_width(), screen.get_height()
-			img = pycam.get_image()
-			img = pygame.transform.scale(img,(mdl_dims,mdl_dims))
-			screen.blit(img, (0,0))
-			#)
+	class PiVideoStream:
+	global mdl_dims
+	def __init__(self, resolution=(mdl_dims, mdl_dims), framerate=32):
+		# initialize the camera and stream
+		self.camera = PiCamera()
+		self.camera.resolution = resolution
+		self.camera.framerate = framerate
+		self.rawCapture = PiRGBArray(self.camera, size=resolution)
+		self.stream = self.camera.capture_continuous(self.rawCapture,
+			format="bgr", use_video_port=True)
+ 
+		# initialize the frame and the variable used to indicate
+		# if the thread should be stopped
+		self.frame = None
+		self.stopped = False
+			def start(self):
+		# start the thread to read frames from the video stream
+		Thread(target=self.update, args=()).start()
+		return self
+ 
+	def update(self):
+		# keep looping infinitely until the thread is stopped
+		for f in self.stream:
+			# grab the frame from the stream and clear the stream in
+			# preparation for the next frame
+			self.frame = f.array
+			self.rawCapture.truncate(0)
+ 
+			# if the thread indicator variable is set, stop the thread
+			# and resource camera resources
+			if self.stopped:
+				self.stream.close()
+				self.rawCapture.close()
+				self.camera.close()
+				return
+	def read(self):
+		# return the frame most recently read
+		return self.frame
+ 
+	def stop(self):
+		# indicate that the thread should be stopped
+		self.stopped = True
 	
-	screen_thread = threading.Thread(target=display_thread, args=[mdl_dims, cam_res_x, cam_res_y])
-	screen_thread.daemon = True
-	screen_thread.start()
+	cap_stream = PiVideoStream().start()
+	time.sleep(2.0)
 
+	pygame.init()
+	pygame.camera.init()
+	screen = pygame.display.set_mode((cam_res_x,cam_res_y), pygame.RESIZABLE)
+	pygame.display.set_caption('Object Detection')
+	camlist = pygame.camera.list_cameras()
+	if camlist:
+	    pycam = pygame.camera.Camera(camlist[0],(cam_res_x,cam_res_y))
+	else:
+		print("No camera found!")
+		exit
+	pycam.start() 
+	pygame.font.init()
+	fnt_sz = 18
+	fnt = pygame.font.SysFont('Arial', fnt_sz)
 	x1=x2=y1=y2=0
 	last_tm = time.time()
 	start_ms = time.time()
@@ -115,9 +146,11 @@ def main():
 	img = pycam.get_image()
 	
 	while True:
-		img = pycam.get_image()
-		#img = pygame.transform.scale(img,(resized_x, resized_y))	
-		#screen.blit(img, (0,0))					
+		img = cap_stream.read()
+		#img = pycam.get_image()
+		img = pygame.transform.scale(img,(resized_x, resized_y))	
+		screen.blit(img, (0,0))
+
 		detect_img = pygame.transform.scale(img,(mdl_dims,mdl_dims))
 		img_arr = pygame.surfarray.pixels3d(detect_img)			
 		img_arr = np.swapaxes(img_arr,0,1)
