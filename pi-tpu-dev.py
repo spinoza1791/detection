@@ -73,29 +73,25 @@ def main():
 	img = None
 	
 	class PyCam:
-		def __init__(self, resolution=(320, 320), framerate=32):
+		def __init__(self, resolution=(320, 320)):
 			pygame.init()
 			pygame.camera.init()
 			self.screen = pygame.display.set_mode((320, 320), pygame.RESIZABLE)
 			pygame.display.set_caption('Object Detection')
 			self.camlist = pygame.camera.list_cameras()
 			if self.camlist:
-			    self.pycam = pygame.camera.Camera(self.camlist[0],(320, 320))
+			    self.pycam = pygame.camera.Camera(self.camlist[0], resolution)
 			else:
 				print("No camera found!")
 				exit
 			self.pycam.start() 
-
-			# initialize the frame and the variable used to indicate
-			# if the thread should be stopped
 			self.frame = None
 			self.stopped = False
 			
 		def start(self):
-			# start the thread to read frames from the pygame camera stream
 			Thread(target=self.update, args=()).start()
 			return self
-
+		
 		def update(self):
 			global img
 			while True:
@@ -160,7 +156,7 @@ def main():
 			self.stopped = True
 			
 	pycam_thread = PyCam().start()
-	detection_thread = Detection(args.model).start()
+	#detection_thread = Detection(args.model).start()
 	
 	pygame.font.init()
 	fnt_sz = 18
@@ -179,23 +175,23 @@ def main():
 	#img = pycam.get_image()
 	
 	while True:
-		img = pycam_thread.read()
+		#img = pycam_thread.read()
 		#img = pycam.get_image()
 		#img = pygame.transform.scale(img,(resized_x, resized_y))	
 		#screen.blit(img, (0,0))
-		#if img:
-		results = detection_thread.read()
-			#detect_img = pygame.transform.scale(img,(mdl_dims,mdl_dims))
-			#img_arr = pygame.surfarray.pixels3d(detect_img)			
-			#img_arr = np.swapaxes(img_arr,0,1)
-			#img_arr = np.ascontiguousarray(img_arr)
-			#frame = io.BytesIO(img_arr)
-			#frame_buf_val = np.frombuffer(frame.getvalue(), dtype=np.uint8)
-			#print(frame_buf_val)
-			#start_ms = time.time()
-			#results = engine.DetectWithInputTensor(frame_buf_val, threshold=thresh, top_k=max_obj)
-			#elapsed_ms = time.time() - start_ms
-			#pygame.surfarray.blit_array(screen, img_arr)	
+		if img:
+		#results = detection_thread.read()
+			detect_img = pygame.transform.scale(img,(mdl_dims,mdl_dims))
+			img_arr = pygame.surfarray.pixels3d(detect_img)			
+			img_arr = np.swapaxes(img_arr,0,1)
+			img_arr = np.ascontiguousarray(img_arr)
+			frame = io.BytesIO(img_arr)
+			frame_buf_val = np.frombuffer(frame.getvalue(), dtype=np.uint8)
+			print(frame_buf_val)
+			start_ms = time.time()
+			results = engine.DetectWithInputTensor(frame_buf_val, threshold=thresh, top_k=max_obj)
+			elapsed_ms = time.time() - start_ms
+			pygame.surfarray.blit_array(screen, img_arr)	
 		i += 1
 		if results:
 			num_obj = 0
