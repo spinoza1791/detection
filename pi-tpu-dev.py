@@ -10,6 +10,7 @@ import numpy as np
 import edgetpu.detection.engine
 import os
 from threading import Thread
+import threading
 
 os.environ['SDL_VIDEO_CENTERED'] = '1'
 
@@ -68,7 +69,7 @@ def main():
 	else:		
 		cam_res_x=cam_res_y= 352
 		
-	c = Thread.Condition()
+	c = threading.Condition()
 	img = None
 	
 	class PyCam:
