@@ -70,7 +70,7 @@ def main():
 
 	engine = edgetpu.detection.engine.DetectionEngine(args.model)
 	
-	class PiVideoStream:
+	class PyCam:
 		def __init__(self, resolution=(320, 320), framerate=32):
 			pygame.init()
 			pygame.camera.init()
@@ -90,7 +90,7 @@ def main():
 			self.stopped = False
 			
 		def start(self):
-			# start the thread to read frames from the video stream
+			# start the thread to read frames from the pygame camera stream
 			Thread(target=self.update, args=()).start()
 			return self
 
@@ -111,8 +111,41 @@ def main():
 			# indicate that the thread should be stopped
 			self.stopped = True
 	
-	pycam_thread = PiVideoStream().start()
+	class Detection:
+		def __init__(self):
+			self.nothing = None
 
+		def start(self):
+			Thread(target=self.update, args=()).start()
+			return self
+
+		def update(self):
+			global img
+			while True:
+				if img:
+					self.detect_img = pygame.transform.scale(img,(320,320))
+					self.img_arr = pygame.surfarray.pixels3d(self.detect_img)			
+					self.img_arr = np.swapaxes(self.img_arr,0,1)
+					self.img_arr = np.ascontiguousarray(self.img_arr)
+					self.frame_bytes = io.BytesIO(self.img_arr)
+					self.frame_buf_val = np.frombuffer(self.frame_bytes.getvalue(), dtype=np.uint8)
+					#print(frame_buf_val)
+					#start_ms = time.time()
+					self.results = engine.DetectWithInputTensor(self.frame_buf_val, threshold=0.6, top_k=10)
+					#elapsed_ms = time.time() - start_ms
+				if self.stopped:
+					return
+		def read(self):
+			# return the frame most recently read
+			return self.results
+
+		def stop(self):
+			# indicate that the thread should be stopped
+			self.stopped = True
+			
+	pycam_thread = PyCam().start()
+	detection_thread = Detection().start()
+	
 	pygame.font.init()
 	fnt_sz = 18
 	fnt = pygame.font.SysFont('Arial', fnt_sz)
@@ -135,52 +168,52 @@ def main():
 		#img = pygame.transform.scale(img,(resized_x, resized_y))	
 		#screen.blit(img, (0,0))
 		if img:
-			detect_img = pygame.transform.scale(img,(mdl_dims,mdl_dims))
-			img_arr = pygame.surfarray.pixels3d(detect_img)			
-			img_arr = np.swapaxes(img_arr,0,1)
-			img_arr = np.ascontiguousarray(img_arr)
-			frame = io.BytesIO(img_arr)
-			frame_buf_val = np.frombuffer(frame.getvalue(), dtype=np.uint8)
+			results = detection_thread.read()
+			#detect_img = pygame.transform.scale(img,(mdl_dims,mdl_dims))
+			#img_arr = pygame.surfarray.pixels3d(detect_img)			
+			#img_arr = np.swapaxes(img_arr,0,1)
+			#img_arr = np.ascontiguousarray(img_arr)
+			#frame = io.BytesIO(img_arr)
+			#frame_buf_val = np.frombuffer(frame.getvalue(), dtype=np.uint8)
 			#print(frame_buf_val)
-			start_ms = time.time()
-			results = engine.DetectWithInputTensor(frame_buf_val, threshold=thresh, top_k=max_obj)
-			elapsed_ms = time.time() - start_ms
+			#start_ms = time.time()
+			#results = engine.DetectWithInputTensor(frame_buf_val, threshold=thresh, top_k=max_obj)
+			#elapsed_ms = time.time() - start_ms
 			#pygame.surfarray.blit_array(screen, img_arr)	
-			i += 1
-		#if results:
-		#	num_obj = 0
-		#	for obj in results:
-		#		num_obj = num_obj + 1
-		#	for obj in results:
-		#		bbox = obj.bounding_box.flatten().tolist()
-		#		label_id = int(round(obj.label_id,1))
-		#		class_label = "%s" % (labels[label_id])
-		#		fnt_class_label = fnt.render(class_label, True, (255,255,255))
-		#		fnt_class_label_width = fnt_class_label.get_rect().width
-		#		screen.blit(fnt_class_label,(x1, y1-fnt_sz))
-		#		score = round(obj.score,2)
-		#		y1 = round(bbox[1] * resized_y) 
-		#		x2 = round(bbox[2] * resized_x) 
-		#		y2 = round(bbox[3] * resized_y) 
-		#		rect_width = x2 - x1
-		#		rect_height = y2 - y1
-		#		class_score = "%.2f" % (score)
-		#		fnt_class_score = fnt.render(class_score, True, (0,255,255))
-		#		fnt_class_score_width = fnt_class_score.get_rect().width
-		#		screen.blit(fnt_class_score,(x2-fnt_class_score_width, y1-fnt_sz))
-		#		if i > N:
-		#			ms = "(%d%s%d) %s%.2fms" % (num_obj, "/", max_obj, "objects detected in ", elapsed_ms*1000)
-		#		fnt_ms = fnt.render(ms, True, (255,255,255))
-		#		fnt_ms_width = fnt_ms.get_rect().width
-		#		screen.blit(fnt_ms,((resized_x / 2 ) - (fnt_ms_width / 2), 0))
-		#		bbox_rect = pygame.draw.rect(screen, (0,255,0), (x1, y1, rect_width, rect_height), 4)
-
-		#else:
-		#	if i > N:
-		#		ms = "%s %.2fms" % ("No objects detected in", elapsed_ms*1000)
-		#	fnt_ms = fnt.render(ms, True, (255,0,0))
-		#	fnt_ms_width = fnt_ms.get_rect().width
-		#	screen.blit(fnt_ms,((resized_x / 2 ) - (fnt_ms_width / 2), 0))
+		i += 1
+		if results:
+			num_obj = 0
+			for obj in results:
+				num_obj = num_obj + 1
+			for obj in results:
+				bbox = obj.bounding_box.flatten().tolist()
+				label_id = int(round(obj.label_id,1))
+				class_label = "%s" % (labels[label_id])
+				fnt_class_label = fnt.render(class_label, True, (255,255,255))
+				fnt_class_label_width = fnt_class_label.get_rect().width
+				screen.blit(fnt_class_label,(x1, y1-fnt_sz))
+				score = round(obj.score,2)
+				y1 = round(bbox[1] * resized_y) 
+				x2 = round(bbox[2] * resized_x) 
+				y2 = round(bbox[3] * resized_y) 
+				rect_width = x2 - x1
+				rect_height = y2 - y1
+				class_score = "%.2f" % (score)
+				fnt_class_score = fnt.render(class_score, True, (0,255,255))
+				fnt_class_score_width = fnt_class_score.get_rect().width
+				screen.blit(fnt_class_score,(x2-fnt_class_score_width, y1-fnt_sz))
+				if i > N:
+					ms = "(%d%s%d) %s%.2fms" % (num_obj, "/", max_obj, "objects detected in ", elapsed_ms*1000)
+				fnt_ms = fnt.render(ms, True, (255,255,255))
+				fnt_ms_width = fnt_ms.get_rect().width
+				screen.blit(fnt_ms,((resized_x / 2 ) - (fnt_ms_width / 2), 0))
+				bbox_rect = pygame.draw.rect(screen, (0,255,0), (x1, y1, rect_width, rect_height), 4)
+		else:
+			if i > N:
+				ms = "%s %.2fms" % ("No objects detected in", elapsed_ms*1000)
+			fnt_ms = fnt.render(ms, True, (255,0,0))
+			fnt_ms_width = fnt_ms.get_rect().width
+			screen.blit(fnt_ms,((resized_x / 2 ) - (fnt_ms_width / 2), 0))
 				
 		if i > N:
 			tm = time.time()
