@@ -79,6 +79,7 @@ def main():
 			self.camera.resolution = resolution
 			self.camera.framerate = framerate
 			self.rawCapture = PiRGBArray(self.camera, size=resolution)
+			self.camera.start_preview(fullscreen=False, layer=0, window=(960, 540, 320, 320))
 			self.stream = self.camera.capture_continuous(self.rawCapture,
 				format="bgr", use_video_port=True)
 
@@ -150,7 +151,7 @@ def main():
 		img = cap_stream.read()
 		#img = pycam.get_image()
 		#img = pygame.transform.scale(img,(resized_x, resized_y))	
-		screen.blit(img, (0,0))
+		#screen.blit(img, (0,0))
 
 		detect_img = pygame.transform.scale(img,(mdl_dims,mdl_dims))
 		img_arr = pygame.surfarray.pixels3d(detect_img)			
