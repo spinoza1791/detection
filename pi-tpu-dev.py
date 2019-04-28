@@ -189,7 +189,7 @@ def main():
 			img_arr = np.ascontiguousarray(img_arr)
 			frame = io.BytesIO(img_arr)
 			frame_buf_val = np.frombuffer(frame.getvalue(), dtype=np.uint8)
-			#print(frame_buf_val)
+			print(frame_buf_val)
 			start_ms = time.time()
 			results = engine.DetectWithInputTensor(frame_buf_val, threshold=thresh, top_k=max_obj)
 			elapsed_ms = time.time() - start_ms
