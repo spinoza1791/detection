@@ -71,16 +71,16 @@ def main():
 		cam_res_x=cam_res_y= 352		
 
 	engine = edgetpu.detection.engine.DetectionEngine(args.model)
+	pygame.init()
+	pygame.camera.init()
 	
 	class PiVideoStream:
 		def __init__(self, resolution=(320, 320), framerate=32):
-			pygame.init()
-			pygame.camera.init()
-			self.screen = pygame.display.set_mode((resolution), pygame.RESIZABLE)
+			self.screen = pygame.display.set_mode((320, 320), pygame.RESIZABLE)
 			pygame.display.set_caption('Object Detection')
 			self.camlist = pygame.camera.list_cameras()
 			if self.camlist:
-			    self.pycam = pygame.camera.Camera(self.camlist[0],(resolution))
+			    self.pycam = pygame.camera.Camera(self.camlist[0],(320, 320))
 			else:
 				print("No camera found!")
 				exit
