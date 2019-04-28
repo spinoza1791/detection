@@ -9,8 +9,6 @@ import pygame.camera
 import numpy as np
 import edgetpu.detection.engine
 import os
-from picamera.array import PiRGBArray
-from picamera import PiCamera
 from threading import Thread
 
 os.environ['SDL_VIDEO_CENTERED'] = '1'
@@ -101,7 +99,6 @@ def main():
 				self.frame = self.pycam.get_image()
 				#frame = pygame.transform.scale(frame,(resized_x, resized_y))	
 				self.screen.blit(self.frame, (0,0))
-				pygame.display.update()
 				if self.stopped:
 					self.pycam.stop()
 					pygame.display.quit()
@@ -137,7 +134,7 @@ def main():
 		#img = pycam.get_image()
 		#img = pygame.transform.scale(img,(resized_x, resized_y))	
 		#screen.blit(img, (0,0))
-		if img:
+		if !img:
 			detect_img = pygame.transform.scale(img,(mdl_dims,mdl_dims))
 			img_arr = pygame.surfarray.pixels3d(detect_img)			
 			img_arr = np.swapaxes(img_arr,0,1)
@@ -150,7 +147,7 @@ def main():
 			elapsed_ms = time.time() - start_ms
 			#pygame.surfarray.blit_array(screen, img_arr)	
 			i += 1
-		if results:
+		if !results:
 			num_obj = 0
 			for obj in results:
 				num_obj = num_obj + 1
@@ -207,7 +204,7 @@ def main():
 			elif event.type == pygame.VIDEORESIZE:
 				screen = pygame.display.set_mode((event.w,event.h),pygame.RESIZABLE)
 		
-		#pygame.display.update()
+		pygame.display.update()
 				
 
 if __name__ == '__main__':
