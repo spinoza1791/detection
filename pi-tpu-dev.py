@@ -70,7 +70,7 @@ def main():
 		cam_res_x=cam_res_y= 352
 		
 	c = threading.Condition()
-	global img = None
+	img = None
 	
 	class PyCam:
 		def __init__(self, resolution=(320, 320)):
@@ -175,7 +175,7 @@ def main():
 	#img = pycam.get_image()
 	
 	while True:
-		#img = pycam_thread.read()
+		img = pycam_thread.read()
 		#img = pycam.get_image()
 		#img = pygame.transform.scale(img,(resized_x, resized_y))	
 		#screen.blit(img, (0,0))
