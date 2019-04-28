@@ -113,7 +113,7 @@ def main():
 	
 	class Detection:
 		def __init__(self):
-			self.nothing = None
+			self.results = None
 
 		def start(self):
 			Thread(target=self.update, args=()).start()
