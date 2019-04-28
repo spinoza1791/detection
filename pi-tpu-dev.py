@@ -95,14 +95,16 @@ def main():
 			return self
 		
 		def update(self):
+			global img
 			while True:
 				#c.acquire()
-				self.frame = self.pycam.get_image()				
+				#self.frame = self.pycam.get_image()
+				img = self.pycam.get_image()
 				#if self.frame:
 					#img = self.frame
 					#c.notify_all()
 					#frame = pygame.transform.scale(frame,(resized_x, resized_y))	
-				self.screen.blit(self.frame, (0,0))
+				self.screen.blit(img, (0,0))
 				#else:
 				#	c.wait()
 				#c.release()
@@ -118,44 +120,42 @@ def main():
 			# indicate that the thread should be stopped
 			self.stopped = True
 	
-	class Detection:
-		def __init__(self, model):
-			self.engine = edgetpu.detection.engine.DetectionEngine(model)
-			self.results = None
-		def start(self):
-			Thread(target=self.update, args=()).start()
-			return self
-		def update(self):
-			global img
-			while True:
-				#c.acquire()
-				if img:
-					print("img is not None")
-					self.detect_img = pygame.transform.scale(img,(320,320))
-					self.img_arr = pygame.surfarray.pixels3d(self.detect_img)			
-					self.img_arr = np.swapaxes(self.img_arr,0,1)
-					self.img_arr = np.ascontiguousarray(self.img_arr)
-					self.frame_bytes = io.BytesIO(self.img_arr)
-					self.frame_buf_val = np.frombuffer(self.frame_bytes.getvalue(), dtype=np.uint8)
-					print(self.frame_buf_val)
-					#start_ms = time.time()
-					self.results = self.engine.DetectWithInputTensor(self.frame_buf_val, threshold=0.6, top_k=10)
-					#elapsed_ms = time.time() - start_ms
-					#c.notify_all()
-				#else:
-				#	c.wait()
-				#c.release()
-			if self.stopped:
-				return
-		def read(self):
-			if not self.results:
-				print("No results")
-			else:
-				return self.results
-		def stop(self):
-			# indicate that the thread should be stopped
-			self.stopped = True
-			
+	#class Detection:
+	#	def __init__(self, model):
+	#		self.engine = edgetpu.detection.engine.DetectionEngine(model)
+	#		self.results = None
+	#	def start(self):
+	#		Thread(target=self.update, args=()).start()
+	#		return self
+	#	def update(self):
+	#		global img
+	#			if img:
+	#				print("img is not None")
+	#				self.detect_img = pygame.transform.scale(img,(320,320))
+	#				self.img_arr = pygame.surfarray.pixels3d(self.detect_img)			
+	#				self.img_arr = np.swapaxes(self.img_arr,0,1)
+	#				self.img_arr = np.ascontiguousarray(self.img_arr)
+	#				self.frame_bytes = io.BytesIO(self.img_arr)
+	#				self.frame_buf_val = np.frombuffer(self.frame_bytes.getvalue(), dtype=np.uint8)
+	#				print(self.frame_buf_val)
+	#				#start_ms = time.time()
+	#				self.results = self.engine.DetectWithInputTensor(self.frame_buf_val, threshold=0.6, top_k=10)
+	#				#elapsed_ms = time.time() - start_ms
+	#				#c.notify_all()
+	#			#else:
+	#			#	c.wait()
+	#			#c.release()
+	#		if self.stopped:
+	#			return
+	#	def read(self):
+	#		if not self.results:
+	#			print("No results")
+	#		else:
+	#			return self.results
+	#	def stop(self):
+	#		# indicate that the thread should be stopped
+	#		self.stopped = True
+	#		
 	pycam_thread = PyCam().start()
 	#detection_thread = Detection(args.model).start()
 	
@@ -173,15 +173,16 @@ def main():
 	ms = "00"
 	screen = pygame.display.get_surface() #get the surface of the current active display
 	resized_x,resized_y = size = screen.get_width(), screen.get_height()
-	#img = pycam.get_image()
+	img = pycam.get_image()
 	
 	while True:
-		img = pycam_thread.read()
+		#img = pycam_thread.read()
 		#img = pycam.get_image()
 		#img = pygame.transform.scale(img,(resized_x, resized_y))	
 		#screen.blit(img, (0,0))
-		if img:
+		#if img:
 		#results = detection_thread.read()
+		if img:
 			detect_img = pygame.transform.scale(img,(mdl_dims,mdl_dims))
 			img_arr = pygame.surfarray.pixels3d(detect_img)			
 			img_arr = np.swapaxes(img_arr,0,1)
