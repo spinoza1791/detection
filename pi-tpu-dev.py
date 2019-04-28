@@ -97,13 +97,14 @@ def main():
 			return self
 
 		def update(self):
-			frame = pycam.get_image()
-			frame = pygame.transform.scale(frame,(resized_x, resized_y))	
-			screen.blit(frame, (0,0))
-			if self.stopped:
-				self.pycam.stop()
-				pygame.display.quit()
-				return
+			while True:
+				frame = pycam.get_image()
+				#frame = pygame.transform.scale(frame,(resized_x, resized_y))	
+				screen.blit(frame, (0,0))
+				if self.stopped:
+					self.pycam.stop()
+					pygame.display.quit()
+					return
 		def read(self):
 			# return the frame most recently read
 			return self.frame
