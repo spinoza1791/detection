@@ -73,8 +73,7 @@ def main():
 	engine = edgetpu.detection.engine.DetectionEngine(args.model)
 	
 	class PiVideoStream:
-		global mdl_dims
-		def __init__(self, resolution=(mdl_dims, mdl_dims), framerate=32):
+		def __init__(self, resolution=(320, 320), framerate=32):
 			# initialize the camera and stream
 			self.camera = PiCamera()
 			self.camera.resolution = resolution
@@ -117,6 +116,7 @@ def main():
 			self.stopped = True
 	
 	cap_stream = PiVideoStream().start()
+	
 	time.sleep(2.0)
 
 	pygame.init()
