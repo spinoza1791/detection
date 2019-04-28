@@ -101,6 +101,7 @@ def main():
 				frame = pycam.get_image()
 				#frame = pygame.transform.scale(frame,(resized_x, resized_y))	
 				screen.blit(frame, (0,0))
+				print("screen.blit")
 				if self.stopped:
 					self.pycam.stop()
 					pygame.display.quit()
