@@ -103,8 +103,8 @@ def main():
 				if self.frame:
 					img = self.frame
 					c.notify_all()
-				#frame = pygame.transform.scale(frame,(resized_x, resized_y))	
-				self.screen.blit(self.frame, (0,0))
+					#frame = pygame.transform.scale(frame,(resized_x, resized_y))	
+					self.screen.blit(self.frame, (0,0))
 				else:
 					c.wait()
 				c.release()
