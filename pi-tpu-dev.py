@@ -113,7 +113,6 @@ def main():
 	
 	class Detection:
 		def __init__(self, model):
-			self.args = args
 			self.engine = edgetpu.detection.engine.DetectionEngine(model)
 			self.results = None
 		def start(self):
@@ -122,6 +121,7 @@ def main():
 		def update(self):
 			global img
 			while img:
+				print("img is not None")
 				self.detect_img = pygame.transform.scale(img,(320,320))
 				self.img_arr = pygame.surfarray.pixels3d(self.detect_img)			
 				self.img_arr = np.swapaxes(self.img_arr,0,1)
