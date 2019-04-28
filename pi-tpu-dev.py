@@ -113,14 +113,12 @@ def main():
 	
 	class Detection:
 		def __init__(self, *args):
-        		self.args = args
+			self.args = args
 			self.engine = edgetpu.detection.engine.DetectionEngine(args)
 			self.results = None
-
 		def start(self):
 			Thread(target=self.update, args=()).start()
 			return self
-
 		def update(self):
 			global img
 			while img:
@@ -140,7 +138,6 @@ def main():
 			if not self.results:
 				print("No results")
 			return self.results
-
 		def stop(self):
 			# indicate that the thread should be stopped
 			self.stopped = True
