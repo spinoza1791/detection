@@ -132,7 +132,9 @@ def main():
 			Thread(target=self.update, args=()).start()
 			return self
 		def update(self):
+			#global mdl_dims
 			self.img = pycam.get_image()
+			#img = pygame.transform.scale(img,(resized_x, resized_y))
 			self.detect_img = pygame.transform.scale(self.img,(320,320))
 			self.img_arr = pygame.surfarray.pixels3d(self.detect_img)			
 			self.img_arr = np.swapaxes(self.img_arr,0,1)
@@ -145,11 +147,16 @@ def main():
 			#elapsed_ms = time.time() - start_ms
 			if self.stopped:
 				return
-		def read(self):
+		def get_results(self):
 			if not self.results:
 				print("No results")
 			else:
 				return self.results
+		def get_image(self):
+			if not self.img:
+				print("No image")
+			else:
+				return self.img
 		def stop(self):
 			# indicate that the thread should be stopped
 			self.stopped = True
@@ -186,11 +193,11 @@ def main():
 	
 	while True:
 		#img = pycam_thread.read()
-		img = pycam.get_image()
+		results = detection_thread.get_results()		
+		img = detection_thread.get_image() #pycam.get_image()
 		img = pygame.transform.scale(img,(resized_x, resized_y))	
 		screen.blit(img, (0,0))
-		if img:
-			results = detection_thread.read()
+
 		#if img:
 		#img_detect = pycam.get_image()
 		#detect_img = pygame.transform.scale(img_detect,(mdl_dims,mdl_dims))
