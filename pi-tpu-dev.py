@@ -189,7 +189,6 @@ def main():
 		#pygame.surfarray.blit_array(screen, img_arr)	
 		i += 1
 		if results:
-			start_ms = time.time()
 			num_obj = 0
 			for obj in results:
 				num_obj = num_obj + 1
@@ -208,16 +207,17 @@ def main():
 				rect_width = x2 - x1
 				rect_height = y2 - y1
 				class_score = "%.2f" % (score)
+				start_ms = time.time()
 				fnt_class_score = fnt.render(class_score, True, (0,255,255))
 				fnt_class_score_width = fnt_class_score.get_rect().width
 				screen.blit(fnt_class_score,(x2-fnt_class_score_width, y1-fnt_sz))
+				bbox_rect = pygame.draw.rect(screen, (0,255,0), (x1, y1, rect_width, rect_height), 4)
+				elapsed_ms = time.time() - start_ms
 				if i > N:
 					ms = "(%d%s%d) %s%.2fms" % (num_obj, "/", max_obj, "objects detected in ", elapsed_ms*1000)
 				fnt_ms = fnt.render(ms, True, (255,255,255))
 				fnt_ms_width = fnt_ms.get_rect().width
 				screen.blit(fnt_ms,((resized_x / 2 ) - (fnt_ms_width / 2), 0))
-				bbox_rect = pygame.draw.rect(screen, (0,255,0), (x1, y1, rect_width, rect_height), 4)
-				elapsed_ms = time.time() - start_ms
 		else:
 			if i > N:
 				ms = "%s %.2fms" % ("No objects detected in", 33) #elapsed_ms*1000)
