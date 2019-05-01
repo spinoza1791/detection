@@ -183,19 +183,19 @@ def main():
 		#screen.blit(img, (0,0))
 		#if img:
 		#results = detection_thread.read()
-		if img:
-			img_detect = pycam.get_image()
-			detect_img = pygame.transform.scale(img_detect,(mdl_dims,mdl_dims))
-			img_arr = pygame.surfarray.pixels3d(detect_img)			
-			img_arr = np.swapaxes(img_arr,0,1)
-			img_arr = np.ascontiguousarray(img_arr)
-			frame = io.BytesIO(img_arr)
-			frame_buf_val = np.frombuffer(frame.getvalue(), dtype=np.uint8)
-			print(frame_buf_val)
-			start_ms = time.time()
-			results = engine.DetectWithInputTensor(frame_buf_val, threshold=thresh, top_k=max_obj)
-			elapsed_ms = time.time() - start_ms
-			pygame.surfarray.blit_array(screen, img_arr)	
+		#if img:
+		img_detect = pycam.get_image()
+		detect_img = pygame.transform.scale(img_detect,(mdl_dims,mdl_dims))
+		img_arr = pygame.surfarray.pixels3d(detect_img)			
+		img_arr = np.swapaxes(img_arr,0,1)
+		img_arr = np.ascontiguousarray(img_arr)
+		frame = io.BytesIO(img_arr)
+		frame_buf_val = np.frombuffer(frame.getvalue(), dtype=np.uint8)
+		print(frame_buf_val)
+		start_ms = time.time()
+		results = engine.DetectWithInputTensor(frame_buf_val, threshold=thresh, top_k=max_obj)
+		elapsed_ms = time.time() - start_ms
+		pygame.surfarray.blit_array(screen, img_arr)	
 		i += 1
 		if results:
 			num_obj = 0
