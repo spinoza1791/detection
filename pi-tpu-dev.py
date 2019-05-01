@@ -134,8 +134,8 @@ def main():
 			# indicate that the thread should be stopped
 			self.stopped = True
 
-		py_thread = PyThread().start()
-		#detection_thread = Detection(args.model).start()
+	py_thread = PyThread().start()
+	#detection_thread = Detection(args.model).start()
 	
 	while True:
 		img = pycam.get_image()		
