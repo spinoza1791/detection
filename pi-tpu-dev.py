@@ -70,7 +70,7 @@ def main():
 		cam_res_x=cam_res_y= 352
 		
 	#c = threading.Condition()
-	img = None
+	frame_buf_val = None
 	
 	#engine = edgetpu.detection.engine.DetectionEngine(args.model)
 	
