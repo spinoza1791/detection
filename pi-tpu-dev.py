@@ -75,7 +75,8 @@ def main():
 	engine = edgetpu.detection.engine.DetectionEngine(args.model)
 	
 	class PyThread:
-		def __init__(self):		
+		def __init__(self):
+			var = None
 		def start(self):
 			Thread(target=self.update, args=()).start()
 			return self		
