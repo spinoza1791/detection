@@ -195,8 +195,9 @@ def main():
 		#img = pycam_thread.read()
 		results = detection_thread.get_results()		
 		img = detection_thread.get_image() #pycam.get_image()
-		img = pygame.transform.scale(img,(resized_x, resized_y))	
-		screen.blit(img, (0,0))
+		if img:
+			img = pygame.transform.scale(img,(resized_x, resized_y))	
+			screen.blit(img, (0,0))
 
 		#if img:
 		#img_detect = pycam.get_image()
