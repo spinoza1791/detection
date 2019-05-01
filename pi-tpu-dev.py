@@ -27,7 +27,7 @@ def main():
 	parser.add_argument(
 	  '--thresh', help='Threshold confidence [0.1-1.0], default=0.3', default=0.3, required=False)
 	parser.add_argument(
-	  '--video_off', help='Video display off, for increased FPS', action='store_true', required=False)
+	  '--video_off', help='Video display on/off, for increased FPS', action='store_true', required=False)
 	parser.add_argument(
 	  '--cam_res', help='Set camera resolution, examples: 96, 128, 256, 352, 384, 480, 640, 1920', default=352, required=False)
 	if len(sys.argv[0:])==0:
@@ -99,34 +99,12 @@ def main():
 	ms = "00"
 	screen = pygame.display.get_surface() #get the surface of the current active display
 	resized_x,resized_y = size = screen.get_width(), screen.get_height()
-	
-	def PyThread():
-		global class_label, screen, class_score, x1, x2, y1, y2, fnt_sz, rect_width, rect_height, fnt, resized_x
-		while class_score:
-			print("PyThread running")
-			self.fnt_class_label = fnt.render(class_label, True, (255,255,255))
-			self.fnt_class_label_width = self.fnt_class_label.get_rect().width				
-			screen.blit(self.fnt_class_label,(x1, y1-fnt_sz))
-			self.fnt_class_score = fnt.render(class_score, True, (0,255,255))
-			self.fnt_class_score_width = self.fnt_class_score.get_rect().width
-			screen.blit(self.fnt_class_score,(x2-self.fnt_class_score_width, y1-fnt_sz))
-			self.bbox_rect = pygame.draw.rect(screen, (0,255,0), (x1, y1, rect_width, rect_height), 4)
-			#if i > N:
-			#	ms = "(%d%s%d) %s%.2fms" % (num_obj, "/", max_obj, "objects detected in ", elapsed_ms*1000)
-			self.fnt_ms = fnt.render("25", True, (255,255,255))
-			self.fnt_ms_width = self.fnt_ms.get_rect().width
-			screen.blit(self.fnt_ms,((resized_x / 2 ) - (self.fnt_ms_width / 2), 0))
-
-
-	class_score = None
-	t = threading.Thread(target = PyThread)
-	t.setDaemon(True)
-	t.start()
 			     
 	#py_thread = PyThread().start()
 	#detection_thread = Detection(args.model).start()
 	
 	while True:
+		start_ms = time.time()
 		img = pycam.get_image()		
 		#img = pygame.transform.scale(img,(resized_x, resized_y))	
 		screen.blit(img, (0,0))
@@ -160,24 +138,24 @@ def main():
 				y2 = round(bbox[3] * resized_y) 				
 				rect_width = x2 - x1
 				rect_height = y2 - y1				
-
-				#start_ms = time.time()
-				#fnt_class_label = fnt.render(class_label, True, (255,255,255))
-				#fnt_class_label_width = fnt_class_label.get_rect().width				
-				#screen.blit(fnt_class_label,(x1, y1-fnt_sz))
-				#fnt_class_score = fnt.render(class_score, True, (0,255,255))
-				#fnt_class_score_width = fnt_class_score.get_rect().width
-				#screen.blit(fnt_class_score,(x2-fnt_class_score_width, y1-fnt_sz))
-				#bbox_rect = pygame.draw.rect(screen, (0,255,0), (x1, y1, rect_width, rect_height), 4)
-				#if i > N:
-			#		ms = "(%d%s%d) %s%.2fms" % (num_obj, "/", max_obj, "objects detected in ", elapsed_ms*1000)
-				#fnt_ms = fnt.render(ms, True, (255,255,255))
-				#fnt_ms_width = fnt_ms.get_rect().width
-				#screen.blit(fnt_ms,((resized_x / 2 ) - (fnt_ms_width / 2), 0))
-				#elapsed_ms = time.time() - start_ms
+				if video_off == False:
+					fnt_class_label = fnt.render(class_label, True, (255,255,255))
+					fnt_class_label_width = fnt_class_label.get_rect().width				
+					screen.blit(fnt_class_label,(x1, y1-fnt_sz))
+					fnt_class_score = fnt.render(class_score, True, (0,255,255))
+					fnt_class_score_width = fnt_class_score.get_rect().width
+					screen.blit(fnt_class_score,(x2-fnt_class_score_width, y1-fnt_sz))
+					bbox_rect = pygame.draw.rect(screen, (0,255,0), (x1, y1, rect_width, rect_height), 4)
+					elapsed_ms = time.time() - start_ms
+					if i > N:
+						ms = "(%d%s%d) %s%.2fms" % (num_obj, "/", max_obj, "objects detected in ", elapsed_ms*1000)
+					fnt_ms = fnt.render(ms, True, (255,255,255))
+					fnt_ms_width = fnt_ms.get_rect().width
+					screen.blit(fnt_ms,((resized_x / 2 ) - (fnt_ms_width / 2), 0))
 		else:
+			elapsed_ms = time.time() - start_ms
 			if i > N:
-				ms = "%s %.2fms" % ("No objects detected in", 33) #elapsed_ms*1000)
+				ms = "%s %.2fms" % ("No objects detected in", elapsed_ms*1000)
 			fnt_ms = fnt.render(ms, True, (255,0,0))
 			fnt_ms_width = fnt_ms.get_rect().width
 			screen.blit(fnt_ms,((resized_x / 2 ) - (fnt_ms_width / 2), 0))
