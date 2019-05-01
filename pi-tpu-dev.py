@@ -172,10 +172,10 @@ def main():
 	
 	while True:
 		img = pycam.get_image()		
-		img = pygame.transform.scale(img,(resized_x, resized_y))	
+		#img = pygame.transform.scale(img,(resized_x, resized_y))	
 		screen.blit(img, (0,0))
 
-		detect_img = pygame.transform.scale(img,(mdl_dims,mdl_dims))
+		#detect_img = pygame.transform.scale(img,(mdl_dims,mdl_dims))
 		img_arr = pygame.surfarray.pixels3d(detect_img)			
 		img_arr = np.swapaxes(img_arr,0,1)
 		img_arr = np.ascontiguousarray(img_arr)
