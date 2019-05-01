@@ -159,11 +159,11 @@ def main():
 	
 	pygame.init()
 	pygame.camera.init()
-	self.screen = pygame.display.set_mode((mdl_dims, mdl_dims), pygame.RESIZABLE)
+	screen = pygame.display.set_mode((mdl_dims, mdl_dims), pygame.RESIZABLE)
 	pygame.display.set_caption('Object Detection')
-	self.camlist = pygame.camera.list_cameras()
-	if self.camlist:
-		pycam = pygame.camera.Camera(self.camlist[0], resolution)
+	camlist = pygame.camera.list_cameras()
+	if camlist:
+		pycam = pygame.camera.Camera(camlist[0], resolution)
 	else:
 		print("No camera found!")
 		exit
