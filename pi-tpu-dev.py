@@ -74,42 +74,6 @@ def main():
 	
 	engine = edgetpu.detection.engine.DetectionEngine(args.model)
 	
-	class PyThread:
-		def __init__(self):
-			var = None
-		def start(self):
-			Thread(target=self.update, args=()).start()
-			return self		
-		def update(self):
-			global class_label, screen, class_score, x1, x2, y1, y2, fnt_sz, rect_width, rect_height, fnt, resized_x
-			while True:
-				self.fnt_class_label = fnt.render(class_label, True, (255,255,255))
-				self.fnt_class_label_width = self.fnt_class_label.get_rect().width				
-				screen.blit(self.fnt_class_label,(x1, y1-fnt_sz))
-				self.fnt_class_score = fnt.render(class_score, True, (0,255,255))
-				self.fnt_class_score_width = self.fnt_class_score.get_rect().width
-				screen.blit(self.fnt_class_score,(x2-self.fnt_class_score_width, y1-fnt_sz))
-				self.bbox_rect = pygame.draw.rect(screen, (0,255,0), (x1, y1, rect_width, rect_height), 4)
-				#if i > N:
-				#	ms = "(%d%s%d) %s%.2fms" % (num_obj, "/", max_obj, "objects detected in ", elapsed_ms*1000)
-				self.fnt_ms = fnt.render("25", True, (255,255,255))
-				self.fnt_ms_width = self.fnt_ms.get_rect().width
-				screen.blit(self.fnt_ms,((resized_x / 2 ) - (self.fnt_ms_width / 2), 0))
-				if self.stopped:
-					pycam.stop()
-					pygame.display.quit()
-					return
-		def read(self):
-			# return the frame most recently read
-			return self.frame
-	
-		def stop(self):
-			# indicate that the thread should be stopped
-			self.stopped = True
-	
-	py_thread = PyThread().start()
-	#detection_thread = Detection(args.model).start()
-	
 	pygame.init()
 	pygame.camera.init()
 	screen = pygame.display.set_mode((mdl_dims, mdl_dims), pygame.RESIZABLE)
@@ -136,6 +100,42 @@ def main():
 	screen = pygame.display.get_surface() #get the surface of the current active display
 	resized_x,resized_y = size = screen.get_width(), screen.get_height()
 	#img = pycam.get_image()
+	
+	class PyThread:
+	def __init__(self):
+		var = None
+	def start(self):
+		Thread(target=self.update, args=()).start()
+		return self		
+	def update(self):
+		global class_label, screen, class_score, x1, x2, y1, y2, fnt_sz, rect_width, rect_height, fnt, resized_x
+		while True:
+			self.fnt_class_label = fnt.render(class_label, True, (255,255,255))
+			self.fnt_class_label_width = self.fnt_class_label.get_rect().width				
+			screen.blit(self.fnt_class_label,(x1, y1-fnt_sz))
+			self.fnt_class_score = fnt.render(class_score, True, (0,255,255))
+			self.fnt_class_score_width = self.fnt_class_score.get_rect().width
+			screen.blit(self.fnt_class_score,(x2-self.fnt_class_score_width, y1-fnt_sz))
+			self.bbox_rect = pygame.draw.rect(screen, (0,255,0), (x1, y1, rect_width, rect_height), 4)
+			#if i > N:
+			#	ms = "(%d%s%d) %s%.2fms" % (num_obj, "/", max_obj, "objects detected in ", elapsed_ms*1000)
+			self.fnt_ms = fnt.render("25", True, (255,255,255))
+			self.fnt_ms_width = self.fnt_ms.get_rect().width
+			screen.blit(self.fnt_ms,((resized_x / 2 ) - (self.fnt_ms_width / 2), 0))
+			if self.stopped:
+				pycam.stop()
+				pygame.display.quit()
+				return
+	def read(self):
+		# return the frame most recently read
+		return self.frame
+
+	def stop(self):
+		# indicate that the thread should be stopped
+		self.stopped = True
+	
+	py_thread = PyThread().start()
+	#detection_thread = Detection(args.model).start()
 	
 	while True:
 		img = pycam.get_image()		
