@@ -183,9 +183,9 @@ def main():
 		#screen.blit(img, (0,0))
 		#if img:
 		#results = detection_thread.read()
-		img = pycam.get_image()
 		if img:
-			detect_img = pygame.transform.scale(img,(mdl_dims,mdl_dims))
+			img_detect = pycam.get_image()
+			detect_img = pygame.transform.scale(img_detect,(mdl_dims,mdl_dims))
 			img_arr = pygame.surfarray.pixels3d(detect_img)			
 			img_arr = np.swapaxes(img_arr,0,1)
 			img_arr = np.ascontiguousarray(img_arr)
