@@ -76,18 +76,18 @@ def main():
 	
 	class PyCam:
 		def __init__(self, resolution=(320, 320)):
-			global img
+			global img, pycam
 			pygame.init()
 			pygame.camera.init()
 			self.screen = pygame.display.set_mode((320, 320), pygame.RESIZABLE)
 			pygame.display.set_caption('Object Detection')
 			self.camlist = pygame.camera.list_cameras()
 			if self.camlist:
-			    self.pycam = pygame.camera.Camera(self.camlist[0], resolution)
+			    pycam = pygame.camera.Camera(self.camlist[0], resolution)
 			else:
 				print("No camera found!")
 				exit
-			self.pycam.start() 
+			pycam.start() 
 			self.frame = None
 			self.stopped = False
 			
@@ -100,7 +100,7 @@ def main():
 			while True:
 				#c.acquire()
 				#self.frame = self.pycam.get_image()
-				img = self.pycam.get_image()
+				img = pycam.get_image()
 				#if self.frame:
 					#img = self.frame
 					#c.notify_all()
@@ -110,7 +110,7 @@ def main():
 				#	c.wait()
 				#c.release()
 				if self.stopped:
-					self.pycam.stop()
+					pycam.stop()
 					pygame.display.quit()
 					return
 		def read(self):
@@ -183,6 +183,7 @@ def main():
 		#screen.blit(img, (0,0))
 		#if img:
 		#results = detection_thread.read()
+		img = pycam.get_image()
 		if img:
 			detect_img = pygame.transform.scale(img,(mdl_dims,mdl_dims))
 			img_arr = pygame.surfarray.pixels3d(detect_img)			
@@ -246,7 +247,7 @@ def main():
 			keys = pygame.key.get_pressed()
 			if(keys[pygame.K_ESCAPE] == 1):
 				#pycam.stop()
-				pygame.display.quit()
+				#pygame.display.quit()
 				sys.exit()
 			elif event.type == pygame.VIDEORESIZE:
 				screen = pygame.display.set_mode((event.w,event.h),pygame.RESIZABLE)
