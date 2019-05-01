@@ -70,9 +70,9 @@ def main():
 		cam_res_x=cam_res_y= 352
 		
 	#c = threading.Condition()
-	frame_buf_val = None
+	#frame_buf_val = None
 	
-	#engine = edgetpu.detection.engine.DetectionEngine(args.model)
+	engine = edgetpu.detection.engine.DetectionEngine(args.model)
 	
 	#class PyCam:
 	#	def __init__(self, resolution=(320, 320)):
@@ -118,30 +118,30 @@ def main():
 	#		# indicate that the thread should be stopped
 	#		self.stopped = True
 	#
-	class Detection:
-		def __init__(self, model):
-			self.engine = edgetpu.detection.engine.DetectionEngine(model)
-			self.results = None
-		def start(self):
-			Thread(target=self.update, args=()).start()
-			return self
-		def update(self):
-			global frame_buf_val
-			while True:
-				self.results = self.engine.DetectWithInputTensor(frame_buf_val, threshold=0.6, top_k=10)
-			if self.stopped:
-				return
-		def get_results(self, ):
-			if not self.results:
-				print("No results")
-			else:
-				return self.results
-		def stop(self):
-			# indicate that the thread should be stopped
-			self.stopped = True
+	#class Detection:
+	#	def __init__(self, model):
+	#		self.engine = edgetpu.detection.engine.DetectionEngine(model)
+	#		self.results = None
+	#	def start(self):
+	#		Thread(target=self.update, args=()).start()
+	#		return self
+	#	def update(self):
+	#		global frame_buf_val
+	#		while True:
+	#			self.results = self.engine.DetectWithInputTensor(frame_buf_val, threshold=0.6, top_k=10)
+	#		if self.stopped:
+	#			return
+	#	def get_results(self, ):
+	#		if not self.results:
+	#			print("No results")
+	#		else:
+	#			return self.results
+	#	def stop(self):
+	#		# indicate that the thread should be stopped
+	#		self.stopped = True
 	
 	#pycam_thread = PyCam().start()
-	detection_thread = Detection(args.model).start()
+	#detection_thread = Detection(args.model).start()
 	
 	pygame.init()
 	pygame.camera.init()
@@ -171,7 +171,6 @@ def main():
 	#img = pycam.get_image()
 	
 	while True:
-		#img = pycam_thread.read()
 		img = pycam.get_image()		
 		img = pygame.transform.scale(img,(resized_x, resized_y))	
 		screen.blit(img, (0,0))
@@ -184,8 +183,8 @@ def main():
 		frame_buf_val = np.frombuffer(frame.getvalue(), dtype=np.uint8)
 		#print(frame_buf_val)
 		start_ms = time.time()
-		results = detection_thread.get_results()
-		#results = engine.DetectWithInputTensor(frame_buf_val, threshold=thresh, top_k=max_obj)
+		#results = detection_thread.get_results()
+		results = engine.DetectWithInputTensor(frame_buf_val, threshold=thresh, top_k=max_obj)
 		elapsed_ms = time.time() - start_ms
 		#pygame.surfarray.blit_array(screen, img_arr)	
 		i += 1
