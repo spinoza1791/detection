@@ -110,6 +110,7 @@ def main():
 		def update(self):
 			global class_label, screen, class_score, x1, x2, y1, y2, fnt_sz, rect_width, rect_height, fnt, resized_x
 			while True:
+				print("PyThread running")
 				self.fnt_class_label = fnt.render(class_label, True, (255,255,255))
 				self.fnt_class_label_width = self.fnt_class_label.get_rect().width				
 				screen.blit(self.fnt_class_label,(x1, y1-fnt_sz))
@@ -126,9 +127,6 @@ def main():
 					pycam.stop()
 					pygame.display.quit()
 					return
-		def read(self):
-			# return the frame most recently read
-			return self.frame
 
 		def stop(self):
 			# indicate that the thread should be stopped
