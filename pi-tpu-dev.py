@@ -127,7 +127,7 @@ def main():
 			return self
 		def update(self):
 			global frame_buf_val
-			while frame_buf_val:
+			while True:
 				self.results = self.engine.DetectWithInputTensor(frame_buf_val, threshold=0.6, top_k=10)
 			if self.stopped:
 				return
