@@ -193,24 +193,22 @@ def main():
 			for obj in results:
 				num_obj = num_obj + 1
 			for obj in results:
-
 				bbox = obj.bounding_box.flatten().tolist()
 				label_id = int(round(obj.label_id,1))
 				class_label = "%s" % (labels[label_id])
-				fnt_class_label = fnt.render(class_label, True, (255,255,255))
-				fnt_class_label_width = fnt_class_label.get_rect().width
-				
-				screen.blit(fnt_class_label,(x1, y1-fnt_sz))
 				score = round(obj.score,2)
-				start_ms = time.time()
+				class_score = "%.2f" % (score)				
 				x1 = round(bbox[0] * resized_x) 
 				y1 = round(bbox[1] * resized_y) 
 				x2 = round(bbox[2] * resized_x) 
-				y2 = round(bbox[3] * resized_y) 
-				elapsed_ms = time.time() - start_ms
+				y2 = round(bbox[3] * resized_y) 				
 				rect_width = x2 - x1
-				rect_height = y2 - y1
-				class_score = "%.2f" % (score)
+				rect_height = y2 - y1				
+
+				start_ms = time.time()
+				fnt_class_label = fnt.render(class_label, True, (255,255,255))
+				fnt_class_label_width = fnt_class_label.get_rect().width				
+				screen.blit(fnt_class_label,(x1, y1-fnt_sz))
 				fnt_class_score = fnt.render(class_score, True, (0,255,255))
 				fnt_class_score_width = fnt_class_score.get_rect().width
 				screen.blit(fnt_class_score,(x2-fnt_class_score_width, y1-fnt_sz))
@@ -220,6 +218,7 @@ def main():
 				fnt_ms = fnt.render(ms, True, (255,255,255))
 				fnt_ms_width = fnt_ms.get_rect().width
 				screen.blit(fnt_ms,((resized_x / 2 ) - (fnt_ms_width / 2), 0))
+				elapsed_ms = time.time() - start_ms
 		else:
 			if i > N:
 				ms = "%s %.2fms" % ("No objects detected in", 33) #elapsed_ms*1000)
