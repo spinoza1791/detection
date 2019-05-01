@@ -199,6 +199,7 @@ def main():
 				class_label = "%s" % (labels[label_id])
 				fnt_class_label = fnt.render(class_label, True, (255,255,255))
 				fnt_class_label_width = fnt_class_label.get_rect().width
+				elapsed_ms = time.time() - start_ms
 				screen.blit(fnt_class_label,(x1, y1-fnt_sz))
 				score = round(obj.score,2)
 				x1 = round(bbox[0] * resized_x) 
@@ -208,7 +209,6 @@ def main():
 				rect_width = x2 - x1
 				rect_height = y2 - y1
 				class_score = "%.2f" % (score)
-				elapsed_ms = time.time() - start_ms
 				fnt_class_score = fnt.render(class_score, True, (0,255,255))
 				fnt_class_score_width = fnt_class_score.get_rect().width
 				screen.blit(fnt_class_score,(x2-fnt_class_score_width, y1-fnt_sz))
