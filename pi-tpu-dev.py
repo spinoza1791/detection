@@ -102,7 +102,7 @@ def main():
 	
 	def PyThread():
 		global class_label, screen, class_score, x1, x2, y1, y2, fnt_sz, rect_width, rect_height, fnt, resized_x
-		while True:
+		while class_score:
 			print("PyThread running")
 			self.fnt_class_label = fnt.render(class_label, True, (255,255,255))
 			self.fnt_class_label_width = self.fnt_class_label.get_rect().width				
@@ -118,6 +118,7 @@ def main():
 			screen.blit(self.fnt_ms,((resized_x / 2 ) - (self.fnt_ms_width / 2), 0))
 
 
+	class_score = None
 	t = threading.Thread(target = PyThread)
 	t.setDaemon(True)
 	t.start()
