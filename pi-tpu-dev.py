@@ -121,6 +121,7 @@ def main():
 	class Detection:
 		def __init__(self, model):
 			self.engine = edgetpu.detection.engine.DetectionEngine(model)
+			self.results = None
 		def start(self):
 			Thread(target=self.update, args=()).start()
 			return self
