@@ -182,13 +182,14 @@ def main():
 		frame = io.BytesIO(img_arr)
 		frame_buf_val = np.frombuffer(frame.getvalue(), dtype=np.uint8)
 		#print(frame_buf_val)
-		start_ms = time.time()
+		#start_ms = time.time()
 		#results = detection_thread.get_results()
 		results = engine.DetectWithInputTensor(frame_buf_val, threshold=thresh, top_k=max_obj)
-		elapsed_ms = time.time() - start_ms
+		#elapsed_ms = time.time() - start_ms
 		#pygame.surfarray.blit_array(screen, img_arr)	
 		i += 1
 		if results:
+			start_ms = time.time()
 			num_obj = 0
 			for obj in results:
 				num_obj = num_obj + 1
@@ -216,9 +217,10 @@ def main():
 				fnt_ms_width = fnt_ms.get_rect().width
 				screen.blit(fnt_ms,((resized_x / 2 ) - (fnt_ms_width / 2), 0))
 				bbox_rect = pygame.draw.rect(screen, (0,255,0), (x1, y1, rect_width, rect_height), 4)
+				elapsed_ms = time.time() - start_ms
 		else:
 			if i > N:
-				ms = "%s %.2fms" % ("No objects detected in", elapsed_ms*1000)
+				ms = "%s %.2fms" % ("No objects detected in", 33) #elapsed_ms*1000)
 			fnt_ms = fnt.render(ms, True, (255,0,0))
 			fnt_ms_width = fnt_ms.get_rect().width
 			screen.blit(fnt_ms,((resized_x / 2 ) - (fnt_ms_width / 2), 0))
