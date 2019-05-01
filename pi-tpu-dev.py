@@ -126,12 +126,12 @@ def main():
 			Thread(target=self.update, args=()).start()
 			return self
 		def update(self):
-			global frame_buf_val, engine
-			if frame_buf_val:
+			global frame_buf_val
+			while frame_buf_val:
 				self.results = self.engine.DetectWithInputTensor(frame_buf_val, threshold=0.6, top_k=10)
 			if self.stopped:
 				return
-		def get_results(self):
+		def get_results(self, ):
 			if not self.results:
 				print("No results")
 			else:
