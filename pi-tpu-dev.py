@@ -76,19 +76,24 @@ def main():
 	
 	pygame.init()
 	pygame.camera.init()
-	screen = pygame.display.set_mode((mdl_dims, mdl_dims), pygame.RESIZABLE)
-	pygame.display.set_caption('Object Detection')
 	camlist = pygame.camera.list_cameras()
 	if camlist:
 		pycam = pygame.camera.Camera(camlist[0], (mdl_dims, mdl_dims))
+		pycam.start()
 	else:
 		print("No camera found!")
 		exit
-	pycam.start() 
-	pygame.font.init()
-	fnt_sz = 18
-	fnt = pygame.font.SysFont('Arial', fnt_sz)
-	x1=x2=y1=y2=0
+		
+	if video_off == False	
+		screen = pygame.display.set_mode((mdl_dims, mdl_dims), pygame.RESIZABLE)
+		pygame.display.set_caption('Object Detection')
+		screen = pygame.display.get_surface() #get the surface of the current active display
+		resized_x,resized_y = size = screen.get_width(), screen.get_height()	
+		pygame.font.init()
+		fnt_sz = 18
+		fnt = pygame.font.SysFont('Arial', fnt_sz)
+		x1=x2=y1=y2=0
+		
 	last_tm = time.time()
 	start_ms = time.time()
 	elapsed_ms = time.time()
@@ -97,8 +102,6 @@ def main():
 	fps = "00.0 fps"
 	N = 100
 	ms = "00"
-	screen = pygame.display.get_surface() #get the surface of the current active display
-	resized_x,resized_y = size = screen.get_width(), screen.get_height()
 			     
 	#py_thread = PyThread().start()
 	#detection_thread = Detection(args.model).start()
@@ -106,10 +109,11 @@ def main():
 	while True:
 		start_ms = time.time()
 		img = pycam.get_image()		
-		#img = pygame.transform.scale(img,(resized_x, resized_y))	
-		screen.blit(img, (0,0))
-
-		#detect_img = pygame.transform.scale(img,(mdl_dims,mdl_dims))
+		if video_off == False:
+			img = pygame.transform.scale(img,(resized_x, resized_y))	
+			screen.blit(img, (0,0))
+			detect_img = pygame.transform.scale(img,(mdl_dims,mdl_dims))
+		
 		img_arr = pygame.surfarray.pixels3d(img)			
 		img_arr = np.swapaxes(img_arr,0,1)
 		img_arr = np.ascontiguousarray(img_arr)
@@ -152,13 +156,18 @@ def main():
 					fnt_ms = fnt.render(ms, True, (255,255,255))
 					fnt_ms_width = fnt_ms.get_rect().width
 					screen.blit(fnt_ms,((resized_x / 2 ) - (fnt_ms_width / 2), 0))
+				else:
+					print("x1:"+x1+"y1:"+y1+"x2:"+x2+"y2:"+y2)
 		else:
-			elapsed_ms = time.time() - start_ms
-			if i > N:
-				ms = "%s %.2fms" % ("No objects detected in", elapsed_ms*1000)
-			fnt_ms = fnt.render(ms, True, (255,0,0))
-			fnt_ms_width = fnt_ms.get_rect().width
-			screen.blit(fnt_ms,((resized_x / 2 ) - (fnt_ms_width / 2), 0))
+			if video_off == False:
+				elapsed_ms = time.time() - start_ms
+				if i > N:
+					ms = "%s %.2fms" % ("No objects detected in", elapsed_ms*1000)
+				fnt_ms = fnt.render(ms, True, (255,0,0))
+				fnt_ms_width = fnt_ms.get_rect().width
+				screen.blit(fnt_ms,((resized_x / 2 ) - (fnt_ms_width / 2), 0))
+			else:
+				print("No results")
 				
 		if i > N:
 			tm = time.time()
@@ -166,11 +175,11 @@ def main():
 			i = 0
 			last_tm = tm
 			print(fps + " FPS")
-			
-		fps_thresh = fps + "    thresh:" + str(thresh)
-		fps_fnt = fnt.render(fps_thresh, True, (255,255,0))
-		fps_width = fps_fnt.get_rect().width
-		screen.blit(fps_fnt,((resized_x / 2) - (fps_width / 2), 20))
+		if video_off == False:	
+			fps_thresh = fps + "    thresh:" + str(thresh)
+			fps_fnt = fnt.render(fps_thresh, True, (255,255,0))
+			fps_width = fps_fnt.get_rect().width
+			screen.blit(fps_fnt,((resized_x / 2) - (fps_width / 2), 20))
 
 		for event in pygame.event.get():
 			keys = pygame.key.get_pressed()
