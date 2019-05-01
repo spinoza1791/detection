@@ -84,7 +84,7 @@ def main():
 		print("No camera found!")
 		exit
 		
-	if video_off == False	
+	if video_off == False:	
 		screen = pygame.display.set_mode((mdl_dims, mdl_dims), pygame.RESIZABLE)
 		pygame.display.set_caption('Object Detection')
 		screen = pygame.display.get_surface() #get the surface of the current active display
