@@ -11,7 +11,7 @@ import edgetpu.detection.engine
 import os
 from threading import Thread
 import threading
-import msvcrt
+import getch
 
 os.environ['SDL_VIDEO_CENTERED'] = '1'
 
@@ -193,12 +193,15 @@ def main():
 				if(keys[pygame.K_ESCAPE] == 1):
 					#pycam.stop()
 					#pygame.display.quit()
+					pygame.quit()
 					sys.exit()
 				elif event.type == pygame.VIDEORESIZE:
 					screen = pygame.display.set_mode((event.w,event.h),pygame.RESIZABLE)
 				
 		else:
-			if msvcrt.kbhit() and msvcrt.getch() == chr(27).encode():
+			if getch.kbhit() and getch.getch() == chr(27).encode():
+				pygame.quit()
+				sys.exit()
 				aborted = True
 				break
 				
