@@ -118,8 +118,8 @@ def main():
 	while True:
 		start_ms = time.time()	
 		#if pycam.query_image():
-            	img = pycam.get_image()
-			#img = pycam.get_image()
+		img = pycam.get_image()
+		#img = pycam.get_image()
 		if video_off == False:			
 			img = pygame.transform.scale(img,(resized_x, resized_y))	
 			screen.blit(img, (0,0))
