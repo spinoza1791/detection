@@ -29,7 +29,9 @@ def main():
 	parser.add_argument(
 	  '--video_off', help='Video display on/off, for increased FPS', action='store_true', required=False)
 	parser.add_argument(
-	  '--cam_res', help='Set camera resolution, examples: 96, 128, 256, 352, 384, 480, 640, 1920', default=352, required=False)
+	  '--cam_res_x', help='Set camera X resolution, examples: 96, 128, 256, 352, 384, 480, 640, 1920', default=640, required=False)
+	parser.add_argument(
+	  '--cam_res_y', help='Set camera Y resolution, examples: 96, 128, 256, 352, 384, 480, 640, 1920', default=480, required=False)
 	if len(sys.argv[0:])==0:
 		parser.print_help()
 		#parser.print_usage() # for just the usage line
@@ -64,10 +66,14 @@ def main():
 	if args.video_off :
 		video_off = True
 		
-	if args.cam_res:
-		cam_res_x=cam_res_y= int(args.cam_res)
+	if args.cam_res_x:
+		cam_res_x= int(args.cam_res_x)
 	else:		
-		cam_res_x=cam_res_y= 352
+		cam_res_x= 640
+	if args.cam_res_y:
+		cam_res_y= int(args.cam_res_y)
+	else:		
+		cam_res_y= 480
 		
 	#c = threading.Condition()
 	#frame_buf_val = None
