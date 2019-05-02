@@ -160,8 +160,9 @@ def main():
 					x1 = round(bbox[0] * mdl_dims) 
 					y1 = round(bbox[1] * mdl_dims) 
 					x2 = round(bbox[2] * mdl_dims) 
-					y2 = round(bbox[3] * mdl_dims) 
-					print("lbl:" + class_label + " scr:" + class_score + " bbox(" + "x1:"+x1+" y1:"+y1+" x2:"+x2+" y2:"+y2)
+					y2 = round(bbox[3] * mdl_dims)
+					results_line = "%s,%s,%d,%d,%d,%d" % (class_label,class_score,x1,y1,x2,y2)
+					print(results_line)
 		else:
 			if video_off == False:
 				elapsed_ms = time.time() - start_ms
