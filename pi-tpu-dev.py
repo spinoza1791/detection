@@ -127,7 +127,12 @@ def main():
 		#results = detection_thread.get_results()
 		results = engine.DetectWithInputTensor(frame_buf_val, threshold=thresh, top_k=max_obj)
 		#elapsed_ms = time.time() - start_ms
-		#pygame.surfarray.blit_array(screen, img_arr)	
+		#pygame.surfarray.blit_array(screen, img_arr)
+		if i > 5:
+			tm = time.time()
+			fps = "fps:{:5.1f} ".format(i / (tm - last_tm))
+			i = 0
+			last_tm = tm
 		i += 1
 		if results:
 			num_obj = 0
@@ -159,12 +164,12 @@ def main():
 					fnt_ms = fnt.render(ms, True, (255,255,255))
 					fnt_ms_width = fnt_ms.get_rect().width
 					screen.blit(fnt_ms,((resized_x / 2 ) - (fnt_ms_width / 2), 0))
-				else:
+				else: #video_off == True
 					x1 = round(bbox[0] * mdl_dims) 
 					y1 = round(bbox[1] * mdl_dims) 
 					x2 = round(bbox[2] * mdl_dims) 
 					y2 = round(bbox[3] * mdl_dims)
-					results_line = "%d, %s, %s, %d,%d,%d,%d" % (num_obj,class_label,class_score,x1,y1,x2,y2)
+					results_line = "%d, %d, %s, %s, %d,%d,%d,%d" % (fps"fps", num_obj,class_label,class_score,x1,y1,x2,y2)
 					print(results_line)
 				num_obj = num_obj + 1
 		else:
@@ -177,14 +182,7 @@ def main():
 				screen.blit(fnt_ms,((resized_x / 2 ) - (fnt_ms_width / 2), 0))
 			else:
 				print("No results")
-				
-		if i > N:
-			tm = time.time()
-			fps = "fps:{:5.1f} ".format(i / (tm - last_tm))
-			i = 0
-			last_tm = tm
-			if video_off == True:
-				print(fps + " FPS")
+	
 		if video_off == False:	
 			fps_thresh = fps + "    thresh:" + str(thresh)
 			fps_fnt = fnt.render(fps_thresh, True, (255,255,0))
