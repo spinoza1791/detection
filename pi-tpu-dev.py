@@ -132,7 +132,6 @@ def main():
 		if results:
 			num_obj = 0
 			for obj in results:
-				num_obj = num_obj + 1
 				bbox = obj.bounding_box.flatten().tolist()
 				label_id = int(round(obj.label_id,1))
 				class_label = "%s" % (labels[label_id])
@@ -167,6 +166,7 @@ def main():
 					y2 = round(bbox[3] * mdl_dims)
 					results_line = "%d, %s, %s, %d,%d,%d,%d" % (num_obj,class_label,class_score,x1,y1,x2,y2)
 					print(results_line)
+				num_obj = num_obj + 1
 		else:
 			if video_off == False:
 				elapsed_ms = time.time() - start_ms
