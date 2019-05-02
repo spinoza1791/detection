@@ -11,7 +11,6 @@ import edgetpu.detection.engine
 import os
 from threading import Thread
 import threading
-import getch
 
 os.environ['SDL_VIDEO_CENTERED'] = '1'
 
