@@ -198,13 +198,6 @@ def main():
 				elif event.type == pygame.VIDEORESIZE:
 					screen = pygame.display.set_mode((event.w,event.h),pygame.RESIZABLE)
 				
-		else:
-			if getch.kbhit() and getch.getch() == chr(27).encode():
-				pygame.quit()
-				sys.exit()
-				aborted = True
-				break
-				
 
 if __name__ == '__main__':
 	main()
