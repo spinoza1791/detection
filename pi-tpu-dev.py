@@ -132,7 +132,7 @@ def main():
 				num_obj = num_obj + 1
 			for obj in results:
 				bbox = obj.bounding_box.flatten().tolist()
-				label_id = int(round(obj.label_id,1))round
+				label_id = int(round(obj.label_id,1))
 				class_label = "%s" % (labels[label_id])
 				score = round(obj.score,2)
 				class_score = "%.2f" % (score)
@@ -157,7 +157,7 @@ def main():
 					fnt_ms_width = fnt_ms.get_rect().width
 					screen.blit(fnt_ms,((resized_x / 2 ) - (fnt_ms_width / 2), 0))
 				else:
-					print(round(bbox))
+					print("lbl:" + class_label + "scr:" + class_score + "box:" + round(bbox))
 		else:
 			if video_off == False:
 				elapsed_ms = time.time() - start_ms
