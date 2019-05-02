@@ -151,7 +151,7 @@ def main():
 					fnt_class_score_width = fnt_class_score.get_rect().width
 					screen.blit(fnt_class_score,(x2-fnt_class_score_width, y1-lbl_fnt_sz))
 					bbox_rect = pygame.draw.rect(screen, (0,255,0), (x1, y1, rect_width, rect_height), 4)
-					results_line = "%s,%s,%d,%d,%d,%d" % (class_label,class_score,x1,y1,x2,y2)
+					results_line = "%d, %s, %s, %d,%d,%d,%d" % (num_obj, class_label,class_score,x1,y1,x2,y2)
 					print(results_line)
 					elapsed_ms = time.time() - start_ms
 					if i > N:
