@@ -93,6 +93,8 @@ def main():
 		pygame.font.init()
 		fnt_sz = 18
 		fnt = pygame.font.SysFont('Arial', fnt_sz)
+		lbl_fnt_sz = 10
+		lbl_fnt = pygame.font.SysFont('Arial', lbl_fnt_sz)
 		x1=x2=y1=y2=0
 		
 	last_tm = time.time()
@@ -144,12 +146,12 @@ def main():
 					y2 = round(bbox[3] * resized_y) 				
 					rect_width = x2 - x1
 					rect_height = y2 - y1				
-					fnt_class_label = fnt.render(class_label, True, (255,255,255))
+					fnt_class_label = lbl_fnt.render(class_label, True, (255,255,255))
 					fnt_class_label_width = fnt_class_label.get_rect().width				
-					screen.blit(fnt_class_label,(x1, y1-fnt_sz))
-					fnt_class_score = fnt.render(class_score, True, (0,255,255))
+					screen.blit(fnt_class_label,(x1, y1-lbl_fnt_sz))
+					fnt_class_score = lbl_fnt.render(class_score, True, (0,255,255))
 					fnt_class_score_width = fnt_class_score.get_rect().width
-					screen.blit(fnt_class_score,(x2-fnt_class_score_width, y1-fnt_sz))
+					screen.blit(fnt_class_score,(x2-fnt_class_score_width, y1-lbl_fnt_sz))
 					bbox_rect = pygame.draw.rect(screen, (0,255,0), (x1, y1, rect_width, rect_height), 4)
 					elapsed_ms = time.time() - start_ms
 					if i > N:
