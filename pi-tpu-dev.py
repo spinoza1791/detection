@@ -180,6 +180,7 @@ def main():
 			fps_fnt = fnt.render(fps_thresh, True, (255,255,0))
 			fps_width = fps_fnt.get_rect().width
 			screen.blit(fps_fnt,((resized_x / 2) - (fps_width / 2), 20))
+			pygame.display.update()
 
 		for event in pygame.event.get():
 			keys = pygame.key.get_pressed()
@@ -189,8 +190,6 @@ def main():
 				sys.exit()
 			elif event.type == pygame.VIDEORESIZE:
 				screen = pygame.display.set_mode((event.w,event.h),pygame.RESIZABLE)
-		
-		pygame.display.update()
 				
 
 if __name__ == '__main__':
