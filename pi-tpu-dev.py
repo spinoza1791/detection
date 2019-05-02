@@ -135,14 +135,14 @@ def main():
 				label_id = int(round(obj.label_id,1))
 				class_label = "%s" % (labels[label_id])
 				score = round(obj.score,2)
-				class_score = "%.2f" % (score)				
-				x1 = round(bbox[0] * resized_x) 
-				y1 = round(bbox[1] * resized_y) 
-				x2 = round(bbox[2] * resized_x) 
-				y2 = round(bbox[3] * resized_y) 				
-				rect_width = x2 - x1
-				rect_height = y2 - y1				
+				class_score = "%.2f" % (score)
 				if video_off == False:
+					x1 = round(bbox[0] * resized_x) 
+					y1 = round(bbox[1] * resized_y) 
+					x2 = round(bbox[2] * resized_x) 
+					y2 = round(bbox[3] * resized_y) 				
+					rect_width = x2 - x1
+					rect_height = y2 - y1				
 					fnt_class_label = fnt.render(class_label, True, (255,255,255))
 					fnt_class_label_width = fnt_class_label.get_rect().width				
 					screen.blit(fnt_class_label,(x1, y1-fnt_sz))
@@ -157,7 +157,7 @@ def main():
 					fnt_ms_width = fnt_ms.get_rect().width
 					screen.blit(fnt_ms,((resized_x / 2 ) - (fnt_ms_width / 2), 0))
 				else:
-					print("x1:"+x1+"y1:"+y1+"x2:"+x2+"y2:"+y2)
+					print(bbox)
 		else:
 			if video_off == False:
 				elapsed_ms = time.time() - start_ms
