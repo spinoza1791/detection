@@ -153,6 +153,8 @@ def main():
 					fnt_class_score_width = fnt_class_score.get_rect().width
 					screen.blit(fnt_class_score,(x2-fnt_class_score_width, y1-lbl_fnt_sz))
 					bbox_rect = pygame.draw.rect(screen, (0,255,0), (x1, y1, rect_width, rect_height), 4)
+					results_line = "%s,%s,%d,%d,%d,%d" % (class_label,class_score,x1,y1,x2,y2)
+					print(results_line)
 					elapsed_ms = time.time() - start_ms
 					if i > N:
 						ms = "(%d%s%d) %s%.2fms" % (num_obj, "/", max_obj, "objects detected in ", elapsed_ms*1000)
@@ -164,7 +166,7 @@ def main():
 					y1 = round(bbox[1] * mdl_dims) 
 					x2 = round(bbox[2] * mdl_dims) 
 					y2 = round(bbox[3] * mdl_dims)
-					results_line = "%s,%s,%d,%d,%d,%d" % (class_label,class_score,x1,y1,x2,y2)
+					results_line = "%d, %s, %s, %d,%d,%d,%d" % (num_obj,class_label,class_score,x1,y1,x2,y2)
 					print(results_line)
 		else:
 			if video_off == False:
@@ -182,7 +184,8 @@ def main():
 			fps = "fps:{:5.1f} ".format(i / (tm - last_tm))
 			i = 0
 			last_tm = tm
-			print(fps + " FPS")
+			if video_off == True:
+				print(fps + " FPS")
 		if video_off == False:	
 			fps_thresh = fps + "    thresh:" + str(thresh)
 			fps_fnt = fnt.render(fps_thresh, True, (255,255,0))
