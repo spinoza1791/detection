@@ -157,7 +157,7 @@ def main():
 					fnt_ms_width = fnt_ms.get_rect().width
 					screen.blit(fnt_ms,((resized_x / 2 ) - (fnt_ms_width / 2), 0))
 				else:
-					print("lbl:" + class_label + "scr:" + class_score + "box:" + round(bbox))
+					print("lbl:" + class_label + "scr:" + class_score + "box:" + round(bbox[0],bbox[1],bbox[2],bbox[3])
 		else:
 			if video_off == False:
 				elapsed_ms = time.time() - start_ms
