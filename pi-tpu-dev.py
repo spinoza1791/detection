@@ -169,7 +169,7 @@ def main():
 					y1 = round(bbox[1] * mdl_dims) 
 					x2 = round(bbox[2] * mdl_dims) 
 					y2 = round(bbox[3] * mdl_dims)
-					results_line = "%d, %d, %s, %s, %d,%d,%d,%d" % (fps"fps", num_obj,class_label,class_score,x1,y1,x2,y2)
+					results_line = "%d, %d, %s, %s, %d,%d,%d,%d" % (fps+"fps", num_obj,class_label,class_score,x1,y1,x2,y2)
 					print(results_line)
 				num_obj = num_obj + 1
 		else:
