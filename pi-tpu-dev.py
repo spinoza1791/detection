@@ -94,6 +94,7 @@ def main():
 		screen = pygame.display.set_mode((cam_res_x, cam_res_y), pygame.RESIZABLE)
 		pygame.display.set_caption('Object Detection')
 		screen = pygame.display.get_surface() #get the surface of the current active display
+		time.sleep(2)
 		resized_x,resized_y = size = screen.get_width(), screen.get_height()	
 		pygame.font.init()
 		fnt_sz = 18
@@ -116,8 +117,8 @@ def main():
 	
 	while True:
 		start_ms = time.time()	
-		if pycam.query_image():
-            		img = pycam.get_image()
+		#if pycam.query_image():
+            	img = pycam.get_image()
 			#img = pycam.get_image()
 		if video_off == False:			
 			img = pygame.transform.scale(img,(resized_x, resized_y))	
