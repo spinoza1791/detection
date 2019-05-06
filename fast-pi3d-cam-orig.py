@@ -107,7 +107,7 @@ def start_capture(): # has to be in yet another thread as blocking
   global CAMW, CAMH, pool, camera
   with picamera.PiCamera(resolution=(CAMW, CAMH), framerate=max_cam) as camera:
     if pi0:
-      pool = [ImageProcessor() for i in range(0)]
+      pool = [ImageProcessor() for i in range(1)]
     else:
       pool = [ImageProcessor() for i in range(3)]
     #camera.start_preview(fullscreen=False, layer=0, window=(preview_mid_X, preview_mid_Y, preview_W, preview_H))
