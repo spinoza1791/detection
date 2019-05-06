@@ -19,7 +19,13 @@ parser.add_argument(
   '--model', help='File path of Tflite model.', required=True)
 parser.add_argument(
   '--dims', help='Model input dimension', required=True)
+parser.add_argument(
+  '--pi0', help='Reduce threads to one', action='store_true', required=False)
 args = parser.parse_args()
+
+pi0 = False
+if args.pi0 :
+  pi0 = True
 
 mdl_dims = int(args.dims) #dims must be a factor of 32/16 for picamera resolution
 engine = edgetpu.detection.engine.DetectionEngine(args.model)
@@ -100,7 +106,10 @@ def streams():
 def start_capture(): # has to be in yet another thread as blocking
   global CAMW, CAMH, pool, camera
   with picamera.PiCamera(resolution=(CAMW, CAMH), framerate=max_cam) as camera:
-    pool = [ImageProcessor() for i in range(4)]
+    if pi0:
+      pool = [ImageProcessor() for i in range(0)]
+    else:
+      pool = [ImageProcessor() for i in range(3)]
     #camera.start_preview(fullscreen=False, layer=0, window=(preview_mid_X, preview_mid_Y, preview_W, preview_H))
     camera.capture_sequence(streams(), format='rgb', use_video_port=True)
 
