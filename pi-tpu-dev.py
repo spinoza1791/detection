@@ -69,11 +69,11 @@ def main():
 	if args.cam_res_x:
 		cam_res_x= int(args.cam_res_x)
 	else:		
-		cam_res_x= 640
+		cam_res_x= 320
 	if args.cam_res_y:
 		cam_res_y= int(args.cam_res_y)
 	else:		
-		cam_res_y= 480
+		cam_res_y= 320
 		
 	#c = threading.Condition()
 	#frame_buf_val = None
