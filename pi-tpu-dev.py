@@ -29,9 +29,9 @@ def main():
 	parser.add_argument(
 	  '--video_off', help='Video display on/off, for increased FPS', action='store_true', required=False)
 	parser.add_argument(
-	  '--cam_res_x', help='Set camera X resolution, examples: 96, 128, 256, 352, 384, 480, 640, 1920', default=640, required=False)
+	  '--cam_res_x', help='Set camera X resolution, examples: 96, 128, 256, 352, 384, 480, 640, 1920', default=args.dims, required=False)
 	parser.add_argument(
-	  '--cam_res_y', help='Set camera Y resolution, examples: 96, 128, 256, 352, 384, 480, 640, 1920', default=480, required=False)
+	  '--cam_res_y', help='Set camera Y resolution, examples: 96, 128, 256, 352, 384, 480, 640, 1920', default=args.dims, required=False)
 	if len(sys.argv[0:])==0:
 		parser.print_help()
 		#parser.print_usage() # for just the usage line
