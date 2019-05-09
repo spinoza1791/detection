@@ -93,8 +93,8 @@ cmake -D CMAKE_BUILD_TYPE=RELEASE \
       -D WITH_GSTREAMER=ON \
       -D WITH_GTK=ON \
       -D WITH_JPEG=ON \
-      -D EXTRA_C_FLAGS=-mcpu=cortex-a53 -mfpu=neon-vfpv4 -ftree-vectorize -mfloat-abi=hard 
-      -D EXTRA_CXX_FLAGS=-mcpu=cortex-a53 -mfpu=neon-vfpv4 -ftree-vectorize -mfloat-abi=hard
+      -D EXTRA_C_FLAGS=-mcpu=cortex-a53 -mfpu=neon-vfpv4 -ftree-vectorize -mfloat-abi=hard \
+      -D EXTRA_CXX_FLAGS=-mcpu=cortex-a53 -mfpu=neon-vfpv4 -ftree-vectorize -mfloat-abi=hard \
       -D WITH_OPENEXR=ON \
       -D WITH_PNG=ON \
       -D WITH_TIFF=ON \
