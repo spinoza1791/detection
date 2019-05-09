@@ -77,6 +77,8 @@ cd build
 
 #export CFLAGS="-mcpu=cortex-a53 -mfpu=neon-vfpv4 -ftree-vectorize -mfloat-abi=hard -fPIC -O3"
 #export CXXFLAGS="-mcpu=cortex-a53 -mfpu=neon-vfpv4 -ftree-vectorize -mfloat-abi=hard -fPIC -O3"
+#      -D CMAKE_CXX_FLAGS_RELEASE=-mcpu=cortex-a53 -mfpu=neon-vfpv4 -ftree-vectorize -mfloat-abi=hard \
+#      -D CMAKE_C_FLAGS_RELEASE=-mcpu=cortex-a53 -mfpu=neon-vfpv4 -ftree-vectorize -mfloat-abi=hard \
 
 cmake -D CMAKE_BUILD_TYPE=RELEASE \
       -D OPENCV_GENERATE_PKGCONFIG=YES \
@@ -94,8 +96,6 @@ cmake -D CMAKE_BUILD_TYPE=RELEASE \
       -D WITH_GSTREAMER=ON \
       -D WITH_GTK=ON \
       -D WITH_JPEG=ON \
-      -D CMAKE_CXX_FLAGS_RELEASE=-mcpu=cortex-a53 -mfpu=neon-vfpv4 -ftree-vectorize -mfloat-abi=hard \
-      -D CMAKE_C_FLAGS_RELEASE=-mcpu=cortex-a53 -mfpu=neon-vfpv4 -ftree-vectorize -mfloat-abi=hard \
       -D WITH_OPENEXR=ON \
       -D WITH_PNG=ON \
       -D WITH_TIFF=ON \
