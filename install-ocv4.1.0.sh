@@ -6,6 +6,7 @@ V=4.1.0
 #sudo mount -t tmpfs -o size=10485760,mode=1777 overflow /tmp
 
 sudo apt-get install -y \
+     cmake \
      gettext \
      ccache \
      pkg-config \
