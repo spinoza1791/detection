@@ -2,6 +2,9 @@
 
 V=4.1.0
 
+#sudo umount /tmp
+#sudo mount -t tmpfs -o size=10485760,mode=1777 overflow /tmp
+
 sudo apt-get install -y \
      gettext \
      ccache \
@@ -60,8 +63,10 @@ sudo apt-get install -y \
      ffmpeg 
 
 sudo -H pip3 install wheel numpy 
-sudo apt-get install -y python3-scipy python3-matplotlib 
-sudo -H pip3 install scikit-image scikit-learn ipython dlib
+sudo apt-get install -y python3-scipy python3-matplotlib
+cd /tmp && sudo rm -rf * && cd ~
+#sudo -H pip3 install scikit-image scikit-learn ipython dlib
+#cd /tmp && sudo rm -rf * && cd ~
 
 git clone --depth=1 -b ${V} --single-branch https://github.com/opencv/opencv.git
 git clone --depth=1 -b ${V} --single-branch https://github.com/opencv/opencv_contrib.git
