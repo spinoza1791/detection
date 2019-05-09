@@ -10,7 +10,6 @@ sudo apt-get install -y \
      libpng++-dev \
      libjpeg-dev \
      libtiff5-dev \
-     libjasper-dev \
      libavcodec-dev \
      libavformat-dev \
      libavresample-dev \
@@ -34,11 +33,9 @@ sudo apt-get install -y \
      gfortran \
      python-pip \
      python3-pip \
-     python-numpy \
+     python3-numpy \
      python-dev \
      python3-dev \
-     libeigen2-dev \
-     libeigen3-dev \
      libopenexr-dev \
      libgstreamer1.0-dev \
      libgstreamermm-1.0-dev \
@@ -62,7 +59,9 @@ sudo apt-get install -y \
      libunicap2-dev \
      ffmpeg 
 
-sudo pip3 install wheel numpy scipy matplotlib scikit-image scikit-learn ipython dlib
+sudo -H pip3 install wheel numpy 
+sudo apt-get install -y python3-scipy python3-matplotlib 
+sudo -H pip3 install scikit-image scikit-learn ipython dlib
 
 git clone --depth=1 -b ${V} --single-branch https://github.com/opencv/opencv.git
 git clone --depth=1 -b ${V} --single-branch https://github.com/opencv/opencv_contrib.git
@@ -86,10 +85,8 @@ cmake -D CMAKE_BUILD_TYPE=RELEASE \
       -D BUILD_TESTS=OFF \
       -D BUILD_EXAMPLES=OFF \
       -D BUILD_JAVA=OFF \
-      -D WITH_EIGEN=ON \
       -D WITH_GSTREAMER=ON \
       -D WITH_GTK=ON \
-      -D WITH_JASPER=ON \
       -D WITH_JPEG=ON \
       -D EXTRA_C_FLAGS=-mcpu=cortex-a53 -mfpu=neon-vfpv4 -ftree-vectorize -mfloat-abi=hard 
       -D EXTRA_CXX_FLAGS=-mcpu=cortex-a53 -mfpu=neon-vfpv4 -ftree-vectorize -mfloat-abi=hard
@@ -103,7 +100,6 @@ cmake -D CMAKE_BUILD_TYPE=RELEASE \
       -D WITH_LAPACKE=ON \
       -D WITH_PROTOBUF=ON \
       -D WITH_1394=ON \
-      -D WITH_EIGEN=ON \
       -D WITH_FFMPEG=ON \
       -D WITH_GPHOTO2=ON \
       -D WITH_OPENGL=ON \
