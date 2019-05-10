@@ -37,7 +37,6 @@ sudo apt-get install -y \
      gfortran \
      python-pip \
      python3-pip \
-     python3-numpy \
      python-dev \
      python3-dev \
      libopenexr-dev \
@@ -61,37 +60,37 @@ sudo apt-get install -y \
      libtbb-dev \
      libdc1394-22-dev \
      libunicap2-dev \
-     ffmpeg 
+     ffmpeg
 
-sudo -H pip3 install wheel numpy 
-sudo apt-get install -y python3-scipy python3-matplotlib
-cd /tmp && sudo rm -rf * && cd ~
+sudo apt-get install -y build-essential git cmake unzip pkg-config && sudo apt-get install -y libjpeg-dev libpng-dev libtiff-dev && sudo apt-get install -y libavcodec-dev libavformat-dev libswscale-dev libv4l-dev && sudo apt-get install -y libxvidcore-dev libx264-dev && sudo apt-get install -y libgtk-3-dev && sudo apt-get install -y libatlas-base-dev gfortran && sudo apt-get install -y python-dev python3-dev python3-pip python-pip python3-setuptools python3-wheel python3-numpy python3-scipy python3-matplotlib && cd /tmp && sudo rm -rf * && cd ~
+
 #sudo -H pip3 install scikit-image scikit-learn ipython dlib
 #cd /tmp && sudo rm -rf * && cd ~
 
-git clone --depth=1 -b ${V} --single-branch https://github.com/opencv/opencv.git
-git clone --depth=1 -b ${V} --single-branch https://github.com/opencv/opencv_contrib.git
-cd opencv
-mkdir -p build
-cd build
+cd ~ && git clone --depth=1 -b "4.1.0" --single-branch https://github.com/opencv/opencv.git && git clone --depth=1 -b ${V} --single-branch https://github.com/opencv/opencv_contrib.git && cd opencv && mkdir -p build && cd build
 
 #export CFLAGS="-mcpu=cortex-a53 -mfpu=neon-vfpv4 -ftree-vectorize -mfloat-abi=hard -fPIC -O3"
 #export CXXFLAGS="-mcpu=cortex-a53 -mfpu=neon-vfpv4 -ftree-vectorize -mfloat-abi=hard -fPIC -O3"
 #      -D CMAKE_CXX_FLAGS_RELEASE=-mcpu=cortex-a53 -mfpu=neon-vfpv4 -ftree-vectorize -mfloat-abi=hard \
 #      -D CMAKE_C_FLAGS_RELEASE=-mcpu=cortex-a53 -mfpu=neon-vfpv4 -ftree-vectorize -mfloat-abi=hard \
+#    -D PYTHON_INCLUDE_DIR=$(python3 -c "from distutils.sysconfig import get_python_inc; print(get_python_inc())") \
+#    -D PYTHON_INCLUDE_DIR2=$(python3 -c "from os.path import dirname; from distutils.sysconfig import get_config_h_filename; print(dirname(get_config_h_filename()))") \
+#    -D PYTHON_LIBRARY=$(python3 -c "from distutils.sysconfig import get_config_var;from os.path import dirname,join ; print(join(dirname(get_config_var('LIBPC')),get_config_var('LDLIBRARY')))") \
+#    -D PYTHON3_NUMPY_INCLUDE_DIRS=$(python3 -c "import numpy; print(numpy.get_include())") \
+#    -D PYTHON3_PACKAGES_PATH=$(python3 -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())") \
+
 cmake -D CMAKE_BUILD_TYPE=RELEASE \
     -D CMAKE_INSTALL_PREFIX=/usr/local \
     -D OPENCV_EXTRA_MODULES_PATH=../../opencv_contrib/modules \
     -D ENABLE_NEON=ON \
     -D OPENMP=ON \
+    -D INSTALL_C_EXAMPLES=OFF \
+    -D OPENCV_ENABLE_NONFREE=ON \
     -D BUILD_TESTS=OFF \
+    -D BUILD_DOCS=OFF \
+    -D BUILD_PERF_TESTS=OFF \ 
     -D INSTALL_PYTHON_EXAMPLES=OFF \
     -D PYTHON3_EXECUTABLE=$(which python3) \
-    -D PYTHON_INCLUDE_DIR=$(python3 -c "from distutils.sysconfig import get_python_inc; print(get_python_inc())") \
-    -D PYTHON_INCLUDE_DIR2=$(python3 -c "from os.path import dirname; from distutils.sysconfig import get_config_h_filename; print(dirname(get_config_h_filename()))") \
-    -D PYTHON_LIBRARY=$(python3 -c "from distutils.sysconfig import get_config_var;from os.path import dirname,join ; print(join(dirname(get_config_var('LIBPC')),get_config_var('LDLIBRARY')))") \
-    -D PYTHON3_NUMPY_INCLUDE_DIRS=$(python3 -c "import numpy; print(numpy.get_include())") \
-    -D PYTHON3_PACKAGES_PATH=$(python3 -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())") \
     -D BUILD_opencv_python3=YES \
     -D BUILD_opencv_python2=YES \
     -D PYTHON_DEFAULT_EXECUTABLE=$(which python3) \
