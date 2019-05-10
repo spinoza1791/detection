@@ -1,15 +1,12 @@
-# detection
+sudo sed -i "s/MAX_SPEED=.*/MAX_SPEED=1510000/" /etc/default/cpufrequtils && sudo service cpufrequtils restart
+
 Pi
 1. sudo nano /etc/dphys-swapfile CONF_SWAPSIZE=2048
 2. sudo /etc/init.d/dphys-swapfile stop
 3. sudo /etc/init.d/dphys-swapfile start
 
 Debian
-1. sudo fallocate -l 2G /swapfile
-2. sudo dd if=/dev/zero of=/swapfile bs=1024 count=2097152
-3. sudo chmod 600 /swapfile 
-4. sudo mkswap /swapfile
-5. sudo swapon /swapfile
+1. sudo fallocate -l 2G /swapfile && sudo dd if=/dev/zero of=/swapfile bs=1024 count=2097152 && sudo chmod 600 /swapfile && sudo mkswap /swapfile && sudo swapon /swapfile
 
 # coral-pi
 
