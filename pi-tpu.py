@@ -115,6 +115,7 @@ def main():
 	i = 0
 	j = 0
 	results = None
+	fps_avg = "00.0avg_fps"
 	fps_last = 0
 	fps_total = 0
 	N = 10
