@@ -156,8 +156,8 @@ def overlay_on_image(frames, object_infos, label, camera_width, camera_height):
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("--model", default="/home/pi/TPU-MobilenetSSD/mobilenet_ssd_v2_coco_quant_postprocess_edgetpu.tflite", help="Path of the detection model.")
-    parser.add_argument("--label", default="/home/pi/TPU-MobilenetSSD/coco_labels.txt", help="Path of the labels file.")
+    parser.add_argument("--model", default="/home/libre/models/mobilenet_ssd_v2_coco_quant_postprocess_edgetpu.tflite", help="Path of the detection model.")
+    parser.add_argument("--label", default="/home/libre/detection/coco_labels.txt", help="Path of the labels file.")
     parser.add_argument("--cam", type=int, default=0, help="Camera number, ex. 0")
     args = parser.parse_args()
 
