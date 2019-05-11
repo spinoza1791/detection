@@ -130,13 +130,12 @@ def main():
 	img = pygame.transform.scale(img,(mdl_dims,mdl_dims))
 	
 	while True:
-		#if not video_off :
-		#	screen = pygame.display.get_surface() #get the surface of the current active display
-		#	resized_x,resized_y = size = screen.get_width(), screen.get_height()
-		if pycam.query_image() and not video_off:
+		if not video_off :
 			screen = pygame.display.get_surface() #get the surface of the current active display
 			resized_x,resized_y = size = screen.get_width(), screen.get_height()
+		if pycam.query_image():
 			img = pycam.get_image()
+		if not video_off:
 			img = pygame.transform.scale(img,(resized_x, resized_y))
 			#if img and video_off == False:
 			screen.blit(img, (0,0))
@@ -236,8 +235,8 @@ def main():
 			elif event.type == pygame.VIDEORESIZE and not video_off:
 				screen = pygame.display.set_mode((event.w,event.h),pygame.RESIZABLE)
 		
-		#if not video_off:
-		pygame.display.update()
+		if not video_off:
+			pygame.display.update()
 				
 
 if __name__ == '__main__':
