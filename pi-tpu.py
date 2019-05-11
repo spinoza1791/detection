@@ -115,7 +115,7 @@ def main():
 	i = 0
 	j = 0
 	results = None
-	fps = "00.0 fps"
+	fps_last = 0
 	fps_total = 0
 	N = 10
 	ms = "00"
@@ -192,19 +192,21 @@ def main():
 				
 		if i > N:
 			tm = time.time()
-			fps = "fps:{:5.1f} ".format(i / (tm - last_tm))
+			#fps = "fps:{:5.1f} ".format(i / (tm - last_tm))
+			fps_last = i / (tm - last_tm)
 			if j < 5:
 				j += 1
-				fps_total = fps_total + (i / (tm - last_tm))
+				fps_total = fps_total + fps_last
 			else:
-				fps_avg = "fps:{:5.1f} ".format(fps_total / 5)
+				fps_avg = "avg_fps:{:5.1f} ".format(fps_total / 5)
 				print(fps_avg + " AVG_FPS")
+				fps_total = 0
 				j = 0
 			i = 0
 			last_tm = tm
 
 			
-		fps_thresh = fps + "    thresh:" + str(thresh)
+		fps_thresh = fps_avg + "    thresh:" + str(thresh)
 		fps_fnt = fnt.render(fps_thresh, True, (255,255,0))
 		fps_width = fps_fnt.get_rect().width
 		screen.blit(fps_fnt,((resized_x / 2) - (fps_width / 2), 20))
