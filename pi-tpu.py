@@ -164,7 +164,7 @@ def main():
 		if results:
 			num_obj = 0
 			for obj in results:
-				num_obj +=
+				num_obj += 1
 			for obj in results:
 				bbox = obj.bounding_box.flatten().tolist()
 				label_id = int(round(obj.label_id,1))
