@@ -193,7 +193,8 @@ def main():
 					fnt_ms_width = fnt_ms.get_rect().width
 					screen.blit(fnt_ms,((resized_x / 2 ) - (fnt_ms_width / 2), 0))
 					bbox_rect = pygame.draw.rect(screen, (0,255,0), (x1, y1, rect_width, rect_height), 4)
-				print(str(fps_avg, class_label, class_score, x1, y1, x2, y2))
+				output = "(%s %s %s %d %d %d %d)" % (fps_avg, class_label, class_score, x1, y1, x2, y2)
+				print(output)
 		else:
 			if not video_off:
 				if i > N:
