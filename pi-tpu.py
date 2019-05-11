@@ -125,10 +125,11 @@ def main():
 	while True:
 		screen = pygame.display.get_surface() #get the surface of the current active display
 		resized_x,resized_y = size = screen.get_width(), screen.get_height()
-		img = pycam.get_image()
-		img = pygame.transform.scale(img,(resized_x, resized_y))
-		#if img and video_off == False:
-		screen.blit(img, (0,0))
+		if pycam.query_image():
+            		img = pycam.get_image()
+			img = pygame.transform.scale(img,(resized_x, resized_y))
+			#if img and video_off == False:
+			screen.blit(img, (0,0))
 					
 		detect_img = pygame.transform.scale(img,(mdl_dims,mdl_dims))
 		img_arr = pygame.surfarray.pixels3d(detect_img)
