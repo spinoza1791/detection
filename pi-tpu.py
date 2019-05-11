@@ -118,7 +118,7 @@ def main():
 	i = 0
 	j = 0
 	results = None
-	fps_avg = "00.0avg_fps"
+	fps_avg = "00.0"
 	fps_last = 0
 	fps_total = 0
 	N = 10
@@ -193,7 +193,7 @@ def main():
 					fnt_ms_width = fnt_ms.get_rect().width
 					screen.blit(fnt_ms,((resized_x / 2 ) - (fnt_ms_width / 2), 0))
 					bbox_rect = pygame.draw.rect(screen, (0,255,0), (x1, y1, rect_width, rect_height), 4)
-				output = "(%s %s %s %d %d %d %d)" % (fps_avg, class_label, class_score, x1, y1, x2, y2)
+				output = "(%s%s%s %s%s %s%d %s%d %s%d %s%d)" % (fps_avg, "class:", class_label, "conf:", class_score, "x1:",x1, "y1:",y1, "x2:",x2,"y2:", y2)
 				print(output)
 		else:
 			if not video_off:
@@ -211,8 +211,8 @@ def main():
 				j += 1
 				fps_total = fps_total + fps_last
 			else:
-				fps_avg = "avg_fps:{:5.1f} ".format(fps_total / 5)
-				print(fps_avg + " AVG_FPS")
+				fps_avg = "AVG_FPS:{:5.1f} ".format(fps_total / 5)
+				print(fps_avg)
 				fps_total = 0
 				j = 0
 			i = 0
