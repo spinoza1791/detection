@@ -29,7 +29,9 @@ def main():
 	parser.add_argument(
 	  '--gray', help='Grayscale detection for increased FPS', action='store_true', required=False)
 	parser.add_argument(
-	  '--cam_res', help='Set camera resolution, examples: 96, 128, 256, 352, 384, 480, 640, 1920', default=352, required=False)
+	  '--cam_w', help='Set camera resolution, examples: 96, 128, 256, 352, 384, 480, 640, 1920', default=320, required=False)
+	parser.add_argument(
+	  '--cam_h', help='Set camera resolution, examples: 96, 128, 256, 352, 384, 480, 640, 1920', default=240, required=False)
 	if len(sys.argv[0:])==0:
 		parser.print_help()
 		#parser.print_usage() # for just the usage line
@@ -68,11 +70,15 @@ def main():
 	if args.gray :
 		gray = True
 		
-	if args.cam_res:
-		cam_res_x=cam_res_y= int(args.cam_res)
+	if args.cam_w:
+		cam_w= int(args.cam_w)
 	else:		
-		cam_res_x=cam_res_y= 352
+		cam_w= 320
 		
+	if args.cam_h:
+		cam_h= int(args.cam_h)
+	else:		
+		cam_h=240		
 
 	engine = edgetpu.detection.engine.DetectionEngine(args.model)
 
@@ -82,7 +88,7 @@ def main():
 	pygame.display.set_caption('Object Detection')
 	camlist = pygame.camera.list_cameras()
 	if camlist:
-	    pycam = pygame.camera.Camera(camlist[0],(cam_res_x,cam_res_y))
+	    pycam = pygame.camera.Camera(camlist[0],(cam_w,cam_h))
 	else:
 		print("No camera found!")
 		exit
