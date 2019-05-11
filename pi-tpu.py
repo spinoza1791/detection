@@ -89,6 +89,9 @@ def main():
 	if not video_off :
 		screen = pygame.display.set_mode((cam_w,cam_w), pygame.RESIZABLE)
 		pygame.display.set_caption('Object Detection')
+		pygame.font.init()
+		fnt_sz = 12
+		fnt = pygame.font.SysFont('Arial', fnt_sz)
 	camlist = pygame.camera.list_cameras()
 	if camlist:
 	    pycam = pygame.camera.Camera(camlist[0],(cam_w,cam_h))
@@ -96,20 +99,17 @@ def main():
 		print("No camera found!")
 		exit
 	pycam.start() 
-	pygame.font.init()
-	fnt_sz = 12
-	fnt = pygame.font.SysFont('Arial', fnt_sz)
 	
-	def grayscale(img):
-		arr = pygame.surfarray.pixels3d(img)
-		#arr = arr.dot([0.298, 0.587, 0.114])[:,:,None].repeat(3,axis=2)
-		avgs = [[(r*0.298 + g*0.587 + b*0.114) for (r,g,b) in col] for col in arr]
-		arr = np.array([[[avg,avg,avg] for avg in col] for col in avgs])
-		return arr
+	#def grayscale(img):
+	#	arr = pygame.surfarray.pixels3d(img)
+	#	#arr = arr.dot([0.298, 0.587, 0.114])[:,:,None].repeat(3,axis=2)
+	#	avgs = [[(r*0.298 + g*0.587 + b*0.114) for (r,g,b) in col] for col in arr]
+	#	arr = np.array([[[avg,avg,avg] for avg in col] for col in avgs])
+	#	return arr
 
-	def fullcolor(img):
-		arr = pygame.surfarray.pixels3d(img)
-		return arr
+	#def fullcolor(img):
+	#	arr = pygame.surfarray.pixels3d(img)
+	#	return arr
 	
 	x1=x2=y1=y2=0
 	last_tm = time.time()
@@ -130,10 +130,12 @@ def main():
 	img = pygame.transform.scale(img,(mdl_dims,mdl_dims))
 	
 	while True:
-		if not video_off :
+		#if not video_off :
+		#	screen = pygame.display.get_surface() #get the surface of the current active display
+		#	resized_x,resized_y = size = screen.get_width(), screen.get_height()
+		if pycam.query_image() and not video_off:
 			screen = pygame.display.get_surface() #get the surface of the current active display
 			resized_x,resized_y = size = screen.get_width(), screen.get_height()
-		if pycam.query_image() and not video_off:
 			img = pycam.get_image()
 			img = pygame.transform.scale(img,(resized_x, resized_y))
 			#if img and video_off == False:
@@ -186,11 +188,15 @@ def main():
 					screen.blit(fnt_class_score,(x2-fnt_class_score_width, y1-fnt_sz))
 				if i > N:
 					ms = "(%d%s%d) %s%.2fms" % (num_obj, "/", max_obj, "objects detected in ", elapsed_ms*1000)
+					print(ms)
 				if not video_off:
 					fnt_ms = fnt.render(ms, True, (255,255,255))
 					fnt_ms_width = fnt_ms.get_rect().width
 					screen.blit(fnt_ms,((resized_x / 2 ) - (fnt_ms_width / 2), 0))
 					bbox_rect = pygame.draw.rect(screen, (0,255,0), (x1, y1, rect_width, rect_height), 4)
+				print("x1="+x1, "y1="+y1, "x2="+x2, "y2="+y2)
+				print(class_label, class_score)
+				
 
 		else:
 			if not video_off:
