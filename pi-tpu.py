@@ -173,8 +173,6 @@ def main():
 					fnt_class_label_width = fnt_class_label.get_rect().width
 					screen.blit(fnt_class_label,(x1, y1-fnt_sz))
 				score = round(obj.score,2)
-				if video_off:
-					resized_x = 
 				x1 = round(bbox[0] * resized_x) 
 				y1 = round(bbox[1] * resized_y) 
 				x2 = round(bbox[2] * resized_x) 
