@@ -159,15 +159,17 @@ if __name__ == '__main__':
     parser.add_argument("--model", default="/home/libre/models/mobilenet_ssd_v2_coco_quant_postprocess_edgetpu.tflite", help="Path of the detection model.")
     parser.add_argument("--label", default="/home/libre/detection/coco_labels.txt", help="Path of the labels file.")
     parser.add_argument("--cam", type=int, default=0, help="Camera number, ex. 0")
+    parser.add_argument("--cam_w", type=int, default=300, help="Camera width")
+    parser.add_argument("--cam_h", type=int, default=300, help="Camera width")
     args = parser.parse_args()
 
     model    = args.model
     label    = ReadLabelFile(args.label)
     cam_arg = args.cam
 
-    camera_width = 320
-    camera_height = 320
-    vidfps = 40
+    camera_width = cam_w
+    camera_height = cam_h
+    vidfps = 60
 
     try:
         mp.set_start_method('forkserver')
