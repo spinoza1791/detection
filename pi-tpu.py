@@ -196,9 +196,10 @@ def main():
 				output = "(%s%s%s %s%s %s%d %s%d %s%d %s%d)" % (fps_avg, "class:", class_label, "conf:", class_score, "x1:",x1, "y1:",y1, "x2:",x2,"y2:", y2)
 				print(output)
 		else:
+			if i > N:
+				ms = "%s %.2fms" % ("No objects detected in", elapsed_ms*1000, fps_avg)
+				print(ms)
 			if not video_off:
-				if i > N:
-					ms = "%s %.2fms" % ("No objects detected in", elapsed_ms*1000)
 				fnt_ms = fnt.render(ms, True, (255,0,0))
 				fnt_ms_width = fnt_ms.get_rect().width
 				screen.blit(fnt_ms,((resized_x / 2 ) - (fnt_ms_width / 2), 0))
@@ -212,7 +213,6 @@ def main():
 				fps_total = fps_total + fps_last
 			else:
 				fps_avg = "AVG_FPS:{:5.1f} ".format(fps_total / 5)
-				print(fps_avg)
 				fps_total = 0
 				j = 0
 			i = 0
