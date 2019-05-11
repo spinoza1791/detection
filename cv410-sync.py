@@ -23,6 +23,8 @@ def main():
     parser.add_argument("--model", default="/home/libre/models/mobilenet_ssd_v2_coco_quant_postprocess_edgetpu.tflite", help="Path of the detection model.")
     parser.add_argument("--label", default="/home/libre/detection/coco_labels.txt", help="Path of the labels file.")
     parser.add_argument("--usbcamno", type=int, default=0, help="USB Camera number.")
+    parser.add_argument("--cam_w", type=int, default=320, help="Camera width")
+    parser.add_argument("--cam_h", type=int, default=320, help="Camera width")
     args = parser.parse_args()
 
     fps = ""
@@ -37,8 +39,8 @@ def main():
     label_text_color = (255, 255, 255)
     percentage = 0.0
 
-    camera_width = 320
-    camera_height = 320
+    camera_width = cam_w
+    camera_height = cam_h
 
     cap = cv2.VideoCapture(args.usbcamno)
     cap.set(cv2.CAP_PROP_FPS, 150)
