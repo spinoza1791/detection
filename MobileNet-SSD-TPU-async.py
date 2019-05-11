@@ -160,15 +160,15 @@ if __name__ == '__main__':
     parser.add_argument("--label", default="/home/libre/detection/coco_labels.txt", help="Path of the labels file.")
     parser.add_argument("--cam", type=int, default=0, help="Camera number, ex. 0")
     parser.add_argument("--cam_w", type=int, default=300, help="Camera width")
-    parser.add_argument("--cam_h", type=int, default=300, help="Camera width")
+    parser.add_argument("--cam_h", type=int, default=300, help="Camera height")
     args = parser.parse_args()
 
     model    = args.model
     label    = ReadLabelFile(args.label)
     cam_arg = args.cam
 
-    camera_width = cam_w
-    camera_height = cam_h
+    camera_width = args.cam_w
+    camera_height = args.cam_h
     vidfps = 60
 
     try:
