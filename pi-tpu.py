@@ -84,7 +84,7 @@ def main():
 
 	pygame.init()
 	pygame.camera.init()
-	screen = pygame.display.set_mode((cam_res_x,cam_res_y), pygame.RESIZABLE)
+	screen = pygame.display.set_mode((cam_w,cam_w), pygame.RESIZABLE)
 	pygame.display.set_caption('Object Detection')
 	camlist = pygame.camera.list_cameras()
 	if camlist:
@@ -94,7 +94,7 @@ def main():
 		exit
 	pycam.start() 
 	pygame.font.init()
-	fnt_sz = 18
+	fnt_sz = 12
 	fnt = pygame.font.SysFont('Arial', fnt_sz)
 	
 	def grayscale(img):
