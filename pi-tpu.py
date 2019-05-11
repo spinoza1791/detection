@@ -116,6 +116,7 @@ def main():
 	j = 0
 	results = None
 	fps = "00.0 fps"
+	fps_total = 0
 	N = 10
 	ms = "00"
 	screen = pygame.display.get_surface() #get the surface of the current active display
