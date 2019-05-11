@@ -113,6 +113,7 @@ def main():
 	start_ms = time.time()
 	elapsed_ms = time.time()
 	i = 0
+	j = 0
 	results = None
 	fps = "00.0 fps"
 	N = 10
@@ -191,9 +192,16 @@ def main():
 		if i > N:
 			tm = time.time()
 			fps = "fps:{:5.1f} ".format(i / (tm - last_tm))
+			if j < 5:
+				j += 1
+				fps_total = fps_total + (i / (tm - last_tm))
+			else:
+				fps_avg = "fps:{:5.1f} ".format(fps_total / 5)
+				print(fps_avg + " AVG_FPS")
+				j = 0
 			i = 0
 			last_tm = tm
-			print(fps + " FPS")
+
 			
 		fps_thresh = fps + "    thresh:" + str(thresh)
 		fps_fnt = fnt.render(fps_thresh, True, (255,255,0))
