@@ -162,10 +162,12 @@ def main():
 		#pygame.surfarray.blit_array(screen, img_arr)	
 		i += 1
 		if results:
-			num_obj = 0
+			obj_cnt = 0
+			obj_id = 0
 			for obj in results:
-				num_obj += 1
+				obj_cnt += 1
 			for obj in results:
+				obj_id += 1
 				bbox = obj.bounding_box.flatten().tolist()
 				label_id = int(round(obj.label_id,1))
 				class_label = "%s" % (labels[label_id])
@@ -186,14 +188,14 @@ def main():
 					fnt_class_score_width = fnt_class_score.get_rect().width
 					screen.blit(fnt_class_score,(x2-fnt_class_score_width, y1-fnt_sz))
 				if i > N:
-					ms = "(%d%s%d) %s%.2fms" % (num_obj, "/", max_obj, "objects detected in ", elapsed_ms*1000)
+					ms = "(%d%s%d) %s%.2fms" % (obj_cnt, "/", max_obj, "objects detected in ", elapsed_ms*1000)
 					print(ms)
 				if not video_off:
 					fnt_ms = fnt.render(ms, True, (255,255,255))
 					fnt_ms_width = fnt_ms.get_rect().width
 					screen.blit(fnt_ms,((resized_x / 2 ) - (fnt_ms_width / 2), 0))
 					bbox_rect = pygame.draw.rect(screen, (0,255,0), (x1, y1, rect_width, rect_height), 4)
-				output = "%s%d %s%s %s%s %s%d %s%d %s%d %s%d %s" % ("id:",obj,"class:", class_label, "conf:", class_score, "x1:",x1, "y1:",y1, "x2:",x2,"y2:", y2, fps_avg)
+				output = "%s%d %s%s %s%s %s%d %s%d %s%d %s%d %s" % ("id:",obj_id,"class:", class_label, "conf:", class_score, "x1:",x1, "y1:",y1, "x2:",x2,"y2:", y2, fps_avg)
 				print(output)
 		else:
 			if i > N:
