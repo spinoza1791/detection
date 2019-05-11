@@ -197,7 +197,7 @@ def main():
 				print(output)
 		else:
 			if i > N:
-				ms = "%s %.2fms" % ("No objects detected in", elapsed_ms*1000, fps_avg)
+				ms = "%s %.2fms %s" % ("No objects detected in", elapsed_ms*1000, fps_avg)
 				print(ms)
 			if not video_off:
 				fnt_ms = fnt.render(ms, True, (255,0,0))
