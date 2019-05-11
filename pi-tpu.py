@@ -78,14 +78,17 @@ def main():
 	if args.cam_h:
 		cam_h= int(args.cam_h)
 	else:		
-		cam_h=240		
+		cam_h=240
 
+	resized_x = cam_w
+	resized_y = cam_h
 	engine = edgetpu.detection.engine.DetectionEngine(args.model)
 
 	pygame.init()
 	pygame.camera.init()
-	screen = pygame.display.set_mode((cam_w,cam_w), pygame.RESIZABLE)
-	pygame.display.set_caption('Object Detection')
+	if not video_off :
+		screen = pygame.display.set_mode((cam_w,cam_w), pygame.RESIZABLE)
+		pygame.display.set_caption('Object Detection')
 	camlist = pygame.camera.list_cameras()
 	if camlist:
 	    pycam = pygame.camera.Camera(camlist[0],(cam_w,cam_h))
@@ -120,15 +123,17 @@ def main():
 	fps_total = 0
 	N = 10
 	ms = "00"
-	screen = pygame.display.get_surface() #get the surface of the current active display
-	resized_x,resized_y = size = screen.get_width(), screen.get_height()
+	if not video_off :
+		screen = pygame.display.get_surface() #get the surface of the current active display
+		resized_x,resized_y = size = screen.get_width(), screen.get_height()
 	img = pycam.get_image()
 	img = pygame.transform.scale(img,(mdl_dims,mdl_dims))
 	
 	while True:
-		screen = pygame.display.get_surface() #get the surface of the current active display
-		resized_x,resized_y = size = screen.get_width(), screen.get_height()
-		if pycam.query_image():
+		if not video_off :
+			screen = pygame.display.get_surface() #get the surface of the current active display
+			resized_x,resized_y = size = screen.get_width(), screen.get_height()
+		if pycam.query_image() and not video_off:
 			img = pycam.get_image()
 			img = pygame.transform.scale(img,(resized_x, resized_y))
 			#if img and video_off == False:
@@ -163,10 +168,13 @@ def main():
 				bbox = obj.bounding_box.flatten().tolist()
 				label_id = int(round(obj.label_id,1))
 				class_label = "%s" % (labels[label_id])
-				fnt_class_label = fnt.render(class_label, True, (255,255,255))
-				fnt_class_label_width = fnt_class_label.get_rect().width
-				screen.blit(fnt_class_label,(x1, y1-fnt_sz))
+				if not video_off:
+					fnt_class_label = fnt.render(class_label, True, (255,255,255))
+					fnt_class_label_width = fnt_class_label.get_rect().width
+					screen.blit(fnt_class_label,(x1, y1-fnt_sz))
 				score = round(obj.score,2)
+				if video_off:
+					resized_x = 
 				x1 = round(bbox[0] * resized_x) 
 				y1 = round(bbox[1] * resized_y) 
 				x2 = round(bbox[2] * resized_x) 
@@ -174,22 +182,25 @@ def main():
 				rect_width = x2 - x1
 				rect_height = y2 - y1
 				class_score = "%.2f" % (score)
-				fnt_class_score = fnt.render(class_score, True, (0,255,255))
-				fnt_class_score_width = fnt_class_score.get_rect().width
-				screen.blit(fnt_class_score,(x2-fnt_class_score_width, y1-fnt_sz))
+				if not video_off:
+					fnt_class_score = fnt.render(class_score, True, (0,255,255))
+					fnt_class_score_width = fnt_class_score.get_rect().width
+					screen.blit(fnt_class_score,(x2-fnt_class_score_width, y1-fnt_sz))
 				if i > N:
 					ms = "(%d%s%d) %s%.2fms" % (num_obj, "/", max_obj, "objects detected in ", elapsed_ms*1000)
-				fnt_ms = fnt.render(ms, True, (255,255,255))
-				fnt_ms_width = fnt_ms.get_rect().width
-				screen.blit(fnt_ms,((resized_x / 2 ) - (fnt_ms_width / 2), 0))
-				bbox_rect = pygame.draw.rect(screen, (0,255,0), (x1, y1, rect_width, rect_height), 4)
+				if not video_off:
+					fnt_ms = fnt.render(ms, True, (255,255,255))
+					fnt_ms_width = fnt_ms.get_rect().width
+					screen.blit(fnt_ms,((resized_x / 2 ) - (fnt_ms_width / 2), 0))
+					bbox_rect = pygame.draw.rect(screen, (0,255,0), (x1, y1, rect_width, rect_height), 4)
 
 		else:
-			if i > N:
-				ms = "%s %.2fms" % ("No objects detected in", elapsed_ms*1000)
-			fnt_ms = fnt.render(ms, True, (255,0,0))
-			fnt_ms_width = fnt_ms.get_rect().width
-			screen.blit(fnt_ms,((resized_x / 2 ) - (fnt_ms_width / 2), 0))
+			if not video_off:
+				if i > N:
+					ms = "%s %.2fms" % ("No objects detected in", elapsed_ms*1000)
+				fnt_ms = fnt.render(ms, True, (255,0,0))
+				fnt_ms_width = fnt_ms.get_rect().width
+				screen.blit(fnt_ms,((resized_x / 2 ) - (fnt_ms_width / 2), 0))
 				
 		if i > N:
 			tm = time.time()
@@ -206,11 +217,11 @@ def main():
 			i = 0
 			last_tm = tm
 
-			
-		fps_thresh = fps_avg + "    thresh:" + str(thresh)
-		fps_fnt = fnt.render(fps_thresh, True, (255,255,0))
-		fps_width = fps_fnt.get_rect().width
-		screen.blit(fps_fnt,((resized_x / 2) - (fps_width / 2), 20))
+		if not video_off:
+			fps_thresh = fps_avg + "    thresh:" + str(thresh)
+			fps_fnt = fnt.render(fps_thresh, True, (255,255,0))
+			fps_width = fps_fnt.get_rect().width
+			screen.blit(fps_fnt,((resized_x / 2) - (fps_width / 2), 20))
 
 		for event in pygame.event.get():
 			keys = pygame.key.get_pressed()
@@ -218,10 +229,11 @@ def main():
 				pycam.stop()
 				pygame.display.quit()
 				sys.exit()
-			elif event.type == pygame.VIDEORESIZE:
+			elif event.type == pygame.VIDEORESIZE and not video_off:
 				screen = pygame.display.set_mode((event.w,event.h),pygame.RESIZABLE)
 		
-		pygame.display.update()
+		if not video_off:
+			pygame.display.update()
 				
 
 if __name__ == '__main__':
