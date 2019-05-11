@@ -236,8 +236,8 @@ def main():
 			elif event.type == pygame.VIDEORESIZE and not video_off:
 				screen = pygame.display.set_mode((event.w,event.h),pygame.RESIZABLE)
 		
-		if not video_off:
-			pygame.display.update()
+		#if not video_off:
+		pygame.display.update()
 				
 
 if __name__ == '__main__':
