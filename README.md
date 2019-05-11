@@ -19,7 +19,7 @@ Prep
 4. Unplug / reinsert TPU
 3. cd ~ && mkdir models && cd models && curl -O https://dl.google.com/coral/canned_models/mobilenet_ssd_v2_face_quant_postprocess_edgetpu.tflite && curl -O https://dl.google.com/coral/canned_models/mobilenet_ssd_v2_coco_quant_postprocess_edgetpu.tflite
 4. cd ~ && git clone https://github.com/spinoza1791/detection.git
-5. cd ~/detection && python3 pi-tpu.py --model=/home/pi/models/mobilenet_ssd_v2_face_quant_postprocess_edgetpu.tflite --dims=320
+5. cd ~/detection && python3 pi-tpu.py --model=/home/libre/models/mobilenet_ssd_v2_face_quant_postprocess_edgetpu.tflite --dims=320
 3. Verify python version: python3 --version (must be Python 3.5.x or higher)
 4. Install Pi camera v2.1 - https://www.makeuseof.com/tag/set-up-raspberry-pi-camera-module/
 5. echo "bcm2835_v4l2" | sudo tee -a /etc/modules >/dev/null
