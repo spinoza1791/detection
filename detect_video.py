@@ -45,6 +45,7 @@ model = DetectionEngine(args["model"])
 # initialize the video stream and allow the camera sensor to warmup
 print("[INFO] starting video stream...")
 vs = VideoStream(src=0).start()
+
 fps = FPS().start()
 #vs = VideoStream(usePiCamera=False).start()
 time.sleep(2.0)
@@ -85,6 +86,7 @@ while True:
 		keep_aspect_ratio=True, relative_coord=False)
 	fps.update()
 	print("[INFO] approx. FPS: {:.2f}".format(fps.fps()))
+	print(str(fps.fps())
 	end = time.time()
 
 	# loop over the results
