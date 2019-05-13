@@ -85,7 +85,8 @@ while True:
 	results = model.DetectWithImage(frame, threshold=args["confidence"],
 		keep_aspect_ratio=True, relative_coord=False)
 	fps.update()
-	#print("[INFO] approx. FPS: {:.2f}".format(fps.fps()))
+	fps.stop()
+	print("[INFO] approx. FPS: {:.2f}".format(fps.fps()))
 	print(str(fps.elapsed()))
 	end = time.time()
 
