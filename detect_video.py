@@ -78,6 +78,7 @@ while True:
 
 	# make predictions on the input frame
 	start = time.time()
+	detectframecount += 1
 	results = model.DetectWithImage(frame, threshold=args["confidence"],
 		keep_aspect_ratio=True, relative_coord=False)
 	end = time.time()
