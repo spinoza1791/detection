@@ -44,12 +44,13 @@ model = DetectionEngine(args["model"])
 # initialize the video stream and allow the camera sensor to warmup
 print("[INFO] starting video stream...")
 vs = VideoStream(src=0).start()
+fps = FPS().start()
 #vs = VideoStream(usePiCamera=False).start()
 time.sleep(2.0)
 
 # loop over the frames from the video stream
 while True:
-	t1 = time.perf_counter()
+	#t1 = time.perf_counter()
 	# grab the frame from the threaded video stream and resize it
 	# to have a maximum width of 500 pixels
 	frame = vs.read()
@@ -62,25 +63,27 @@ while True:
 	frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 	frame = Image.fromarray(frame)
 	
-	framecount += 1
-	if framecount >= 15:
-		fps = "(Playback) {:.1f} FPS".format(time1/15)
-		detectfps = "(Detection) {:.1f} FPS".format(detectframecount/time2)
-		framecount = 0
-		detectframecount = 0
-		time1 = 0
-		time2 = 0
-		print("Playback FPS: " + fps + "Detection FPS: " + detectfps)
-	t2 = time.perf_counter()
-	elapsedTime = t2-t1
-	time1 += 1/elapsedTime
-	time2 += elapsedTime
+	#framecount += 1
+	#if framecount >= 15:
+	#	fps = "(Playback) {:.1f} FPS".format(time1/15)
+	#	detectfps = "(Detection) {:.1f} FPS".format(detectframecount/time2)
+	#	framecount = 0
+	#	detectframecount = 0
+	#	time1 = 0
+	#	time2 = 0
+	#	print("Playback FPS: " + fps + "Detection FPS: " + detectfps)
+	#t2 = time.perf_counter()
+	#elapsedTime = t2-t1
+	#time1 += 1/elapsedTime
+	#time2 += elapsedTime
 
 	# make predictions on the input frame
 	start = time.time()
-	detectframecount += 1
+	#detectframecount += 1
 	results = model.DetectWithImage(frame, threshold=args["confidence"],
 		keep_aspect_ratio=True, relative_coord=False)
+	fps.update()
+	print("[INFO] approx. FPS: {:.2f}".format(fps.fps()))
 	end = time.time()
 
 	# loop over the results
