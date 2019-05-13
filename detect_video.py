@@ -1,16 +1,15 @@
 # USAGE
 # python detect_video.py --model mobilenet_ssd_v2/mobilenet_ssd_v2_coco_quant_postprocess_edgetpu.tflite --labels mobilenet_ssd_v2/coco_labels.txt
 
-# import the necessary packages
+from __future__ import print_function
 from edgetpu.detection.engine import DetectionEngine
 from imutils.video import VideoStream
+from imutils.video import FPS
+import imutils
 from PIL import Image
 import argparse
-import imutils
-from imutils.video import FPS
 import time
 import cv2
-import datetime
 
 # construct the argument parser and parse the arguments
 ap = argparse.ArgumentParser()
