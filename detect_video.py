@@ -86,7 +86,7 @@ while True:
 		keep_aspect_ratio=True, relative_coord=False)
 	fps.update()
 	#print("[INFO] approx. FPS: {:.2f}".format(fps.fps()))
-	print(str(fps.fps()))
+	print(str(fps.elapsed()))
 	end = time.time()
 
 	# loop over the results
