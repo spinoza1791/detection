@@ -49,6 +49,7 @@ time.sleep(2.0)
 
 # loop over the frames from the video stream
 while True:
+	t1 = time.perf_counter()
 	# grab the frame from the threaded video stream and resize it
 	# to have a maximum width of 500 pixels
 	frame = vs.read()
