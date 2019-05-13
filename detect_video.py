@@ -24,6 +24,13 @@ args = vars(ap.parse_args())
 print("[INFO] parsing class labels...")
 labels = {}
 
+fps = ""
+detectfps = ""
+framecount = 0
+detectframecount = 0
+time1 = 0
+time2 = 0
+
 # loop over the class labels file
 for row in open(args["labels"]):
 	# unpack the row and update the labels dictionary
@@ -53,6 +60,20 @@ while True:
 	# array to PIL image format
 	frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 	frame = Image.fromarray(frame)
+	
+	framecount += 1
+        if framecount >= 15:
+            fps = "(Playback) {:.1f} FPS".format(time1/15)
+            detectfps = "(Detection) {:.1f} FPS".format(detectframecount/time2)
+            framecount = 0
+            detectframecount = 0
+            time1 = 0
+            time2 = 0
+            print("Playback FPS: " + fps + "Detection FPS: " + detectfps)
+        t2 = time.perf_counter()
+        elapsedTime = t2-t1
+        time1 += 1/elapsedTime
+        time2 += elapsedTime
 
 	# make predictions on the input frame
 	start = time.time()
