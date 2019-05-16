@@ -66,7 +66,7 @@ while True:
 	if framecount >= 15:
 		fps = "(Playback) {:.1f} FPS".format(time1/15)
 		#detectfps = "(Detection) {:.1f} FPS".format(detectframecount/time2)
-		detectfps = "(Detection) {:.1f} FPS".format((end - start) * 1000)
+		detectfps = "(Detection) {:.1f} ms".format((end - start) * 1000)
 		framecount = 0
 		detectframecount = 0
 		time1 = 0
