@@ -1,4 +1,7 @@
 sudo sed -i "s/MAX_SPEED=.*/MAX_SPEED=1510000/" /etc/default/cpufrequtils && sudo service cpufrequtils restart
+if sdcard locked: 
+sudo fdisk -l
+sudo hdparm -r0 /dev/sda
 
 Pi
 1. sudo nano /etc/dphys-swapfile CONF_SWAPSIZE=2048
