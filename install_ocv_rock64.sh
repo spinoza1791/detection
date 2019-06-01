@@ -18,9 +18,18 @@ cmake -D CMAKE_BUILD_TYPE=RELEASE \
     -D CMAKE_INSTALL_PREFIX=/usr/local \
     -D INSTALL_PYTHON_EXAMPLES=OFF\
     -D OPENCV_EXTRA_MODULES_PATH=~/opencv_contrib-3.4.1/modules \
-    -D BUILD_EXAMPLES=OFF \
     -D ENABLE_NEON=ON \
-    -D OPENMP=ON ..
+    -D OPENMP=ON \
+    -D INSTALL_C_EXAMPLES=OFF \
+    -D OPENCV_ENABLE_NONFREE=ON \
+    -D BUILD_TESTS=OFF \
+    -D BUILD_DOCS=OFF \
+    -D BUILD_PERF_TESTS=OFF \
+    -D PYTHON3_EXECUTABLE=$(which python3) \
+    -D BUILD_opencv_python3=YES \
+    -D BUILD_opencv_python2=YES \
+    -D PYTHON_DEFAULT_EXECUTABLE=$(which python3) \
+    -D BUILD_EXAMPLES=OFF ....
 
 make -j4
 sudo make install
