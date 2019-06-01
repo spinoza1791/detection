@@ -5,6 +5,8 @@ sudo apt-get install -y libxvidcore-dev libx264-dev
 sudo apt-get install -y libgtk-3-dev
 sudo apt-get install -y libatlas-base-dev gfortran
 sudo apt-get install -y python3-dev
+sudo apt-get install libgstreamer1.0-0 gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-doc gstreamer1.0-tools gstreamer1.0-x gstreamer1.0-alsa gstreamer1.0-pulseaudio
+sudo -H pip3 install numpy
 cd ~
 wget -O opencv_contrib.zip https://github.com/opencv/opencv_contrib/archive/3.4.1.zip
 wget -O opencv.zip https://github.com/opencv/opencv/archive/3.4.1.zip
