@@ -31,7 +31,7 @@ cmake -D CMAKE_BUILD_TYPE=RELEASE \
     -D BUILD_opencv_python3=YES \
     -D BUILD_opencv_python2=YES \
     -D PYTHON_DEFAULT_EXECUTABLE=$(which python3) \
-    -D BUILD_EXAMPLES=OFF ....
+    -D BUILD_EXAMPLES=OFF ..
 
 make -j4
 sudo make install
