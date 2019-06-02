@@ -20,6 +20,16 @@ ap.add_argument("-c", "--confidence", type=float, default=0.3,
 	help="minimum probability to filter weak detections")
 args = vars(ap.parse_args())
 
+global fps
+global detectfps
+global framecount
+global detectframecount
+global time1
+global time2
+global lastresults
+global cam
+global window_name
+
 # initialize the labels dictionary
 print("[INFO] parsing class labels...")
 labels = {}
@@ -39,10 +49,10 @@ print("[INFO] starting video stream...")
 vs = VideoStream(src=0).start()
 #vs = VideoStream(usePiCamera=False).start()
 time.sleep(2.0)
-fps = FPS().start()
 
 # loop over the frames from the video stream
 while True:
+	t1 = time.perf_counter()
 	# grab the frame from the threaded video stream and resize it
 	# to have a maximum width of 500 pixels
 	frame = vs.read()
@@ -56,10 +66,10 @@ while True:
 	frame = Image.fromarray(frame)
 
 	# make predictions on the input frame
-	start = time.time()
+	tinf = time.perf_counter()
 	results = model.DetectWithImage(frame, threshold=args["confidence"],
 		keep_aspect_ratio=True, relative_coord=False)
-	end = time.time()
+	print(time.perf_counter() - tinf, "sec")
 
 	# loop over the results
 	for r in results:
@@ -69,6 +79,7 @@ while True:
 		label = labels[r.label_id]
 
 		# draw the bounding box and label on the image
+		detectframecount += 1
 		cv2.rectangle(orig, (startX, startY), (endX, endY),
 			(0, 255, 0), 2)
 		y = startY - 15 if startY - 15 > 15 else startY + 15
@@ -84,10 +95,21 @@ while True:
 	if key == ord("q"):
 		break
 
-	fps.update()
-	print("[INFO] approx. FPS: {:.2f}".format(fps.fps()))
+        # FPS calculation
+        framecount += 1
+        if framecount >= 15:
+            fps       = "(Playback) {:.1f} FPS".format(time1/15)
+            detectfps = "(Detection) {:.1f} FPS".format(detectframecount/time2)
+            framecount = 0
+            detectframecount = 0
+            time1 = 0
+            time2 = 0
+            print("Playback FPS: " + fps + "Detection FPS: " + detectfps)
+        t2 = time.perf_counter()
+        elapsedTime = t2-t1
+        time1 += 1/elapsedTime
+        time2 += elapsedTime
 	
 # do a bit of cleanup
-fps.stop()
 cv2.destroyAllWindows()
 vs.stop()
