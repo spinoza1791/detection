@@ -80,7 +80,7 @@ def main():
 	N = 10
 	ms = "00"
 	scale_req = False
-	if (cam_w != mdl_dims) or (cam_h != mdl_doms):
+	if (cam_w != mdl_dims) or (cam_h != mdl_dims):
 		scale_req = True
 				   
 	#if not video_off :
