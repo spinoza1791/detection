@@ -25,7 +25,7 @@ def main():
 	parser.add_argument(
 	  '--thresh', help='Threshold confidence [0.1-1.0], default=0.3', default=0.3)
 	parser.add_argument(
-	  '--video_off', help='Video display off, for increased FPS', action='store_true', required=False)
+	  '--video_off', help='Video display off, for increased FPS', action='store_true', default=False)
 	parser.add_argument(
 	  '--cam_w', help='Set camera resolution, examples: 96, 128, 256, 352, 384, 480, 640, 1920', default=320)
 	parser.add_argument(
@@ -41,7 +41,7 @@ def main():
 			pairs = (l.strip().split(maxsplit=1) for l in f.readlines())
 			labels = dict((int(k), v) for k, v in pairs)
 	else:
-		lbl_input = input("Type label name for this single object model:")
+		lbl_input = input("Type label name for this single class model:")
 		if lbl_input:
 			labels = {0: lbl_input}
 		else:
@@ -49,17 +49,10 @@ def main():
 			
 	mdl_dims = int(args.dims)
 	max_obj = int(args.max_obj)
-	cam_w= args.cam_w
-	cam_h= args.cam_h
-	if args.thresh:
-		thresh = float(args.thresh)
-		if thresh < 0.1 or thresh > 1.0:
-			thresh = 0.3	
-	
-	video_off = False
-	if args.video_off :
-		video_off = True
-		
+	cam_w= int(args.cam_w)
+	cam_h= int(args.cam_h)
+	thresh = float(args.thresh)
+	video_off = args.video_off
 	engine = edgetpu.detection.engine.DetectionEngine(args.model)
 
 	pygame.init()
