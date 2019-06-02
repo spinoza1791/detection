@@ -58,23 +58,21 @@ def main():
 	pygame.init()
 	pygame.camera.init()
 	if not video_off :
-		screen = pygame.display.set_mode((cam_w,cam_h)) #, pygame.DOUBLEBUF | pygame.HWSURFACE)
+		screen = pygame.display.set_mode((cam_w,cam_h), pygame.DOUBLEBUF | pygame.HWSURFACE)
 		pygame.display.set_caption('Object Detection')
 		pygame.font.init()
 		fnt_sz = 18
 		fnt = pygame.font.SysFont('Arial', fnt_sz)
 	camlist = pygame.camera.list_cameras()
 	if camlist:
-	    pycam = pygame.camera.Camera(camlist[0],(cam_w,cam_h))
+	    pycam = pygame.camera.Camera(camlist[0],(cam_w, cam_h))
 	else:
 		print("No camera found!")
 		exit
 	pycam.start() 
 	time.sleep(1)
 	x1=x2=y1=y2=i=j=fps_last=fps_total=0
-	last_tm = time.time()
-	start_ms = time.time()
-	elapsed_ms = time.time()
+	start_ms=last_tm=elapsed_ms= time.time()
 	results = None
 	fps_avg = "00.0"
 	N = 10
@@ -86,8 +84,8 @@ def main():
 	#if not video_off :
 	#	screen = pygame.display.get_surface() #get the surface of the current active display
 	#	screen_x,screen_y = screen.get_width(), screen.get_height()
-	#img = pycam.get_image()
-	#img = pygame.transform.scale(img,(mdl_dims,mdl_dims))
+	img = pycam.get_image()
+	img = pygame.transform.scale(img,(mdl_dims,mdl_dims))
 	
 	while True:
 		#if not video_off :
