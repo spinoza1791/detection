@@ -49,7 +49,7 @@ def camThread(label, results, frameBuffer, camera_width, camera_height, vidfps, 
     global cam
     global window_name
 
-    cam = cv2.VideoCapture(cam_num)
+    cam = cv2.UMat(cv2.VideoCapture(cam_num))
     cam.set(cv2.CAP_PROP_FPS, vidfps)
     cam.set(cv2.CAP_PROP_FRAME_WIDTH, camera_width)
     cam.set(cv2.CAP_PROP_FRAME_HEIGHT, camera_height)
@@ -138,7 +138,7 @@ def overlay_on_image(frames, object_infos, label, camera_width, camera_height):
         percentage = int(obj.score * 100)
         label_text = label[obj.label_id] + " (" + str(percentage) + "%)" 
 
-        label_size = cv2.getTextSize(label_text, cv2.FONT_HERSHEY_SIMPLEX, 0.5, 1)[0]
+        label_size = cv2.UMat(cv2.getTextSize(label_text, cv2.FONT_HERSHEY_SIMPLEX, 0.5, 1)[0])
         label_left = box_left
         label_top = box_top - label_size[1]
         if (label_top < 1):
