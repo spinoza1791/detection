@@ -58,7 +58,7 @@ def main():
 	pygame.init()
 	pygame.camera.init()
 	if not video_off :
-		screen = pygame.display.set_mode((cam_w,cam_w), pygame.DOUBLEBUF | pygame.HWSURFACE)
+		screen = pygame.display.set_mode((cam_w,cam_h), pygame.DOUBLEBUF | pygame.HWSURFACE)
 		pygame.display.set_caption('Object Detection')
 		pygame.font.init()
 		fnt_sz = 18
@@ -71,7 +71,7 @@ def main():
 		exit
 	pycam.start() 
 	time.sleep(1)
-	x1=x2=y1=y2=i=j=fps_last=fps_total=0
+	x1=x2=y1=y2=i=j=fps_last=fps_total=scr_w=scr_h=0
 	last_tm = time.time()
 	start_ms = time.time()
 	elapsed_ms = time.time()
@@ -79,22 +79,25 @@ def main():
 	fps_avg = "00.0"
 	N = 10
 	ms = "00"
-	if not video_off :
-		screen = pygame.display.get_surface() #get the surface of the current active display
-		resized_x,resized_y = screen.get_width(), screen.get_height()
-	img = pycam.get_image()
-	img = pygame.transform.scale(img,(mdl_dims,mdl_dims))
+	#if not video_off :
+	#	screen = pygame.display.get_surface() #get the surface of the current active display
+	#	screen_x,screen_y = screen.get_width(), screen.get_height()
+	#img = pycam.get_image()
+	#img = pygame.transform.scale(img,(mdl_dims,mdl_dims))
 	
 	while True:
 		if not video_off :
 			screen = pygame.display.get_surface() #get the surface of the current active display
-			resized_x,resized_y = screen.get_width(), screen.get_height()
+			scr_w,scr_h = screen.get_width(), screen.get_height()
 		if pycam.query_image():
 			img = pycam.get_image()
 		if not video_off:
-			img = pygame.transform.scale(img,(resized_x, resized_y))
+			img = pygame.transform.scale(img,(scr_w, scr_h))
 			screen.blit(img, (0,0))
 			detect_img = pygame.transform.scale(img,(mdl_dims,mdl_dims))
+		else:
+			detect_img = img
+			
 		img_arr = pygame.surfarray.pixels3d(detect_img)
 		img_arr = np.swapaxes(img_arr,0,1)
 		img_arr = np.ascontiguousarray(img_arr)
@@ -113,16 +116,12 @@ def main():
 				obj_id += 1
 				bbox = obj.bounding_box.flatten().tolist()
 				label_id = int(round(obj.label_id,1))
-				class_label = "%s" % (labels[label_id])
-				if not video_off:
-					fnt_class_label = fnt.render(class_label, True, (255,255,255))
-					fnt_class_label_width = fnt_class_label.get_rect().width
-					screen.blit(fnt_class_label,(x1, y1-fnt_sz))
+				class_label = "%s" % (labels[label_id]
 				score = round(obj.score,2)
-				x1 = round(bbox[0] * resized_x) 
-				y1 = round(bbox[1] * resized_y) 
-				x2 = round(bbox[2] * resized_x) 
-				y2 = round(bbox[3] * resized_y) 
+				x1 = round(bbox[0] * scr_w) 
+				y1 = round(bbox[1] * scr_h) 
+				x2 = round(bbox[2] * scr_w) 
+				y2 = round(bbox[3] * scr_h) 
 				rect_width = x2 - x1
 				rect_height = y2 - y1
 				class_score = "%.2f" % (score)
@@ -130,14 +129,16 @@ def main():
 					fnt_class_score = fnt.render(class_score, True, (0,255,255))
 					fnt_class_score_width = fnt_class_score.get_rect().width
 					screen.blit(fnt_class_score,(x2-fnt_class_score_width, y1-fnt_sz))
+					fnt_class_label = fnt.render(class_label, True, (255,255,255))
+					fnt_class_label_width = fnt_class_label.get_rect().width
+					screen.blit(fnt_class_label,(x1, y1-fnt_sz))
+					fnt_ms = fnt.render(ms, True, (255,255,255))
+					fnt_ms_width = fnt_ms.get_rect().width
+					screen.blit(fnt_ms,((scr_w / 2 ) - (fnt_ms_width / 2), 0))
+					bbox_rect = pygame.draw.rect(screen, (0,255,0), (x1, y1, rect_width, rect_height), 4)
 				if i > N:
 					ms = "(%d%s%d) %s%.2fms" % (obj_cnt, "/", max_obj, "objects detected in ", elapsed_ms*1000)
 					print(ms)
-				if not video_off:
-					fnt_ms = fnt.render(ms, True, (255,255,255))
-					fnt_ms_width = fnt_ms.get_rect().width
-					screen.blit(fnt_ms,((resized_x / 2 ) - (fnt_ms_width / 2), 0))
-					bbox_rect = pygame.draw.rect(screen, (0,255,0), (x1, y1, rect_width, rect_height), 4)
 				output = "%s%d %s%s %s%s %s%d %s%d %s%d %s%d %s" % ("id:",obj_id,"class:", class_label, "conf:", class_score, "x1:",x1, "y1:",y1, "x2:",x2,"y2:", y2, fps_avg)
 				print(output)
 		else:
@@ -147,7 +148,7 @@ def main():
 			if not video_off:
 				fnt_ms = fnt.render(ms, True, (255,0,0))
 				fnt_ms_width = fnt_ms.get_rect().width
-				screen.blit(fnt_ms,((resized_x / 2 ) - (fnt_ms_width / 2), 0))
+				screen.blit(fnt_ms,((scr_w / 2 ) - (fnt_ms_width / 2), 0))
 				
 		if i > N:
 			tm = time.time()
@@ -166,7 +167,7 @@ def main():
 			fps_thresh = fps_avg + "    thresh:" + str(thresh)
 			fps_fnt = fnt.render(fps_thresh, True, (255,255,0))
 			fps_width = fps_fnt.get_rect().width
-			screen.blit(fps_fnt,((resized_x / 2) - (fps_width / 2), 20))
+			screen.blit(fps_fnt,((scr_w / 2) - (fps_width / 2), 20))
 
 		for event in pygame.event.get():
 			keys = pygame.key.get_pressed()
