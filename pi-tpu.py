@@ -116,7 +116,7 @@ def main():
 				obj_id += 1
 				bbox = obj.bounding_box.flatten().tolist()
 				label_id = int(round(obj.label_id,1))
-				class_label = "%s" % (labels[label_id]
+				class_label = "%s" % (labels[label_id])
 				score = round(obj.score,2)
 				x1 = round(bbox[0] * scr_w) 
 				y1 = round(bbox[1] * scr_h) 
