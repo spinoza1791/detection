@@ -58,7 +58,7 @@ def main():
 	pygame.init()
 	pygame.camera.init()
 	if not video_off :
-		screen = pygame.display.set_mode((cam_w,cam_w), pygame.DOUBLEBUF, pygame.HWSURFACE)
+		screen = pygame.display.set_mode((cam_w,cam_w), pygame.DOUBLEBUF | pygame.HWSURFACE)
 		pygame.display.set_caption('Object Detection')
 		pygame.font.init()
 		fnt_sz = 18
