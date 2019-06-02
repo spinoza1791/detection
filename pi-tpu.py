@@ -164,7 +164,7 @@ def main():
 				fps_thresh = fps_avg + "    thresh:" + str(thresh)
 				fps_fnt = fnt.render(fps_thresh, True, (255,255,0))
 				fps_width = fps_fnt.get_rect().width
-				screen.blit(fps_fnt,((scr_w / 2) - (fps_width / 2), 20))
+				screen.blit(fps_fnt,((cam_w / 2) - (fps_width / 2), 20))
 
 		for event in pygame.event.get():
 			keys = pygame.key.get_pressed()
