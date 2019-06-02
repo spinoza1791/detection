@@ -15,11 +15,11 @@ os.environ['SDL_VIDEO_CENTERED'] = '1'
 def main():
 	parser = argparse.ArgumentParser()
 	parser.add_argument(
-	  '--model', help='File path of Tflite model.', required=True)
+	  '--model', help='File path of Tflite model.', default="/home/rock64/models/mobilenet_ssd_v2_coco_quant_postprocess_edgetpu.tflite")
 	parser.add_argument(
-	  '--labels', help='labels file path OR no arg will prompt for label name', required=False)
+	  '--labels', help='labels file path OR no arg will prompt for label name', default="/home/rock64/detection/coco_labels.txt", help="Path of the labels file.")
 	parser.add_argument(
-	  '--dims', help='Model input dimension', required=True)
+	  '--dims', help='Model input dimension', default=320)
 	parser.add_argument(
 	  '--max_obj', help='Maximum objects detected [>= 1], default=1', default=1, required=False)
 	parser.add_argument(
@@ -27,11 +27,9 @@ def main():
 	parser.add_argument(
 	  '--video_off', help='Video display off, for increased FPS', action='store_true', required=False)
 	parser.add_argument(
-	  '--gray', help='Grayscale detection for increased FPS', action='store_true', required=False)
-	parser.add_argument(
 	  '--cam_w', help='Set camera resolution, examples: 96, 128, 256, 352, 384, 480, 640, 1920', default=320, required=False)
 	parser.add_argument(
-	  '--cam_h', help='Set camera resolution, examples: 96, 128, 256, 352, 384, 480, 640, 1920', default=240, required=False)
+	  '--cam_h', help='Set camera resolution, examples: 96, 128, 256, 352, 384, 480, 640, 1920', default=320, required=False)
 	if len(sys.argv[0:])==0:
 		parser.print_help()
 		#parser.print_usage() # for just the usage line
@@ -49,13 +47,12 @@ def main():
 		else:
 			labels = {0: 'object'}
 			
-
 	mdl_dims = int(args.dims)
-	
-	if args.max_obj:
-		max_obj = int(args.max_obj)
-		if max_obj < 1:
-			max_obj = 1
+	max_obj = int(args.max_obj)
+	cam_w= args.cam_w
+	cam_h= args.cam_h
+	resized_x = cam_w
+	resized_y = cam_h
 
 	if args.thresh:
 		thresh = float(args.thresh)
@@ -66,22 +63,6 @@ def main():
 	if args.video_off :
 		video_off = True
 		
-	gray = False
-	if args.gray :
-		gray = True
-		
-	if args.cam_w:
-		cam_w= int(args.cam_w)
-	else:		
-		cam_w= 320
-		
-	if args.cam_h:
-		cam_h= int(args.cam_h)
-	else:		
-		cam_h=240
-
-	resized_x = cam_w
-	resized_y = cam_h
 	engine = edgetpu.detection.engine.DetectionEngine(args.model)
 
 	pygame.init()
@@ -90,7 +71,7 @@ def main():
 		screen = pygame.display.set_mode((cam_w,cam_w), pygame.RESIZABLE)
 		pygame.display.set_caption('Object Detection')
 		pygame.font.init()
-		fnt_sz = 12
+		fnt_sz = 16
 		fnt = pygame.font.SysFont('Arial', fnt_sz)
 	camlist = pygame.camera.list_cameras()
 	if camlist:
@@ -99,18 +80,7 @@ def main():
 		print("No camera found!")
 		exit
 	pycam.start() 
-	
-	#def grayscale(img):
-	#	arr = pygame.surfarray.pixels3d(img)
-	#	#arr = arr.dot([0.298, 0.587, 0.114])[:,:,None].repeat(3,axis=2)
-	#	avgs = [[(r*0.298 + g*0.587 + b*0.114) for (r,g,b) in col] for col in arr]
-	#	arr = np.array([[[avg,avg,avg] for avg in col] for col in avgs])
-	#	return arr
-
-	#def fullcolor(img):
-	#	arr = pygame.surfarray.pixels3d(img)
-	#	return arr
-	
+	time.sleep(2)
 	x1=x2=y1=y2=0
 	last_tm = time.time()
 	start_ms = time.time()
@@ -125,32 +95,21 @@ def main():
 	ms = "00"
 	if not video_off :
 		screen = pygame.display.get_surface() #get the surface of the current active display
-		resized_x,resized_y = size = screen.get_width(), screen.get_height()
+		resized_x,resized_y = screen.get_width(), screen.get_height()
 	img = pycam.get_image()
 	img = pygame.transform.scale(img,(mdl_dims,mdl_dims))
 	
 	while True:
 		if not video_off :
 			screen = pygame.display.get_surface() #get the surface of the current active display
-			resized_x,resized_y = size = screen.get_width(), screen.get_height()
+			resized_x,resized_y = screen.get_width(), screen.get_height()
 		if pycam.query_image():
 			img = pycam.get_image()
 		if not video_off:
 			img = pygame.transform.scale(img,(resized_x, resized_y))
-			#if img and video_off == False:
 			screen.blit(img, (0,0))
-					
-		detect_img = pygame.transform.scale(img,(mdl_dims,mdl_dims))
+			detect_img = pygame.transform.scale(img,(mdl_dims,mdl_dims))
 		img_arr = pygame.surfarray.pixels3d(detect_img)
-		#if gray:
-		#	img_arr = grayscale(img)
-			#print(img_arr.shape)
-			#print(img_arr.size)
-		#else:
-		#	img_arr = fullcolor(img)
-			#print(img_arr.shape)
-			#print(img_arr.size)
-			
 		img_arr = np.swapaxes(img_arr,0,1)
 		img_arr = np.ascontiguousarray(img_arr)
 		frame = io.BytesIO(img_arr)
@@ -208,7 +167,6 @@ def main():
 				
 		if i > N:
 			tm = time.time()
-			#fps = "fps:{:5.1f} ".format(i / (tm - last_tm))
 			fps_last = i / (tm - last_tm)
 			if j < 5:
 				j += 1
