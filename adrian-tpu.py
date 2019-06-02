@@ -12,9 +12,9 @@ import cv2
 
 # construct the argument parser and parse the arguments
 ap = argparse.ArgumentParser()
-ap.add_argument("-m", "--model", required=True,
+ap.add_argument("-m", "--model", default="/home/rock64/models/mobilenet_ssd_v2_coco_quant_postprocess_edgetpu.tflite",
 	help="path to TensorFlow Lite object detection model")
-ap.add_argument("-l", "--labels", required=True,
+ap.add_argument("-l", "--labels", default="/home/rock64/detection/coco_labels.txt",
 	help="path to labels file")
 ap.add_argument("-c", "--confidence", type=float, default=0.3,
 	help="minimum probability to filter weak detections")
