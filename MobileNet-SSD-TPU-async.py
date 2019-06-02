@@ -113,7 +113,7 @@ def inferencer(results, frameBuffer, model, camera_width, camera_height):
         prepimg = Image.fromarray(prepimg)
 
         tinf = time.perf_counter()
-        ans = engine.DetectWithImage(prepimg, threshold=0.5, keep_aspect_ratio=True, relative_coord=False, top_k=10)
+        ans = engine.DetectWithImage(prepimg, threshold=0.3, keep_aspect_ratio=True, relative_coord=False, top_k=10)
         #print(time.perf_counter() - tinf, "sec")
         results.put(ans)
 
@@ -156,8 +156,8 @@ def overlay_on_image(frames, object_infos, label, camera_width, camera_height):
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("--model", default="/home/libre/models/mobilenet_ssd_v2_coco_quant_postprocess_edgetpu.tflite", help="Path of the detection model.")
-    parser.add_argument("--label", default="/home/libre/detection/coco_labels.txt", help="Path of the labels file.")
+    parser.add_argument("--model", default="/home/rock64/models/mobilenet_ssd_v2_coco_quant_postprocess_edgetpu.tflite", help="Path of the detection model.")
+    parser.add_argument("--label", default="/home/rock64/detection/coco_labels.txt", help="Path of the labels file.")
     parser.add_argument("--cam", type=int, default=0, help="Camera number, ex. 0")
     parser.add_argument("--cam_w", type=int, default=300, help="Camera width")
     parser.add_argument("--cam_h", type=int, default=300, help="Camera height")
@@ -169,7 +169,7 @@ if __name__ == '__main__':
 
     camera_width = args.cam_w
     camera_height = args.cam_h
-    vidfps = 45
+    vidfps = 60
 
     try:
         mp.set_start_method('forkserver')
