@@ -10,6 +10,22 @@ from time import sleep
 import multiprocessing as mp
 from edgetpu.detection.engine import DetectionEngine
 
+parser = argparse.ArgumentParser()
+parser.add_argument("--model", default="/home/rock64/models/mobilenet_ssd_v2_coco_quant_postprocess_edgetpu.tflite", help="Path of the detection model.")
+parser.add_argument("--label", default="/home/rock64/detection/coco_labels.txt", help="Path of the labels file.")
+parser.add_argument("--cam", type=int, default=0, help="Camera number, ex. 0")
+parser.add_argument("--cam_w", type=int, default=320, help="Camera width")
+parser.add_argument("--cam_h", type=int, default=240, help="Camera height")
+parser.add_argument('--video_off', help='Video display off, for increased FPS', action='store_true', default=False)
+args = parser.parse_args()
+
+model    = args.model
+label    = ReadLabelFile(args.label)
+cam_arg = args.cam
+video_off = args.video_off
+camera_width = args.cam_w
+camera_height = args.cam_h
+vidfps = 120
 lastresults = None
 processes = []
 frameBuffer = None
@@ -25,7 +41,6 @@ box_thickness = 1
 label_background_color = (125, 175, 75)
 label_text_color = (255, 255, 255)
 percentage = 0.0
-video_off = False
 
 # Function to read labels from text files.
 def ReadLabelFile(file_path):
@@ -47,10 +62,8 @@ def camThread(label, results, frameBuffer, camera_width, camera_height, vidfps, 
     cam.set(cv2.CAP_PROP_FRAME_HEIGHT, camera_height)
     window_name = "Camera"
     cv2.namedWindow(window_name, cv2.WINDOW_AUTOSIZE)
-
     while True:
         t1 = time.perf_counter()
-
         ret, color_image = cam.read()
         if not ret:
             continue
@@ -59,7 +72,6 @@ def camThread(label, results, frameBuffer, camera_width, camera_height, vidfps, 
         frames = color_image
         frameBuffer.put(color_image.copy())
         res = None
-
         if not results.empty():
             res = results.get(False)
             detectframecount += 1
@@ -105,7 +117,8 @@ def inferencer(results, frameBuffer, model, camera_width, camera_height):
         results.put(ans)
 
 def overlay_on_image(frames, object_infos, label, camera_width, camera_height):
-    color_image = frames
+  global video_off
+  color_image = frames
     if not video_off :
       if isinstance(object_infos, type(None)):
           return color_image
@@ -138,42 +151,27 @@ def overlay_on_image(frames, object_infos, label, camera_width, camera_height):
 
     return img_cp
 
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--model", default="/home/rock64/models/mobilenet_ssd_v2_coco_quant_postprocess_edgetpu.tflite", help="Path of the detection model.")
-    parser.add_argument("--label", default="/home/rock64/detection/coco_labels.txt", help="Path of the labels file.")
-    parser.add_argument("--cam", type=int, default=0, help="Camera number, ex. 0")
-    parser.add_argument("--cam_w", type=int, default=320, help="Camera width")
-    parser.add_argument("--cam_h", type=int, default=240, help="Camera height")
-    parser.add_argument('--video_off', help='Video display off, for increased FPS', action='store_true', default=False)
-    args = parser.parse_args()
+#if __name__ == '__main__':
 
-    model    = args.model
-    label    = ReadLabelFile(args.label)
-    cam_arg = args.cam
-    video_off = args.video_off
-    camera_width = args.cam_w
-    camera_height = args.cam_h
-    vidfps = 120
-    try:
-        mp.set_start_method('forkserver')
-        frameBuffer = mp.Queue(10)
-        results = mp.Queue()
-        # Start streaming
-        p = mp.Process(target=camThread,
-                       args=(label, results, frameBuffer, camera_width, camera_height, vidfps, cam_arg),
-                       daemon=True)
-        p.start()
-        processes.append(p)
-        # Activation of inferencer
-        p = mp.Process(target=inferencer,
-                       args=(results, frameBuffer, model, camera_width, camera_height),
-                       daemon=True)
-        p.start()
-        processes.append(p)
-        while True:
-            sleep(1)
+try:
+    mp.set_start_method('forkserver')
+    frameBuffer = mp.Queue(10)
+    results = mp.Queue()
+    # Start streaming
+    p = mp.Process(target=camThread,
+                   args=(label, results, frameBuffer, camera_width, camera_height, vidfps, cam_arg),
+                   daemon=True)
+    p.start()
+    processes.append(p)
+    # Activation of inferencer
+    p = mp.Process(target=inferencer,
+                   args=(results, frameBuffer, model, camera_width, camera_height),
+                   daemon=True)
+    p.start()
+    processes.append(p)
+    while True:
+        sleep(1)
 
-    finally:
-        for p in range(len(processes)):
-            processes[p].terminate()
+finally:
+    for p in range(len(processes)):
+        processes[p].terminate()
