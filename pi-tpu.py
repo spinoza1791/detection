@@ -17,19 +17,19 @@ def main():
 	parser.add_argument(
 	  '--model', help='File path of Tflite model.', default="/home/rock64/models/mobilenet_ssd_v2_coco_quant_postprocess_edgetpu.tflite")
 	parser.add_argument(
-	  '--labels', help='labels file path OR no arg will prompt for label name', default="/home/rock64/detection/coco_labels.txt", help="Path of the labels file.")
+	  '--labels', help="Path of the labels file.", default="/home/rock64/detection/coco_labels.txt")
 	parser.add_argument(
 	  '--dims', help='Model input dimension', default=320)
 	parser.add_argument(
-	  '--max_obj', help='Maximum objects detected [>= 1], default=1', default=1, required=False)
+	  '--max_obj', help='Maximum objects detected [>= 1], default=1', default=1)
 	parser.add_argument(
-	  '--thresh', help='Threshold confidence [0.1-1.0], default=0.3', default=0.3, required=False)
+	  '--thresh', help='Threshold confidence [0.1-1.0], default=0.3', default=0.3)
 	parser.add_argument(
 	  '--video_off', help='Video display off, for increased FPS', action='store_true', required=False)
 	parser.add_argument(
-	  '--cam_w', help='Set camera resolution, examples: 96, 128, 256, 352, 384, 480, 640, 1920', default=320, required=False)
+	  '--cam_w', help='Set camera resolution, examples: 96, 128, 256, 352, 384, 480, 640, 1920', default=320)
 	parser.add_argument(
-	  '--cam_h', help='Set camera resolution, examples: 96, 128, 256, 352, 384, 480, 640, 1920', default=320, required=False)
+	  '--cam_h', help='Set camera resolution, examples: 96, 128, 256, 352, 384, 480, 640, 1920', default=320)
 	if len(sys.argv[0:])==0:
 		parser.print_help()
 		#parser.print_usage() # for just the usage line
@@ -51,9 +51,6 @@ def main():
 	max_obj = int(args.max_obj)
 	cam_w= args.cam_w
 	cam_h= args.cam_h
-	resized_x = cam_w
-	resized_y = cam_h
-
 	if args.thresh:
 		thresh = float(args.thresh)
 		if thresh < 0.1 or thresh > 1.0:
@@ -68,10 +65,10 @@ def main():
 	pygame.init()
 	pygame.camera.init()
 	if not video_off :
-		screen = pygame.display.set_mode((cam_w,cam_w), pygame.RESIZABLE)
+		screen = pygame.display.set_mode((cam_w,cam_w), pygame.DOUBLEBUF, pygame.HWSURFACE)
 		pygame.display.set_caption('Object Detection')
 		pygame.font.init()
-		fnt_sz = 16
+		fnt_sz = 18
 		fnt = pygame.font.SysFont('Arial', fnt_sz)
 	camlist = pygame.camera.list_cameras()
 	if camlist:
@@ -80,17 +77,13 @@ def main():
 		print("No camera found!")
 		exit
 	pycam.start() 
-	time.sleep(2)
-	x1=x2=y1=y2=0
+	time.sleep(1)
+	x1=x2=y1=y2=i=j=fps_last=fps_total=0
 	last_tm = time.time()
 	start_ms = time.time()
 	elapsed_ms = time.time()
-	i = 0
-	j = 0
 	results = None
 	fps_avg = "00.0"
-	fps_last = 0
-	fps_total = 0
 	N = 10
 	ms = "00"
 	if not video_off :
@@ -114,11 +107,9 @@ def main():
 		img_arr = np.ascontiguousarray(img_arr)
 		frame = io.BytesIO(img_arr)
 		frame_buf_val = np.frombuffer(frame.getvalue(), dtype=np.uint8)
-		#print(frame_buf_val)
 		start_ms = time.time()
 		results = engine.DetectWithInputTensor(frame_buf_val, threshold=thresh, top_k=max_obj)
 		elapsed_ms = time.time() - start_ms
-		#pygame.surfarray.blit_array(screen, img_arr)	
 		i += 1
 		if results:
 			obj_cnt = 0
@@ -190,8 +181,8 @@ def main():
 				pycam.stop()
 				pygame.display.quit()
 				sys.exit()
-			elif event.type == pygame.VIDEORESIZE and not video_off:
-				screen = pygame.display.set_mode((event.w,event.h),pygame.RESIZABLE)
+			#elif event.type == pygame.VIDEORESIZE and not video_off:
+			#	screen = pygame.display.set_mode((event.w,event.h),pygame.RESIZABLE)
 		
 		if not video_off:
 			pygame.display.update()
