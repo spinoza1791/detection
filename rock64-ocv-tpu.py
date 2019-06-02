@@ -52,126 +52,125 @@ def ReadLabelFile(file_path):
     ret[int(pair[0])] = pair[1].strip()
   return ret
 
-
 def camThread(label, results, frameBuffer, camera_width, camera_height, vidfps, cam_num):
-    global fps, detectfps, framecount, detectframecount, time1, time2, lastresults, cam, window_name, video_off
+  global fps, detectfps, framecount, detectframecount, time1, time2, lastresults, cam, window_name, video_off
 
-    cam = cv2.VideoCapture(cam_num)
-    cam.set(cv2.CAP_PROP_FPS, vidfps)
-    cam.set(cv2.CAP_PROP_FRAME_WIDTH, camera_width)
-    cam.set(cv2.CAP_PROP_FRAME_HEIGHT, camera_height)
-    window_name = "Camera"
-    cv2.namedWindow(window_name, cv2.WINDOW_AUTOSIZE)
-    while True:
-        t1 = time.perf_counter()
-        ret, color_image = cam.read()
-        if not ret:
-            continue
-        if frameBuffer.full():
-            frameBuffer.get()
-        frames = color_image
-        frameBuffer.put(color_image.copy())
-        res = None
-        if not results.empty():
-            res = results.get(False)
-            detectframecount += 1
-            if not video_off :
-              imdraw = overlay_on_image(frames, res, label, camera_width, camera_height)
-            lastresults = res
-        else:
-            if not video_off :
-              imdraw = overlay_on_image(frames, lastresults, label, camera_width, camera_height)
-        if not video_off :
-          cv2.imshow('Camera', imdraw)
+  cam = cv2.VideoCapture(cam_num)
+  cam.set(cv2.CAP_PROP_FPS, vidfps)
+  cam.set(cv2.CAP_PROP_FRAME_WIDTH, camera_width)
+  cam.set(cv2.CAP_PROP_FRAME_HEIGHT, camera_height)
+  window_name = "Camera"
+  cv2.namedWindow(window_name, cv2.WINDOW_AUTOSIZE)
+  while True:
+    t1 = time.perf_counter()
+    ret, color_image = cam.read()
+    if not ret:
+      continue
+    if frameBuffer.full():
+      frameBuffer.get()
+    frames = color_image
+    frameBuffer.put(color_image.copy())
+    res = None
+    if not results.empty():
+      res = results.get(False)
+      detectframecount += 1
+      if not video_off :
+        imdraw = overlay_on_image(frames, res, label, camera_width, camera_height)
+      lastresults = res
+    else:
+      if not video_off :
+        imdraw = overlay_on_image(frames, lastresults, label, camera_width, camera_height)
+      if not video_off :
+        cv2.imshow('Camera', imdraw)
 
-        if cv2.waitKey(1)&0xFF == ord('q'):
-            break
+    if cv2.waitKey(1)&0xFF == ord('q'):
+      break
 
-        # FPS calculation
-        framecount += 1
-        if framecount >= 15:
-            fps       = "(Playback) {:.1f} FPS".format(time1/15)
-            detectfps = "(Detection) {:.1f} FPS".format(detectframecount/time2)
-            framecount = 0
-            detectframecount = 0
-            time1 = 0
-            time2 = 0
-            print("Playback FPS: " + fps + "Detection FPS: " + detectfps)
-        t2 = time.perf_counter()
-        elapsedTime = t2-t1
-        time1 += 1/elapsedTime
-        time2 += elapsedTime
+    # FPS calculation
+    framecount += 1
+    if framecount >= 15:
+      fps       = "(Playback) {:.1f} FPS".format(time1/15)
+      detectfps = "(Detection) {:.1f} FPS".format(detectframecount/time2)
+      framecount = 0
+      detectframecount = 0
+      time1 = 0
+      time2 = 0
+      print("Playback FPS: " + fps + "Detection FPS: " + detectfps)
+    t2 = time.perf_counter()
+    elapsedTime = t2-t1
+    time1 += 1/elapsedTime
+    time2 += elapsedTime
 
 def inferencer(results, frameBuffer, model, camera_width, camera_height):
-    engine = DetectionEngine(model)
-    while True:
-        if frameBuffer.empty():
-            continue
-        # Run inference.
-        color_image = frameBuffer.get()
-        prepimg = color_image[:, :, ::-1].copy()
-        prepimg = Image.fromarray(prepimg)
-        tinf = time.perf_counter()
-        ans = engine.DetectWithImage(prepimg, threshold=0.3, keep_aspect_ratio=True, relative_coord=False, top_k=10)
-        #print(time.perf_counter() - tinf, "sec")
-        results.put(ans)
+  engine = DetectionEngine(model)
+  while True:
+    if frameBuffer.empty():
+      continue
+    # Run inference.
+    color_image = frameBuffer.get()
+    prepimg = color_image[:, :, ::-1].copy()
+    prepimg = Image.fromarray(prepimg)
+    tinf = time.perf_counter()
+    ans = engine.DetectWithImage(prepimg, threshold=0.3, keep_aspect_ratio=True, relative_coord=False, top_k=10)
+    #print(time.perf_counter() - tinf, "sec")
+    results.put(ans)
 
 def overlay_on_image(frames, object_infos, label, camera_width, camera_height):
   global video_off
   color_image = frames
+  if not video_off :
+    if isinstance(object_infos, type(None)):
+      return color_image
+    img_cp = color_image.copy()
+
+  for obj in object_infos:
+    box = obj.bounding_box.flatten().tolist()
+    box_left = int(box[0])
+    box_top = int(box[1])
+    box_right = int(box[2])
+    box_bottom = int(box[3])
+
+    percentage = int(obj.score * 100)
+    label_text = label[obj.label_id] + " (" + str(percentage) + "%)" 
     if not video_off :
-      if isinstance(object_infos, type(None)):
-          return color_image
-      img_cp = color_image.copy()
+      cv2.rectangle(img_cp, (box_left, box_top), (box_right, box_bottom), box_color, box_thickness)
+      label_size = cv2.getTextSize(label_text, cv2.FONT_HERSHEY_SIMPLEX, 0.5, 1)[0]
+      label_left = box_left
+      label_top = box_top - label_size[1]
+      if (label_top < 1):
+          label_top = 1
+      label_right = label_left + label_size[0]
+      label_bottom = label_top + label_size[1]
+      cv2.rectangle(img_cp, (label_left - 1, label_top - 1), (label_right + 1, label_bottom + 1), label_background_color, -1)
+      cv2.putText(img_cp, label_text, (label_left, label_bottom), cv2.FONT_HERSHEY_SIMPLEX, 0.5, label_text_color, 1)
 
-    for obj in object_infos:
-        box = obj.bounding_box.flatten().tolist()
-        box_left = int(box[0])
-        box_top = int(box[1])
-        box_right = int(box[2])
-        box_bottom = int(box[3])
-        
-        percentage = int(obj.score * 100)
-        label_text = label[obj.label_id] + " (" + str(percentage) + "%)" 
-        if not video_off :
-          cv2.rectangle(img_cp, (box_left, box_top), (box_right, box_bottom), box_color, box_thickness)
-          label_size = cv2.getTextSize(label_text, cv2.FONT_HERSHEY_SIMPLEX, 0.5, 1)[0]
-          label_left = box_left
-          label_top = box_top - label_size[1]
-          if (label_top < 1):
-              label_top = 1
-          label_right = label_left + label_size[0]
-          label_bottom = label_top + label_size[1]
-          cv2.rectangle(img_cp, (label_left - 1, label_top - 1), (label_right + 1, label_bottom + 1), label_background_color, -1)
-          cv2.putText(img_cp, label_text, (label_left, label_bottom), cv2.FONT_HERSHEY_SIMPLEX, 0.5, label_text_color, 1)
+  if not video_off :
+    cv2.putText(img_cp, fps,       (camera_width-170,15), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (38,0,255), 1, cv2.LINE_AA)
+    cv2.putText(img_cp, detectfps, (camera_width-170,30), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (38,0,255), 1, cv2.LINE_AA)
 
-    if not video_off :
-      cv2.putText(img_cp, fps,       (camera_width-170,15), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (38,0,255), 1, cv2.LINE_AA)
-      cv2.putText(img_cp, detectfps, (camera_width-170,30), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (38,0,255), 1, cv2.LINE_AA)
-
-    return img_cp
+  return img_cp
 
 #if __name__ == '__main__':
 
 try:
-    mp.set_start_method('forkserver')
-    frameBuffer = mp.Queue(10)
-    results = mp.Queue()
-    # Start streaming
-    p = mp.Process(target=camThread,
-                   args=(label, results, frameBuffer, camera_width, camera_height, vidfps, cam_arg),
-                   daemon=True)
-    p.start()
-    processes.append(p)
-    # Activation of inferencer
-    p = mp.Process(target=inferencer,
-                   args=(results, frameBuffer, model, camera_width, camera_height),
-                   daemon=True)
-    p.start()
-    processes.append(p)
-    while True:
-        sleep(1)
+  mp.set_start_method('forkserver')
+  frameBuffer = mp.Queue(10)
+  results = mp.Queue()
+  # Start streaming
+  p = mp.Process(target=camThread,
+                 args=(label, results, frameBuffer, camera_width, camera_height, vidfps, cam_arg),
+                 daemon=True)
+  p.start()
+  processes.append(p)
+  # Activation of inferencer
+  p = mp.Process(target=inferencer,
+                 args=(results, frameBuffer, model, camera_width, camera_height),
+                 daemon=True)
+  p.start()
+  processes.append(p)
+  while True:
+    sleep(1)
 
 finally:
-    for p in range(len(processes)):
-        processes[p].terminate()
+  for p in range(len(processes)):
+    processes[p].terminate()
