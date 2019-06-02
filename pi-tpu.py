@@ -58,7 +58,7 @@ def main():
 	pygame.init()
 	pygame.camera.init()
 	if not video_off :
-		screen = pygame.display.set_mode((cam_w,cam_h), pygame.DOUBLEBUF | pygame.HWSURFACE)
+		screen = pygame.display.set_mode((cam_w,cam_h), pygame.HWSURFACE+pygame.HWACCEL+pygame.DOUBLEBUF+pygame.ASYNCBLIT,16)
 		pygame.display.set_caption('Object Detection')
 		pygame.font.init()
 		fnt_sz = 18
@@ -152,7 +152,7 @@ def main():
 					print(output)
 			else:
 				if i > N:
-					ms = "%s %.2fms %s" % ("No objects detected in", elapsed_ms*1000)
+					ms = "%s %.2fms" % ("No objects detected in", elapsed_ms*1000)
 					print(ms)
 				if not video_off:
 					fnt_ms = fnt.render(ms, True, (255,0,0))
