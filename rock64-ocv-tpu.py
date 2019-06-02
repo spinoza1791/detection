@@ -19,8 +19,7 @@ parser.add_argument("--cam_h", type=int, default=240, help="Camera height")
 parser.add_argument('--video_off', help='Video display off, for increased FPS', action='store_true', default=False)
 args = parser.parse_args()
 
-model    = args.model
-label    = ReadLabelFile(args.label)
+model = args.model
 cam_arg = args.cam
 video_off = args.video_off
 camera_width = args.cam_w
@@ -51,6 +50,8 @@ def ReadLabelFile(file_path):
     pair = line.strip().split(maxsplit=1)
     ret[int(pair[0])] = pair[1].strip()
   return ret
+
+label = ReadLabelFile(args.label)
 
 def camThread(label, results, frameBuffer, camera_width, camera_height, vidfps, cam_num):
   global fps, detectfps, framecount, detectframecount, time1, time2, lastresults, cam, window_name, video_off
