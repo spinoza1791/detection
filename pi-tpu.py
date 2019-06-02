@@ -115,10 +115,10 @@ def main():
 					label_id = int(round(obj.label_id,1))
 					class_label = "%s" % (labels[label_id])
 					score = round(obj.score,2)
-					x1 = round(bbox[0] * scr_w) 
-					y1 = round(bbox[1] * scr_h) 
-					x2 = round(bbox[2] * scr_w) 
-					y2 = round(bbox[3] * scr_h) 
+					x1 = round(bbox[0] * cam_w) 
+					y1 = round(bbox[1] * cam_h) 
+					x2 = round(bbox[2] * cam_w) 
+					y2 = round(bbox[3] * cam_h) 
 					rect_width = x2 - x1
 					rect_height = y2 - y1
 					class_score = "%.2f" % (score)
@@ -131,7 +131,7 @@ def main():
 						screen.blit(fnt_class_label,(x1, y1-fnt_sz))
 						fnt_ms = fnt.render(ms, True, (255,255,255))
 						fnt_ms_width = fnt_ms.get_rect().width
-						screen.blit(fnt_ms,((scr_w / 2 ) - (fnt_ms_width / 2), 0))
+						screen.blit(fnt_ms,((cam_w / 2 ) - (fnt_ms_width / 2), 0))
 						bbox_rect = pygame.draw.rect(screen, (0,255,0), (x1, y1, rect_width, rect_height), 4)
 					if i > N:
 						ms = "(%d%s%d) %s%.2fms" % (obj_cnt, "/", max_obj, "objects detected in ", elapsed_ms*1000)
@@ -145,7 +145,7 @@ def main():
 				if not video_off:
 					fnt_ms = fnt.render(ms, True, (255,0,0))
 					fnt_ms_width = fnt_ms.get_rect().width
-					screen.blit(fnt_ms,((scr_w / 2 ) - (fnt_ms_width / 2), 0))
+					screen.blit(fnt_ms,((cam_w / 2 ) - (fnt_ms_width / 2), 0))
 
 			if i > N:
 				tm = time.time()
