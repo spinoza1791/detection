@@ -25,6 +25,7 @@ box_thickness = 1
 label_background_color = (125, 175, 75)
 label_text_color = (255, 255, 255)
 percentage = 0.0
+video_off = False
 
 # Function to read labels from text files.
 def ReadLabelFile(file_path):
@@ -38,17 +39,7 @@ def ReadLabelFile(file_path):
 
 
 def camThread(label, results, frameBuffer, camera_width, camera_height, vidfps, cam_num):
-
-    global fps
-    global detectfps
-    global framecount
-    global detectframecount
-    global time1
-    global time2
-    global lastresults
-    global cam
-    global window_name
-    global video_off = False
+    global fps, detectfps, framecount, detectframecount, time1, time2, lastresults, cam, window_name, video_off
 
     cam = cv2.VideoCapture(cam_num)
     cam.set(cv2.CAP_PROP_FPS, vidfps)
@@ -99,31 +90,21 @@ def camThread(label, results, frameBuffer, camera_width, camera_height, vidfps, 
         time1 += 1/elapsedTime
         time2 += elapsedTime
 
-
-
 def inferencer(results, frameBuffer, model, camera_width, camera_height):
-
     engine = DetectionEngine(model)
-
     while True:
-
         if frameBuffer.empty():
             continue
-
         # Run inference.
         color_image = frameBuffer.get()
         prepimg = color_image[:, :, ::-1].copy()
         prepimg = Image.fromarray(prepimg)
-
         tinf = time.perf_counter()
         ans = engine.DetectWithImage(prepimg, threshold=0.3, keep_aspect_ratio=True, relative_coord=False, top_k=10)
         #print(time.perf_counter() - tinf, "sec")
         results.put(ans)
 
-
-
 def overlay_on_image(frames, object_infos, label, camera_width, camera_height):
-
     color_image = frames
     if not video_off :
       if isinstance(object_infos, type(None)):
@@ -158,7 +139,6 @@ def overlay_on_image(frames, object_infos, label, camera_width, camera_height):
     return img_cp
 
 if __name__ == '__main__':
-
     parser = argparse.ArgumentParser()
     parser.add_argument("--model", default="/home/rock64/models/mobilenet_ssd_v2_coco_quant_postprocess_edgetpu.tflite", help="Path of the detection model.")
     parser.add_argument("--label", default="/home/rock64/detection/coco_labels.txt", help="Path of the labels file.")
@@ -172,30 +152,25 @@ if __name__ == '__main__':
     label    = ReadLabelFile(args.label)
     cam_arg = args.cam
     video_off = args.video_off
-
     camera_width = args.cam_w
     camera_height = args.cam_h
     vidfps = 120
-
     try:
         mp.set_start_method('forkserver')
         frameBuffer = mp.Queue(10)
         results = mp.Queue()
-
         # Start streaming
         p = mp.Process(target=camThread,
                        args=(label, results, frameBuffer, camera_width, camera_height, vidfps, cam_arg),
                        daemon=True)
         p.start()
         processes.append(p)
-
         # Activation of inferencer
         p = mp.Process(target=inferencer,
                        args=(results, frameBuffer, model, camera_width, camera_height),
                        daemon=True)
         p.start()
         processes.append(p)
-
         while True:
             sleep(1)
 
