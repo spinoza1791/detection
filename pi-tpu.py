@@ -21,15 +21,15 @@ def main():
 	parser.add_argument(
 	  '--dims', help='Model input dimension', default=320)
 	parser.add_argument(
-	  '--max_obj', help='Maximum objects detected [>= 1], default=1', default=1)
+	  '--max_obj', help='Maximum objects detected [>= 1], default=10', default=10)
 	parser.add_argument(
 	  '--thresh', help='Threshold confidence [0.1-1.0], default=0.3', default=0.3)
 	parser.add_argument(
 	  '--video_off', help='Video display off, for increased FPS', action='store_true', default=False)
 	parser.add_argument(
-	  '--cam_w', help='Set camera resolution, examples: 96, 128, 256, 352, 384, 480, 640, 1920', default=352)
+	  '--cam_w', help='Set camera resolution, examples: 96, 128, 256, 352, 384, 480, 640, 1920', default=320)
 	parser.add_argument(
-	  '--cam_h', help='Set camera resolution, examples: 96, 128, 256, 352, 384, 480, 640, 1920', default=352)
+	  '--cam_h', help='Set camera resolution, examples: 96, 128, 256, 352, 384, 480, 640, 1920', default=320)
 	if len(sys.argv[0:])==0:
 		parser.print_help()
 		#parser.print_usage() # for just the usage line
@@ -58,7 +58,7 @@ def main():
 	pygame.init()
 	pygame.camera.init()
 	if not video_off :
-		screen = pygame.display.set_mode((cam_w,cam_h), pygame.DOUBLEBUF | pygame.HWSURFACE)
+		screen = pygame.display.set_mode((cam_w,cam_h)) #, pygame.DOUBLEBUF | pygame.HWSURFACE)
 		pygame.display.set_caption('Object Detection')
 		pygame.font.init()
 		fnt_sz = 18
@@ -79,22 +79,36 @@ def main():
 	fps_avg = "00.0"
 	N = 10
 	ms = "00"
+	scale_req = False
+	if (cam_w != mdl_dims) or (cam_h != mdl_doms):
+		scale_req = True
+				   
 	#if not video_off :
 	#	screen = pygame.display.get_surface() #get the surface of the current active display
 	#	screen_x,screen_y = screen.get_width(), screen.get_height()
-	img = pycam.get_image()
-	img = pygame.transform.scale(img,(mdl_dims,mdl_dims))
+	#img = pycam.get_image()
+	#img = pygame.transform.scale(img,(mdl_dims,mdl_dims))
 	
 	while True:
 		#if not video_off :
 			#screen = pygame.display.get_surface() #get the surface of the current active display
 			#scr_w,scr_h = screen.get_width(), screen.get_height()
 		if pycam.query_image():
+			#grab image from camera, when available
 			img = pycam.get_image()
 			if not video_off:
-				img = pygame.transform.scale(img,(cam_w, cam_h))
-				screen.blit(img, (0,0))	
-			detect_img = pygame.transform.scale(img,(mdl_dims,mdl_dims))
+				if scale_req :
+					img = pygame.transform.scale(img,(cam_w, cam_h))
+					screen.blit(img, (0,0))
+					detect_img = pygame.transform.scale(img,(mdl_dims,mdl_dims))
+				else:
+					screen.blit(img, (0,0))
+					detect_img = img
+			else:
+				if scale_req :
+					detect_img = pygame.transform.scale(img,(mdl_dims,mdl_dims))
+				else:
+					detect_img = img
 			img_arr = pygame.surfarray.pixels3d(detect_img)
 			img_arr = np.swapaxes(img_arr,0,1)
 			img_arr = np.ascontiguousarray(img_arr)
