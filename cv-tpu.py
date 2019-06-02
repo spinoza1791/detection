@@ -24,7 +24,7 @@ def main():
     parser.add_argument("--usbcamno", type=int, default=0, help="USB Camera number.")
     parser.add_argument("--cam_w", type=int, default=320, help="Camera width")
     parser.add_argument("--cam_h", type=int, default=240, help="Camera height")
-    args = parser.parse_args()
+    args = vars(ap.parse_args())
 
     fps = ""
     detectfps = ""
