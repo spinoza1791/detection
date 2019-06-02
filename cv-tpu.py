@@ -6,7 +6,6 @@ import time
 from PIL import Image
 from edgetpu.detection.engine import DetectionEngine
 
-
 # Function to read labels from text files.
 def ReadLabelFile(file_path):
   with open(file_path, 'r') as f:
@@ -24,7 +23,7 @@ def main():
     parser.add_argument("--usbcamno", type=int, default=0, help="USB Camera number.")
     parser.add_argument("--cam_w", type=int, default=320, help="Camera width")
     parser.add_argument("--cam_h", type=int, default=240, help="Camera height")
-    args = vars(ap.parse_args())
+    args = parser.parse_args()
 
     fps = ""
     detectfps = ""
@@ -37,11 +36,14 @@ def main():
     label_background_color = (125, 175, 75)
     label_text_color = (255, 255, 255)
     percentage = 0.0
-
+    
+    camera_width = args.cam_w
+    camera_height = args.cam_h
+    
     cap = cv2.VideoCapture(args.usbcamno)
     cap.set(cv2.CAP_PROP_FPS, 150)
-    cap.set(cv2.CAP_PROP_FRAME_WIDTH, cam_w)
-    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, cam_h)
+    cap.set(cv2.CAP_PROP_FRAME_WIDTH, camera_width)
+    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, camera_height)
 
     # Initialize engine.
     engine = DetectionEngine(args.model)
@@ -87,8 +89,8 @@ def main():
                 cv2.rectangle(color_image, (label_left - 1, label_top - 1), (label_right + 1, label_bottom + 1), label_background_color, -1)
                 cv2.putText(color_image, label_text, (label_left, label_bottom), cv2.FONT_HERSHEY_SIMPLEX, 0.5, label_text_color, 1)
 
-        cv2.putText(color_image, fps,       (cam_w-170,15), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (38,0,255), 1, cv2.LINE_AA)
-        cv2.putText(color_image, detectfps, (cam_w-170,30), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (38,0,255), 1, cv2.LINE_AA)
+        cv2.putText(color_image, fps,       (camera_width-170,15), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (38,0,255), 1, cv2.LINE_AA)
+        cv2.putText(color_image, detectfps, (camera_width-170,30), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (38,0,255), 1, cv2.LINE_AA)
 
         cv2.namedWindow('USB Camera', cv2.WINDOW_AUTOSIZE)
         cv2.imshow('USB Camera', color_image)
