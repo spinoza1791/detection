@@ -39,6 +39,7 @@ print("[INFO] starting video stream...")
 vs = VideoStream(src=0).start()
 #vs = VideoStream(usePiCamera=False).start()
 time.sleep(2.0)
+fps = FPS().start()
 
 # loop over the frames from the video stream
 while True:
@@ -83,6 +84,10 @@ while True:
 	if key == ord("q"):
 		break
 
+	fps.update()
+	print("[INFO] approx. FPS: {:.2f}".format(fps.fps()))
+	
 # do a bit of cleanup
+fps.stop()
 cv2.destroyAllWindows()
 vs.stop()
