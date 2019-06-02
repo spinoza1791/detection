@@ -48,7 +48,7 @@ def camThread(label, results, frameBuffer, camera_width, camera_height, vidfps, 
     global lastresults
     global cam
     global window_name
-    global video_off
+    global video_off = False
 
     cam = cv2.VideoCapture(cam_num)
     cam.set(cv2.CAP_PROP_FPS, vidfps)
